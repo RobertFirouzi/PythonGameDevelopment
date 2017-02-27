@@ -6,7 +6,9 @@ Created on Feb 24, 2017
 
 ### LIBRARIES ###
 import sys,os
-sys.path.append(os.path.realpath('')+'\\dir_params')
+PROJECTPATH = __file__.replace('dir_scenery\scenery.py',"")
+sys.path.append(PROJECTPATH+'dir_params')
+# sys.path.append(os.path.realpath('')+'\\dir_params')
 
 ### PARAMS ###
 from def_colors import *
@@ -17,7 +19,8 @@ class SolidBackground():
         self.color=color
         
     def colorChange(self,color):
-        self.color=color 
+        self.color=color
+        return True 
         
 class StaticSprite():
     def __init__(self, image, location):

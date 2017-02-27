@@ -6,11 +6,13 @@ Created on Feb 24, 2017
 
 #TODO 
 #    - create init function which takes in the actors, scenery, etc and initializes
-#    - wrap main code into a class
+#    - wrap main code into a class.  How to organize this?
 #    - organize image paths into a dictionary
-#    - create an array of sound effect names to reference (instead of typing 'click')
-#    - push into a GIT repo
-#    - solve ambient sound problem
+#    -python Docs *akin java docs)
+#    - create unit tests (how to run automatically? - WIP
+#        -output bat results to a file (better way to see results?
+#   - good error checking and notification (not just a log file!) - WIP
+#    -create debug console
 
 ### LIBRARIES ###
 import pygame
@@ -24,6 +26,7 @@ sys.path.append(os.path.realpath('')+'\\dir_sound')
 sys.path.append(os.path.realpath('')+'\\dir_sound\\dir_music')
 sys.path.append(os.path.realpath('')+'\\dir_sound\\dir_ambience')
 sys.path.append(os.path.realpath('')+'\\dir_sound\\dir_soundeffects')
+sys.path.append(os.path.realpath('')+'\\dir_logging')
 sys.path.append(os.path.realpath('')+'\\src')
 
 ### PARAMS ###
@@ -39,6 +42,9 @@ from render_actors import RenderActors  # @UnresolvedImport
 from render_scenery import RenderScenery  # @UnresolvedImport
 from player_actions import ActionMove, ActionDefault  # @UnresolvedImport
 from player_character import *
+
+### LOGGING ###
+from log_errors import logError  # @UnresolvedImport
 
 ### SOUND ###
 from sound_player import MusicPlayer, SoundEffectPlayer  # @UnresolvedImport
@@ -68,18 +74,16 @@ scene.append(background)
 scene.append(img_ball)
 
 ### SOUND ###
-playlist_music = []
-music_saga7 = MUSIC_PATH+'saga7.mp3'
-playlist_music.append(music_saga7)
-musicPlayer = MusicPlayer(playlist_music)
-musicPlayer.playRepeat()
-
+musicPlayer = MusicPlayer()
+musicPlayer.loadSong(MUSIC_PATH, 'saga7-Wind', '.mp3')
+musicPlayer.loadSong(MUSIC_PATH, 'saga7-Water', '.mp3')
+musicPlayer.playSong('saga7-Water')
 
 soundPlayer = SoundEffectPlayer()
 soundPlayer.loadSound(SOUND_PATH, 'click', '.wav')
-# soundPlayer.loadSound(AMBIENCE_PATH, 'city', '.mp3') # can't play mp3?
-# soundPlayer.playSound('city')
-
+soundPlayer.loadSound(AMBIENCE_PATH, 'city', '.wav')
+soundPlayer.playSound('city')
+soundPlayer.setSoundVolume('city',0.4)
 ### GAME ENGINE ###
 renderActors = RenderActors(screen,actors)
 renderScenery = RenderScenery(screen,scene)
@@ -87,6 +91,8 @@ renderScenery = RenderScenery(screen,scene)
 ### CONTROL ### 
 player = PlayerCharacter(box)  # @UndefinedVariable
 player.defaultAction=player.colorSwap
+
+SONG = 0
             
 ### PROGRAM START ###
 while not DONE:
