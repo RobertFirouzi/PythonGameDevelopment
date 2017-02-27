@@ -1,0 +1,13 @@
+'''
+Created on Feb 24, 2017
+
+@author: Robert
+'''
+
+### SCREEN ###
+DISPLAY_WIDTH = 800
+DISPLAY_HEIGHT = 600
+
+### ACTORS ###
+SIMPLE_BOX_WIDTH = 60
+SIMPLE_BOX_HEIGHT = 60
