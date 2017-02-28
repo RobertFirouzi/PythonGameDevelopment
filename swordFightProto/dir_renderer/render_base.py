@@ -9,8 +9,7 @@ class RenderBase():
     def __init__(self, screen, components):
         self.screen = screen
         self.components = components
-    
-    
+       
     #iterate through every component
     def render(self):
         for component in self.components:

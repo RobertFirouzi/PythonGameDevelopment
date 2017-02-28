@@ -7,12 +7,13 @@ Created on Feb 24, 2017
 #TODO 
 #    - create init function which takes in the actors, scenery, etc and initializes
 #    - wrap main code into a class.  How to organize this?
-#    - organize image paths into a dictionary
 #    -python Docs *akin java docs)
 #    - create unit tests (how to run automatically? - WIP
 #        -output bat results to a file (better way to see results?
 #   - good error checking and notification (not just a log file!) - WIP
 #    -create debug console
+#    setup game structure (Level object, etc)
+#    countinue with pygame tutorial
 
 ### LIBRARIES ###
 import pygame
@@ -40,7 +41,7 @@ from scenery import *
 ### ENGINE ###
 from render_actors import RenderActors  # @UnresolvedImport
 from render_scenery import RenderScenery  # @UnresolvedImport
-from player_actions import ActionMove, ActionDefault  # @UnresolvedImport
+from player_actions import ActionMove, ActionColorSwap  # @UnresolvedImport
 from player_character import *
 
 ### LOGGING ###
@@ -48,6 +49,7 @@ from log_errors import logError  # @UnresolvedImport
 
 ### SOUND ###
 from sound_player import MusicPlayer, SoundEffectPlayer  # @UnresolvedImport
+from sound_object import SoundWrapper  # @UnresolvedImport
 
 ### SETUP ###
 pygame.init()  # @UndefinedVariable
@@ -69,31 +71,32 @@ scene = []
 background = SolidBackground(COLOR_BLACK) # @UndefinedVariable
 #TODO create a load image function
 img_ball = StaticSprite(pygame.image.load(IMAGE_PATH+'ball.png'), (20,20))  # @UndefinedVariable
-
 scene.append(background)
 scene.append(img_ball)
 
 ### SOUND ###
 musicPlayer = MusicPlayer()
-musicPlayer.loadSong(MUSIC_PATH, 'saga7-Wind', '.mp3')
-musicPlayer.loadSong(MUSIC_PATH, 'saga7-Water', '.mp3')
+musicPlayer.loadSong(SoundWrapper('song', MUSIC_PATH, 'saga7-Wind', '.mp3'))
+musicPlayer.loadSong(SoundWrapper('song', MUSIC_PATH, 'saga7-Water', '.mp3'))
 musicPlayer.playSong('saga7-Water')
 
 soundPlayer = SoundEffectPlayer()
-soundPlayer.loadSound(SOUND_PATH, 'click', '.wav')
-soundPlayer.loadSound(AMBIENCE_PATH, 'city', '.wav')
+soundPlayer.loadSound(SoundWrapper('sound', SOUND_PATH, 'click', '.wav'))
+soundPlayer.loadSound(SoundWrapper('sound', AMBIENCE_PATH, 'city', '.wav'))
 soundPlayer.playSound('city')
 soundPlayer.setSoundVolume('city',0.4)
+
 ### GAME ENGINE ###
 renderActors = RenderActors(screen,actors)
 renderScenery = RenderScenery(screen,scene)
 
 ### CONTROL ### 
 player = PlayerCharacter(box)  # @UndefinedVariable
-player.defaultAction=player.colorSwap
-
-SONG = 0
-            
+actionMove = ActionMove()
+defaultAction = ActionColorSwap(['click'],soundPlayer)
+player.actionMove=actionMove.act
+player.defaultAction=defaultAction.act
+    
 ### PROGRAM START ###
 while not DONE:
         ### CHECK THE EVENT QUEUE ###
@@ -101,20 +104,19 @@ while not DONE:
             if event.type == pygame.QUIT:  # @UndefinedVariable
                 DONE = True
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:  # @UndefinedVariable 
-                player.performAction(ActionDefault())
-                soundPlayer.playSound('click')
+                player.defaultAction(player)
                     
         ### CHECK BUTTON PRESSES ###   
         pressed = pygame.key.get_pressed()    
         #DIRECTIONAL               
         if pressed[pygame.K_UP]:  # @UndefinedVariable
-            player.performAction(ActionMove('up'))
+            player.actionMove(player,['up'])
         if pressed[pygame.K_DOWN]:  # @UndefinedVariable
-            player.performAction(ActionMove('down'))
+            player.actionMove(player,['down'])
         if pressed[pygame.K_LEFT]:  # @UndefinedVariable
-            player.performAction(ActionMove('left'))
+            player.actionMove(player,['left'])
         if pressed[pygame.K_RIGHT]:  # @UndefinedVariable
-            player.performAction(ActionMove('right'))
+            player.actionMove(player,['right'])
         
         ### DRAW THE GRAPHICS ###
         renderScenery.render()

@@ -14,7 +14,7 @@ from characters import *
 import pygame
 
 #maintains links to the screen and an array of scenery elements to render
-class RenderActors(RenderBase):
+class RenderActors(RenderBase):  # @UndefinedVariable
     def __init__(self, screen, scenery):
         super(RenderActors, self).__init__(screen, scenery)
       

@@ -22,14 +22,13 @@ class SimpleBox():
         self.height=height
         self.x=x
         self.y=y   
-    
         self.moveSpeed = 10
     
     def colorSwap(self):
         if self.color == COLOR_BLUE: # @UndefinedVariable
             self.setColor(COLOR_ORANGE) # @UndefinedVariable
         else:
-           self.setColor(COLOR_BLUE) # @UndefinedVariable
+            self.setColor(COLOR_BLUE) # @UndefinedVariable
         
     def setColor(self,color):
         self.color=color 

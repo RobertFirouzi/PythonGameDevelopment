@@ -14,7 +14,7 @@ from scenery import *
 import pygame
 
 #maintains links to the screen and an array of scenery elements to render
-class RenderScenery(RenderBase):
+class RenderScenery(RenderBase):  # @UndefinedVariable
     def __init__(self, screen, scenery):
         super(RenderScenery, self).__init__(screen, scenery)
       
