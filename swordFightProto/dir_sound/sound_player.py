@@ -11,26 +11,34 @@ import pygame
 import sys,os
 PROJECTPATH = __file__.replace('dir_sound\sound_player.py',"")
 sys.path.append(PROJECTPATH+'dir_logging')
+sys.path.append(PROJECTPATH+'dir_sound')
 
+from sound_object import SoundWrapper  # @UnresolvedImport
 from log_errors import logError  # @UnresolvedImport
 
 class MusicPlayer():
     def __init__(self, musicDict={}):
-        self.musicDict=musicDict
-        self.loadSong(os.path.realpath('')+'\\dir_sound\\dir_music\\', 'ERROR', '.mp3')
+        self.musicDict = musicDict
+        errorSong = SoundWrapper('song', __file__.replace('sound_player.py','dir_music\\'), 'ERROR', '.mp3' )
+        self.loadSong(errorSong)
         
-    def loadSong(self, path, song, ext):
+    def loadSong(self, soundWrapper):
         retVal = True
-        if self.musicDict.get(song) == None:
-            if(os.path.exists(str(path+song+ext))):   
-                newSong = str(path+song+ext)
-                self.musicDict[song] = newSong
+        if soundWrapper.soundType =='song':
+            if self.musicDict.get(soundWrapper.sound) == None:
+                if(os.path.exists(str(soundWrapper.fullPath))):   
+                    self.musicDict[soundWrapper.sound] = soundWrapper
+                else:
+                    logError('MusicPlayer','loadSong', 
+                             'path [' +soundWrapper.fullPath+ '] not found')
+                    retVal = False
             else:
-                logError('MusicPlayer','loadSong', 'path [' +path+song+ext+ '] not found')
+                logError('MusicPlayer','loadSong', 
+                         'tried to reload [' +soundWrapper.fullPath+ '], but this already exists')
                 retVal = False
         else:
-            logError('MusicPlayer','loadSong', 'tried to reload [' +path+song+ext+ '], but this already exists')
             retVal = False
+            logError('MusicPlayer','loadSong', 'load song with type: ' + str(soundWrapper.soundType))
         return retVal
                 
     #playthroughs is how many times to play the song, but -1 means repeat    
@@ -42,7 +50,7 @@ class MusicPlayer():
             if song != 'ERROR': #avoid infinite recursion
                 self.playSong('ERROR',1)
         else:
-            pygame.mixer.music.load(self.musicDict.get(song))
+            pygame.mixer.music.load(self.musicDict.get(song).fullPath)
             pygame.mixer.music.play(-1)
         return retVal
 
@@ -50,20 +58,25 @@ class MusicPlayer():
 class SoundEffectPlayer():
     def __init__(self, soundDict={}):
         self.soundDict = soundDict
-        self.loadSound(os.path.realpath('')+'\\dir_sound\\dir_soundeffects\\', 'ERROR', '.wav')
+        errorSound = SoundWrapper('sound', __file__.replace('sound_player.py','dir_soundeffects\\'), 'ERROR', '.wav' )
+        self.loadSound(errorSound)
         
-    def loadSound(self, path, sound, ext):
-        retVal = True
-        if self.soundDict.get(sound) == None:
-            if(os.path.exists(str(path+sound+ext))):   
-                newSound = pygame.mixer.Sound(path+sound+ext)
-                self.soundDict[sound] = newSound
+    def loadSound(self, soundWrapper):
+        retVal = True    
+        if soundWrapper.soundType =='sound':
+            if self.soundDict.get(soundWrapper.sound) == None:
+                if(os.path.exists(str(soundWrapper.fullPath))):   
+                    soundWrapper.soundObject = pygame.mixer.Sound(soundWrapper.fullPath) #save the sound file in the object
+                    self.soundDict[soundWrapper.sound] = soundWrapper
+                else:
+                    logError('SoundEffectPlayer','loadSound', 'path [' +soundWrapper.fullPath+ '] not found')
+                    retVal = False                
             else:
-                logError('SoundEffectPlayer','loadSound', 'path [' +path+sound+ext+ '] not found')
-                retVal = False                
+                logError('SoundEffectPlayer','loadSound', 'tried to reload [' +soundWrapper.fullPath+ '], but this already exists')
+                retVal = False
         else:
-            logError('SoundEffectPlayer','loadSound', 'tried to reload [' +path+sound+ext+ '], but this already exists')
-            retVal = False
+            retVal=False
+            logError('SoundEffectPlayer','loadSound', 'load sound with type: ' + str(soundWrapper.soundType))                                 
         return retVal
 
     def playSound(self, sound):
@@ -74,7 +87,7 @@ class SoundEffectPlayer():
             if sound != 'ERROR': #prevent infinite recursion
                 self.playSound('ERROR')
         else:
-            self.soundDict[sound].play()
+            self.soundDict[sound].soundObject.play()
         return retVal
    
 #set volume value [0,1.0] of sound in dictionary    
@@ -84,9 +97,10 @@ class SoundEffectPlayer():
             logError('SoundEffectPlayer','setSoundVolume', 'val '+str(volume)+' out of range')            
             retVal = False
         elif self.soundDict.get(sound) == None:  
+            logError('SoundEffectPlayer','playSound', 'sound [' +sound+ '] not found in dict')
             retVal = False
         else: 
-            self.soundDict.get(sound).set_volume(volume)
+            self.soundDict.get(sound).soundObject.set_volume(volume)
         return retVal
         
         
