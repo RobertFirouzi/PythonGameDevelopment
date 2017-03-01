@@ -5,5 +5,5 @@ Created on Feb 25, 2017
 '''
 
 class PlayerCharacter():
-    def __init__(self, actor):
+    def __init__(self, actor=[]):
         self.actor = actor #link to the actor player is controlling

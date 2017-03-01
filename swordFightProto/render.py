@@ -10,7 +10,7 @@ import pygame
 
 #base class to be extended 
 class RenderBase():
-    def __init__(self, screen, components):
+    def __init__(self, screen, components=[]):
         self.screen = screen
         self.components = components
        
@@ -25,8 +25,8 @@ class RenderBase():
 
 #maintains links to the screen and an array of scenery elements to render
 class RenderActors(RenderBase):
-    def __init__(self, screen, scenery):
-        super(RenderActors, self).__init__(screen, scenery)
+    def __init__(self, screen, actors=[]):
+        super(RenderActors, self).__init__(screen, actors)
       
     #render an item to the screen
     def renderFeature(self, component):
@@ -37,7 +37,7 @@ class RenderActors(RenderBase):
     
 #maintains links to the screen and an array of scenery elements to render
 class RenderScenery(RenderBase):
-    def __init__(self, screen, scenery):
+    def __init__(self, screen, scenery=[]):
         super(RenderScenery, self).__init__(screen, scenery)
       
     #render an item to the screen
