@@ -5,9 +5,8 @@ Created on Feb 26, 2017
 '''
 
 from datetime import date, datetime
+import os
 
-import sys,os
-sys.path.append(os.path.realpath('')+'\\dir_params')
 
 def logError(module, function, description):
     today = date.today()
@@ -19,4 +18,3 @@ def logError(module, function, description):
     errorFile = open(directory+str(module)+'-'+str(function)+'.txt', 'a')
     errorFile.write(str(datetime.now())+' ' +description +'\n')
     errorFile.close()
-    

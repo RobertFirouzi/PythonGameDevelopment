@@ -17,39 +17,25 @@ Created on Feb 24, 2017
 
 ### LIBRARIES ###
 import pygame
-import sys,os
-sys.path.append(os.path.realpath('')+'\\dir_params')
-sys.path.append(os.path.realpath('')+'\\dir_actors')
-sys.path.append(os.path.realpath('')+'\\dir_scenery')
-sys.path.append(os.path.realpath('')+'\\dir_renderer')
-sys.path.append(os.path.realpath('')+'\\dir_control')
-sys.path.append(os.path.realpath('')+'\\dir_sound')
-sys.path.append(os.path.realpath('')+'\\dir_sound\\dir_music')
-sys.path.append(os.path.realpath('')+'\\dir_sound\\dir_ambience')
-sys.path.append(os.path.realpath('')+'\\dir_sound\\dir_soundeffects')
-sys.path.append(os.path.realpath('')+'\\dir_logging')
-sys.path.append(os.path.realpath('')+'\\src')
+import os
 
 ### PARAMS ###
-from def_colors import *
-from def_size import *
+import parameters as PRAM
 
 ### ACTORS ###
-from characters import *
-from scenery import *
+from actors import SimpleBox
+from scenery import SolidBackground, StaticSprite
+from actions import ActionColorSwap, ActionMove
 
 ### ENGINE ###
-from render_actors import RenderActors  # @UnresolvedImport
-from render_scenery import RenderScenery  # @UnresolvedImport
-from player_actions import ActionMove, ActionColorSwap  # @UnresolvedImport
-from player_character import *
+from render import RenderActors, RenderScenery
+from player_character import PlayerCharacter
 
 ### LOGGING ###
-from log_errors import logError  # @UnresolvedImport
+from log_errors import logError
 
 ### SOUND ###
-from sound_player import MusicPlayer, SoundEffectPlayer  # @UnresolvedImport
-from sound_object import SoundWrapper  # @UnresolvedImport
+from sound import SoundEffectPlayer, SoundWrapper, MusicPlayer
 
 ### SETUP ###
 pygame.init()  # @UndefinedVariable
@@ -57,7 +43,7 @@ IMAGE_PATH = os.path.realpath('')+'\\dir_image\\'
 MUSIC_PATH = os.path.realpath('')+'\\dir_sound\\dir_music\\'
 AMBIENCE_PATH = os.path.realpath('')+'\\dir_sound\\dir_ambience\\'
 SOUND_PATH = os.path.realpath('')+'\\dir_sound\\dir_soundeffects\\'
-screen = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))  # @UndefinedVariable
+screen = pygame.display.set_mode((PRAM.DISPLAY_WIDTH, PRAM.DISPLAY_HEIGHT))
 CLOCK = pygame.time.Clock() 
 DONE = False
 
@@ -68,9 +54,9 @@ actors.append(box)
 
 ### SCENERY ###
 scene = []
-background = SolidBackground(COLOR_BLACK) # @UndefinedVariable
+background = SolidBackground(PRAM.COLOR_BLACK)
 #TODO create a load image function
-img_ball = StaticSprite(pygame.image.load(IMAGE_PATH+'ball.png'), (20,20))  # @UndefinedVariable
+img_ball = StaticSprite(pygame.image.load(IMAGE_PATH+'ball.png'), (20,20))
 scene.append(background)
 scene.append(img_ball)
 
@@ -91,7 +77,7 @@ renderActors = RenderActors(screen,actors)
 renderScenery = RenderScenery(screen,scene)
 
 ### CONTROL ### 
-player = PlayerCharacter(box)  # @UndefinedVariable
+player = PlayerCharacter(box)
 actionMove = ActionMove()
 defaultAction = ActionColorSwap(['click'],soundPlayer)
 player.actionMove=actionMove.act

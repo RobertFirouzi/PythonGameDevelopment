@@ -4,18 +4,11 @@ Created on Feb 24, 2017
 @author: Robert
 '''
 
-### LIBRARIES ###
-import sys,os
-PROJECTPATH = __file__.replace('dir_scenery\scenery.py',"")
-sys.path.append(PROJECTPATH+'dir_params')
-# sys.path.append(os.path.realpath('')+'\\dir_params')
-
-### PARAMS ###
-from def_colors import *
+import parameters as PRAM
 
 
 class SolidBackground():
-    def __init__(self, color = COLOR_BLACK): # @UndefinedVariable
+    def __init__(self, color = PRAM.COLOR_BLACK):
         self.color=color
         
     def colorChange(self,color):

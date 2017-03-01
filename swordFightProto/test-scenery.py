@@ -7,16 +7,15 @@ the framework
 @author: Robert
 '''
 import unittest
-import os,sys
+import os
 
-sys.path.append(os.path.realpath('')+'\\..\\dir_scenery\\')
 from scenery import *
 
 class Test(unittest.TestCase):
 
     def setUp(self):
         self.solidBackground=SolidBackground((0, 0, 0))
-        imagePath = os.path.realpath('')+'\\..\\dir_image\\'
+        imagePath = os.path.realpath('')+'\\dir_image\\'
         image='testsprite.png'
         pixelLocation = (20,20)
         self.staticSprite=StaticSprite(imagePath+image,pixelLocation)
@@ -26,7 +25,6 @@ class Test(unittest.TestCase):
         self.assertEqual(self.solidBackground.color, (0,0,0))
         self.assertEqual(self.solidBackground.colorChange((1,1,1)), True)
         self.assertEqual(self.solidBackground.color, (1,1,1))
-        self.assertEqual(1,2)
 
     def tearDown(self):
         pass

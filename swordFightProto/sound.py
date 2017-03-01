@@ -4,22 +4,23 @@ Created on Feb 25, 2017
 @author: Robert
 '''
 
-#Modules not unit tested:
-#(none)
-
 import pygame
-import sys,os
-PROJECTPATH = __file__.replace('dir_sound\sound_player.py',"")
-sys.path.append(PROJECTPATH+'dir_logging')
-sys.path.append(PROJECTPATH+'dir_sound')
+import os
 
-from sound_object import SoundWrapper  # @UnresolvedImport
-from log_errors import logError  # @UnresolvedImport
+from log_errors import logError
+
+class SoundWrapper():
+    def __init__(self, soundType, path, sound, ext):
+        self.soundType=soundType
+        self.path=path
+        self.sound=sound
+        self.ext=ext
+        self.fullPath = path+sound+ext
 
 class MusicPlayer():
     def __init__(self, musicDict={}):
         self.musicDict = musicDict
-        errorSong = SoundWrapper('song', __file__.replace('sound_player.py','dir_music\\'), 'ERROR', '.mp3' )
+        errorSong = SoundWrapper('song', os.path.realpath('') +'\\dir_sound\\dir_music\\', 'ERROR', '.mp3')
         self.loadSong(errorSong)
         
     def loadSong(self, soundWrapper):
@@ -58,7 +59,7 @@ class MusicPlayer():
 class SoundEffectPlayer():
     def __init__(self, soundDict={}):
         self.soundDict = soundDict
-        errorSound = SoundWrapper('sound', __file__.replace('sound_player.py','dir_soundeffects\\'), 'ERROR', '.wav' )
+        errorSound = SoundWrapper('sound', os.path.realpath('') +'\\dir_sound\\dir_soundeffects\\', 'ERROR', '.wav' )
         self.loadSound(errorSound)
         
     def loadSound(self, soundWrapper):

@@ -4,11 +4,8 @@ Created on Feb 26, 2017
 @author: Robert
 '''
 import unittest
-import os,sys
-
-sys.path.append(os.path.realpath('')+'\\..\\dir_sound\\')
-from sound_player import *
-from sound_object import *
+import os
+from sound import SoundWrapper, SoundEffectPlayer, MusicPlayer
 import pygame
 
 class TestSoundPlayers(unittest.TestCase):
@@ -17,7 +14,7 @@ class TestSoundPlayers(unittest.TestCase):
         pygame.init()
         self.musicPlayer = MusicPlayer()
         self.soundEffectPlayer = SoundEffectPlayer()
-        soundPath = os.path.realpath('')+'\\..\\dir_sound\\'
+        soundPath = os.path.realpath('')+'\\dir_sound\\'
         self.musicPath = soundPath+'dir_music\\'
         self.effectPath = soundPath+'dir_soundeffects\\'
         
