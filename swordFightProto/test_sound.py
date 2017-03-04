@@ -26,7 +26,7 @@ class TestSoundPlayers(unittest.TestCase):
         self.assertEqual(self.musicPlayer.playSong(PRAM.SONG_TEST), True)
         self.assertEqual(self.musicPlayer.playSong('songnotfound'), False)
         self.assertEqual(self.musicPlayer.playSong(PRAM.SONG_TEST,1), True) #play song once              
-
+        self.assertEqual(self.musicPlayer.playSong(PRAM.SONG_ERROR), True) #play error song
 ### soundPlayer() ###
     def test_loadSound(self):
         self.assertEqual(self.soundPlayer.loadSound(SoundWrapper('notsound', PRAM.SOUND_PATH, PRAM.SOUND_TEST, '.wav')), False)

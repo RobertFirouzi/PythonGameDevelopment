@@ -6,25 +6,25 @@ Created on Mar 1, 2017
 
 #should create the init function for the game first (since need a sound effect player etc
 
-import unittest, pygame
-
+import unittest
+from setup import playerFactory
 from actors import SimpleBox
-from player_actions import ActionMove, ActionColorSwap
-from player_character import PlayerCharacter
-from sound import SoundEffectPlayer
+from event import EventSound
 
 class Test(unittest.TestCase):
 
     def setUp(self):
-#         pygame.init()
-#         soundPlayer = SoundEffectPlayer()
-#         self.simpleBox = SimpleBox()
-#         self.playerCharacter = PlayerCharacter(simpleBox)
-#         self.playerCharacter.actionMove=ActionMove()
-#         self.playerCharacter.actionColorSwap = ActionColorSwap(['click'],soundPlayer)
+        actor = SimpleBox()
+        self.player = playerFactory(actor)
         
-    def testName(self):
-        pass
+    def test_actionMove(self):
+        self.assertEqual(self.player.actionMove('up'),'')
+        self.assertEqual(self.player.actionMove('down'),'')
+        self.assertEqual(self.player.actionMove('left'),'')
+        self.assertEqual(self.player.actionMove('right'),'')
+
+    def test_actionColorSwap(self):
+        self.assertEqual(type(self.player.defaultAction()) is EventSound,True)
 
     def tearDown(self):
         pass

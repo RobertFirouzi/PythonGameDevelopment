@@ -23,6 +23,6 @@ Render an image file to a pixel tuple location
 @param location
 '''        
 class StaticSprite():
-    def __init__(self, image, location):
+    def __init__(self, image, location = (0,0)):
         self.image = image
         self.location = location

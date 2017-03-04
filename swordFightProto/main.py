@@ -24,7 +24,6 @@ game = Game(player, musicPlayer, soundPlayer, renderer) #on init, loads an event
 eventHandler = EventHandler(game)
 game.eventHandler=eventHandler #these objects contain references to each other (Game may not need the handler though)
 
-
 while not DONE:
         ### CHECK THE EVENT QUEUE ###
         for event in pygame.event.get():         

@@ -34,7 +34,7 @@ IMG_TEST = 'testsprite.png'
 
 ### SOUNDTRACK ###
 MUSIC_PLAYLIST = [
-    'ERROR'
+    'ERROR',
     'saga7-Wind',
     'saga7-Water']
 
