@@ -6,7 +6,7 @@ Created on Feb 25, 2017
 
 import pygame
 import os
-
+import parameters as PRAM
 from log_errors import logError
 
 '''
@@ -31,8 +31,6 @@ Class to play music. Needs to have path loaded into it's dictionary to play song
 class MusicPlayer():
     def __init__(self, musicDict={}):
         self.musicDict = musicDict
-        errorSong = SoundWrapper('song', os.path.realpath('') +'\\dir_sound\\dir_music\\', 'ERROR', '.mp3')
-        self.loadSong(errorSong)
     
     '''
     Add a song to the music dictionary
@@ -67,8 +65,8 @@ class MusicPlayer():
         if self.musicDict.get(song) == None:
             logError('MusicPlayer','playSong', 'song [' + song+ '] not found in dict')
             retVal = False
-            if song != 'ERROR': #avoid infinite recursion
-                self.playSong('ERROR',1)
+            if song != PRAM.SONG_ERROR: #avoid infinite recursion
+                self.playSong(PRAM.SONG_ERROR,1)
         else:
             pygame.mixer.music.load(self.musicDict.get(song).fullPath)
             pygame.mixer.music.play(-1)
@@ -116,8 +114,8 @@ class SoundEffectPlayer():
         if self.soundDict.get(sound) == None:
             logError('SoundEffectPlayer','playSound', 'sound [' +sound+ '] not found in dict')
             retVal = False
-            if sound != 'ERROR': #prevent infinite recursion
-                self.playSound('ERROR')
+            if sound != PRAM.SOUND_ERROR: #prevent infinite recursion
+                self.playSound(PRAM.SOUND_ERROR)
         else:
             self.soundDict[sound].soundObject.play()
         return retVal

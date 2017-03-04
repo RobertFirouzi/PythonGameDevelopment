@@ -18,7 +18,7 @@ class SolidBackground():
         self.color=color
         return True 
 '''
-Render an image file to a pizel location
+Render an image file to a pixel tuple location
 @param image
 @param location
 '''        

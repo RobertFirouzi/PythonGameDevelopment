@@ -30,24 +30,32 @@ IMAGE_LIBRARY = ['ball.png'] #may not be needed
 
 ### IMAGE MAP ###
 IMG_BALL = 'ball.png'
+IMG_TEST = 'testsprite.png'
 
 ### SOUNDTRACK ###
 MUSIC_PLAYLIST = [
+    'ERROR'
     'saga7-Wind',
     'saga7-Water']
 
 AMBIENCE = ['city']
 
-SOUNDEFFECTS = ['click']
+SOUNDEFFECTS = [
+    'ERROR',
+    'click']
 
 ### SONGMAP ###
 SONG_SAGAWATER = 'saga7-Water'
+SONG_TEST = 'testsong'
+SONG_ERROR = 'ERROR'
 
 ### AMBIANTMAP ###
 AMB_CITY = 'city'
 
 ### SOUNDMAP ###
 SOUND_COLORSWAP = 'click'
+SOUND_ERROR = 'ERROR'
+SOUND_TEST = 'testeffect'
 
 ### GAME LEVELS ###
 LEVEL_LIBRARY = ['level_test01'] #may not be needed
