@@ -8,6 +8,7 @@ import parameters as PRAM
 from setup import soundPlayerFactory,gameLevelFactory, playerFactory, gameFactory
 from event import EventHandler
 from render import Renderer
+from copy import deepcopy
 
 ### SETUP ###
 pygame.init()  # @UndefinedVariable
@@ -24,11 +25,10 @@ game = gameFactory(player, gameLevel, musicPlayer, soundPlayer, renderer, [], No
 eventHandler = EventHandler(game)
 game.eventHandler=eventHandler
 
+#tempory code until the initialize level method setup in game
+for levelEvent in gameLevel.levelEvents:
+    game.gameEvents.append(deepcopy(levelEvent))
 
-#think where this should be called?  (music/ambiance track should be within gameLevel)
-musicPlayer.playSong('saga7-Water')
-soundPlayer.playSound('city')
-soundPlayer.setSoundVolume('city',0.4)
 
 while not DONE:
         ### CHECK THE EVENT QUEUE ###
@@ -36,7 +36,7 @@ while not DONE:
             if event.type == pygame.QUIT:  # @UndefinedVariable
                 DONE = True
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:  # @UndefinedVariable 
-                game.events.append(player.defaultAction())
+                game.gameEvents.append(player.defaultAction())
                     
         ### CHECK BUTTON PRESSES ###   
         pressed = pygame.key.get_pressed()    
@@ -50,7 +50,7 @@ while not DONE:
         if pressed[pygame.K_RIGHT]:  # @UndefinedVariable
             player.actionMove('right')
         
-        ### RUN GENERATED EVENTS ###
+        ### RUN GAME EVENTS ###
         eventHandler.handleEvents()
         
         ### DRAW THE GRAPHICS ###

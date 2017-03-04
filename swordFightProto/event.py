@@ -19,18 +19,31 @@ class EventSound(EventGeneratedBase):
         super(EventSound, self).__init__(params)
         self.sound=sound
 
-#class to run all generated events
+#plays a music track
+class EventSong(EventGeneratedBase):
+    def __init__(self, song, params=()):
+        super(EventSong, self).__init__(params)
+        self.song=song
+
+#class to run all generated events.  Has reference to game object to have access to all engine components
 class EventHandler():
     def __init__(self, game):
         self.game = game
     
     #run all the events in the queue
     def handleEvents(self):
-        while len(self.game.events)>0:
-            self.run(self.game.events.pop())
+        while len(self.game.gameEvents)>0:
+            retVal = self.run(self.game.gameEvents.pop()) #once an event has run, it can be discarded
+            if retVal != '':
+                self.game.gameEvents.push(retVal) #events can generate additional events
         return
         
     def run(self, event):
-        pass
+        retVal = ''
+        if type(event) is EventSound:
+            self.game.soundPlayer.playSound(event.sound)
+        elif type(event) is EventSong:
+            self.game.musicPlayer.playSong(event.song)
+        return retVal
 
 

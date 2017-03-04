@@ -5,9 +5,9 @@ Created on Mar 1, 2017
 '''
 
 class GameLevel():
-    def __init__(self, actors=[], scenery=[], events=[], layout = []):
+    def __init__(self, actors=[], scenery=[], levelEvents=[], layout = []):
         self.actors = actors
         self.scenery = scenery
-        self.events = events
+        self.levelEvents = levelEvents
         self.layout = layout
         

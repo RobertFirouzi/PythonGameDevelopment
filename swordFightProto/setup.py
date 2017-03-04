@@ -10,6 +10,7 @@ from game_level import GameLevel
 from scenery import SolidBackground, StaticSprite
 from actors import SimpleBox
 from game import Game
+from event import EventSong, EventSound
 
 import os, pygame
 import parameters as PRAM
@@ -62,6 +63,8 @@ def gameLevelFactory(level=[], params=[]):
     background = SolidBackground(PRAM.COLOR_BLACK)
     img_ball = StaticSprite(pygame.image.load(IMAGE_PATH+'ball.png'), (20,20))
     box = SimpleBox()  
+    eventSong = EventSong(PRAM.SONG_SAGAWATER)
+    eventSound = EventSound(PRAM.AMB_CITY)
     actors = []
     scenery = []
     layout = []
@@ -69,6 +72,8 @@ def gameLevelFactory(level=[], params=[]):
     actors.append(box)
     scenery.append(background)
     scenery.append(img_ball)
+    events.append(eventSong)
+    events.append(eventSound)
     gameLevel = GameLevel(actors, scenery, events, layout)
     
     return gameLevel

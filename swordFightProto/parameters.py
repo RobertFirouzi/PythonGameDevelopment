@@ -19,3 +19,9 @@ COLOR_ORANGE = (255, 100, 0)
 
 ### SOUNDEFFECTS ###
 SOUND_COLORSWAP = 'click'
+
+### SOUNDTRACK ###
+SONG_SAGAWATER = 'saga7-Water'
+
+### AMBIANT TRACKS ###
+AMB_CITY = 'city'

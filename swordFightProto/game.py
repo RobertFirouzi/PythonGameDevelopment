@@ -12,14 +12,14 @@ class Game():
                  musicPlayer = None, 
                  soundPlayer = None, 
                  renderer = None,
-                 events = None,
+                 gameEvents = None,
                  eventHandler = None):
         self.player = player
         self.gameLevel = gameLevel
         self.musicPlayer = musicPlayer
         self.soundPlayer = soundPlayer
         self.renderer = renderer
-        self.events=events
+        self.gameEvents=gameEvents
         self.eventHandler = eventHandler
     
     #define the method to init a game level here
