@@ -9,6 +9,13 @@ import os
 
 from log_errors import logError
 
+'''
+Class to hold data on a sound file
+@param soundType
+@param path
+@param sound
+@param ext
+'''
 class SoundWrapper():
     def __init__(self, soundType, path, sound, ext):
         self.soundType=soundType
@@ -17,12 +24,20 @@ class SoundWrapper():
         self.ext=ext
         self.fullPath = path+sound+ext
 
+'''
+Class to play music. Needs to have path loaded into it's dictionary to play song
+@param musicDict
+'''
 class MusicPlayer():
     def __init__(self, musicDict={}):
         self.musicDict = musicDict
         errorSong = SoundWrapper('song', os.path.realpath('') +'\\dir_sound\\dir_music\\', 'ERROR', '.mp3')
         self.loadSong(errorSong)
-        
+    
+    '''
+    Add a song to the music dictionary
+    @param soundWrapper
+    '''    
     def loadSong(self, soundWrapper):
         retVal = True
         if soundWrapper.soundType =='song':
@@ -42,7 +57,11 @@ class MusicPlayer():
             logError('MusicPlayer','loadSong', 'load song with type: ' + str(soundWrapper.soundType))
         return retVal
                 
-    #playthroughs is how many times to play the song, but -1 means repeat    
+    '''
+    Starts playing a song.  If playthroughs = -1 the song plays on repeate
+    @param song
+    @param playthroughs
+    '''   
     def playSong(self, song, playthroughs=-1):
         retVal = True
         if self.musicDict.get(song) == None:
@@ -55,13 +74,21 @@ class MusicPlayer():
             pygame.mixer.music.play(-1)
         return retVal
 
-# note that a sound object must be created first, then can be played            
+'''
+Class to play sound effects.  Default is one playthrough of a soundeffect.  Up to
+8 tracks can play simultanously (?).  Must load sound first.
+@param soundDict
+'''         
 class SoundEffectPlayer():
     def __init__(self, soundDict={}):
         self.soundDict = soundDict
         errorSound = SoundWrapper('sound', os.path.realpath('') +'\\dir_sound\\dir_soundeffects\\', 'ERROR', '.wav' )
         self.loadSound(errorSound)
-        
+    
+    '''
+    Load a sound into the dictionary
+    @param soundWrapper
+    '''    
     def loadSound(self, soundWrapper):
         retVal = True    
         if soundWrapper.soundType =='sound':
@@ -80,6 +107,10 @@ class SoundEffectPlayer():
             logError('SoundEffectPlayer','loadSound', 'load sound with type: ' + str(soundWrapper.soundType))                                 
         return retVal
 
+    '''
+    Play a sound once.  Must be in the soundDictionary
+    @param sound
+    '''
     def playSound(self, sound):
         retVal = True
         if self.soundDict.get(sound) == None:
@@ -91,7 +122,12 @@ class SoundEffectPlayer():
             self.soundDict[sound].soundObject.play()
         return retVal
    
-#set volume value [0,1.0] of sound in dictionary    
+    '''
+    Sets the volume on a specific sound.  Sound must be in the soundDict.  Range
+        of volume is [0.0,1.0]
+    @param sound
+    @param volume
+    '''   
     def setSoundVolume(self,sound,volume):
         retVal = True
         if volume>1.0 or volume<0:

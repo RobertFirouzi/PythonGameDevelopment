@@ -5,10 +5,10 @@ Created on Feb 24, 2017
 '''
 import pygame
 import parameters as PRAM
-from setup import soundPlayerFactory,gameLevelFactory, playerFactory, gameFactory
+from setup import soundPlayerFactory, playerFactory
 from event import EventHandler
 from render import Renderer
-from copy import deepcopy
+from game import Game
 
 ### SETUP ###
 pygame.init()  # @UndefinedVariable
@@ -17,17 +17,12 @@ CLOCK = pygame.time.Clock()
 DONE = False
 
 ### GAME ENGINE ###
-gameLevel = gameLevelFactory()
 musicPlayer, soundPlayer = soundPlayerFactory()
 renderer = Renderer(screen)
-player = playerFactory(gameLevel.actors[0])
-game = gameFactory(player, gameLevel, musicPlayer, soundPlayer, renderer, [], None)
+player = playerFactory()
+game = Game(player, musicPlayer, soundPlayer, renderer) #on init, loads an event for gameStartup
 eventHandler = EventHandler(game)
-game.eventHandler=eventHandler
-
-#tempory code until the initialize level method setup in game
-for levelEvent in gameLevel.levelEvents:
-    game.gameEvents.append(deepcopy(levelEvent))
+game.eventHandler=eventHandler #these objects contain references to each other (Game may not need the handler though)
 
 
 while not DONE:
@@ -41,6 +36,7 @@ while not DONE:
         ### CHECK BUTTON PRESSES ###   
         pressed = pygame.key.get_pressed()    
         #DIRECTIONAL               
+            #TODO - should dirrectional events return an event for the queue?
         if pressed[pygame.K_UP]:  # @UndefinedVariable
             player.actionMove('up')
         if pressed[pygame.K_DOWN]:  # @UndefinedVariable
@@ -54,12 +50,12 @@ while not DONE:
         eventHandler.handleEvents()
         
         ### DRAW THE GRAPHICS ###
-        renderer.renderScenery(game.gameLevel.scenery)
+        renderer.renderScenery(game.gameLevel.scenery) #TODO can make local vars for scenery to tidy up
         renderer.renderActors(game.gameLevel.actors)
         pygame.display.flip()
-        CLOCK.tick(60)
+        CLOCK.tick(60) #60 FPS
 
-#this will only run if the module is run as the main module, not if imported
+#this will only run if the module is run as the main module, not if imported.
 if __name__ == '__main__':
     pass #nop
 

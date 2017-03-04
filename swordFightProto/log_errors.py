@@ -7,7 +7,13 @@ Created on Feb 26, 2017
 from datetime import date, datetime
 import os
 
-
+'''
+Class to log an error for debugging - logs to a timedate folder with file
+    named by module and function which generated the error
+@param module
+@param function
+@param description
+'''
 def logError(module, function, description):
     today = date.today()
     today = today.timetuple()

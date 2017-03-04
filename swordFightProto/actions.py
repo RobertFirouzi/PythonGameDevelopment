@@ -7,6 +7,11 @@ Created on Feb 25, 2017
 import parameters as PRAM
 from event import EventSound
 
+'''
+Base class for an Action object.  Extend for specific functionality
+    Contains a link to the character which contains the action
+@param character
+'''
 class ActionBase():
     def __init__(self,character,params=()):
         self.character=character
@@ -14,7 +19,12 @@ class ActionBase():
 
     def act(self, character, params=()):
         return ''
-    
+
+'''
+Moves the character's actor based on its movement speed
+@Param character
+@return None 
+'''    
 class ActionMove(ActionBase):
     def __init__(self, character, params=()):
         super(ActionMove, self).__init__(character, params)
@@ -35,7 +45,12 @@ class ActionMove(ActionBase):
         return '' #TODO return a move event here to check the characters new position?
         
 
-#plays the param[0] sound effect.  Actions could play sound effects depending on outcome?        
+'''
+Performs colorSwap on the character's actor containing the action, if they own this method
+    returns a sound effect action
+@Param character
+@return EventSound 
+'''      
 class ActionColorSwap(ActionBase):
     def __init__(self, character, params = ()):   
         super(ActionColorSwap, self).__init__(character, params)

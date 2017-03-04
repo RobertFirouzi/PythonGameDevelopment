@@ -4,16 +4,31 @@ Created on Mar 4, 2017
 @author: Robert
 '''
 
-#Highest level class which contains reference to all game objects
+import parameters as PRAM
+import sys, importlib
+from game_level import GameLevel
+from event import EventLoadLevel
+
+'''
+The highest level object which contains references to the game level and
+    all of the game engine objects
+@param player
+@param musicPlayer
+@param soundPlayer
+@param renderer
+@param gameEvents
+@param eventHandler
+@param gameLevel
+'''
 class Game():
     def __init__(self, 
                  player = None,
-                 gameLevel = None, 
                  musicPlayer = None, 
                  soundPlayer = None, 
                  renderer = None,
-                 gameEvents = None,
-                 eventHandler = None):
+                 gameEvents = [],
+                 eventHandler = None,
+                 gameLevel = None, ):
         self.player = player
         self.gameLevel = gameLevel
         self.musicPlayer = musicPlayer
@@ -21,7 +36,33 @@ class Game():
         self.renderer = renderer
         self.gameEvents=gameEvents
         self.eventHandler = eventHandler
+        self.gameStartup() #load initial settings
+
+    '''
+    Run at Game() initialization to setup the starting point
+    '''
+    def gameStartup(self):
+        self.gameEvents.append(EventLoadLevel(PRAM.LEV_TEST1))
     
-    #define the method to init a game level here
-    def initializeLevel(self, level):
-        pass
+    '''
+    Imports the level based on filename and initializes the fields in the 
+        gameLevel object.  Loads the game events from the level to be 
+        immediately run
+    @param levelFile
+    '''
+    def initializeLevel(self, levelFile):
+        sys.path.append(PRAM.LEVEL_PATH)
+        level = importlib.import_module(levelFile)                       
+        sys.path.pop()
+        
+        self.gameLevel = GameLevel(
+            level.actors,
+            level.scenery,
+            level.levelEvents,
+            level.gameEvents,
+            level.layout)
+
+        for event in self.gameLevel.gameEvents:
+            self.gameEvents.append(event)
+            
+        self.player.actor=self.gameLevel.actors[0] #for now convention is for actor[0] to default to player    
