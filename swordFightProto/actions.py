@@ -5,46 +5,48 @@ Created on Feb 25, 2017
 '''
 
 import parameters as PRAM
+from event import EventSound
 
-#Action can take optional params and a link to thje soundplayer if a se is associated
-#If there are soundeffects associated, pass their names as params
 class ActionBase():
-    def __init__(self,params=[],soundPlayer= None):
+    def __init__(self,character,params=()):
+        self.character=character
         self.params=params
-        self.soundPlayer = soundPlayer
 
-    def act(self, character, params=[]):
-        pass
+    def act(self, character, params=()):
+        return ''
     
 class ActionMove(ActionBase):
-    def __init__(self, params=[], soundPlayer= None):
-        super(ActionMove, self).__init__(params, soundPlayer)
+    def __init__(self, character, params=()):
+        super(ActionMove, self).__init__(character, params)
     
-    def act(self,character,params=[]):
-        if params[0]=='up':
-            if character.actor.y>0:
-                character.actor.y-=character.actor.moveSpeed
-        elif params[0]=='down':
-            if character.actor.y<PRAM.DISPLAY_HEIGHT:  # @UndefinedVariable
-                character.actor.y+=character.actor.moveSpeed
-        elif params[0]=='left':
-            if character.actor.x>0:
-                character.actor.x-=character.actor.moveSpeed
-        elif params[0]=='right':
-            if character.actor.x<PRAM.DISPLAY_WIDTH: # @UndefinedVariable
-                character.actor.x+=character.actor.moveSpeed
+    def act(self,params=()):
+        if params=='up':
+            if self.character.actor.y>0:
+                self.character.actor.y -= self.character.actor.moveSpeed
+        elif params=='down':
+            if self.character.actor.y<PRAM.DISPLAY_HEIGHT:  # @UndefinedVariable
+                self.character.actor.y += self.character.actor.moveSpeed
+        elif params=='left':
+            if self.character.actor.x>0:
+                self.character.actor.x -= self.character.actor.moveSpeed
+        elif params=='right':
+            if self.character.actor.x < PRAM.DISPLAY_WIDTH: # @UndefinedVariable
+                self.character.actor.x += self.character.actor.moveSpeed
+        return '' #TODO return a move event here to check the characters new position?
+        
 
 #plays the param[0] sound effect.  Actions could play sound effects depending on outcome?        
 class ActionColorSwap(ActionBase):
-    def __init__(self, params, soundPlayer):   
-        super(ActionColorSwap, self).__init__(params, soundPlayer)
+    def __init__(self, character, params = ()):   
+        super(ActionColorSwap, self).__init__(character, params)
     
-    def act(self, character, params=[]):
-        colorSwapMethod = getattr(character.actor, "colorSwap", None)
+    def act(self, params=()):
+        retVal=''
+        colorSwapMethod = getattr(self.character.actor, "colorSwap", None)
         if callable(colorSwapMethod):
-            character.actor.colorSwap()
-            self.soundPlayer.playSound(self.params[0])
-        
+            self.character.actor.colorSwap()
+            retVal = EventSound(PRAM.SOUND_COLORSWAP)
+        return retVal        
         
         
         

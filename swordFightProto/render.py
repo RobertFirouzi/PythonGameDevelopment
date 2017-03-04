@@ -8,42 +8,29 @@ from actors import SimpleBox
 from scenery import StaticSprite, SolidBackground
 import pygame
 
-#base class to be extended 
-class RenderBase():
-    def __init__(self, screen, components=[]):
+class Renderer():
+    def __init__(self, screen):
         self.screen = screen
-        self.components = components
-       
-    #iterate through every component
-    def render(self):
-        for component in self.components:
-            self.renderFeature(component)
     
-    #define this in the subclass
-    def renderFeature(self, component):
-        pass 
-
-#maintains links to the screen and an array of scenery elements to render
-class RenderActors(RenderBase):
-    def __init__(self, screen, actors=[]):
-        super(RenderActors, self).__init__(screen, actors)
-      
-    #render an item to the screen
-    def renderFeature(self, component):
-        if type(component) is SimpleBox:
-            pygame.draw.rect(self.screen, component.color, 
-                             pygame.Rect(component.x, component.y, component.width, component.height ))
+    def renderActors(self, actors):
+        for actor in actors:
+            self.renderActor(actor)
+        return
+    
+    def renderScenery(self, scenerey):
+        for feature in scenerey:
+            self.renderFeature(feature)
+        return
+    
+    def renderActor(self, actor):
+        if type(actor) is SimpleBox:
+            pygame.draw.rect(self.screen, actor.color, 
+                             pygame.Rect(actor.x, actor.y, actor.width, actor.height))
         return 
-    
-#maintains links to the screen and an array of scenery elements to render
-class RenderScenery(RenderBase):
-    def __init__(self, screen, scenery=[]):
-        super(RenderScenery, self).__init__(screen, scenery)
-      
-    #render an item to the screen
-    def renderFeature(self, component):
-        if type(component) is SolidBackground:
-            self.screen.fill(component.color)
-        elif type(component) is StaticSprite:
-            self.screen.blit(component.image, component.location)
+        
+    def renderFeature(self, feature):
+        if type(feature) is SolidBackground:
+            self.screen.fill(feature.color)
+        elif type(feature) is StaticSprite:
+            self.screen.blit(feature.image, feature.location)
         return

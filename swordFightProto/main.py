@@ -5,14 +5,9 @@ Created on Feb 24, 2017
 '''
 import pygame
 import parameters as PRAM
-from setup import soundPlayerFactory,playerCharacterFactory,renderFactory,gameLevelFactory
-
-def initializeLevel(renderActors,renderScenery,playerCharacter,level=[],params=[]):
-    gameLevel = gameLevelFactory(level, params)
-    renderActors.actors = gameLevel.actors
-    renderScenery.scenery = gameLevel.scenery
-    playerCharacter.actor = gameLevel.actors[0]
-    return gameLevel
+from setup import soundPlayerFactory,gameLevelFactory, playerFactory, gameFactory
+from event import EventHandler
+from render import Renderer
 
 ### SETUP ###
 pygame.init()  # @UndefinedVariable
@@ -23,9 +18,12 @@ DONE = False
 ### GAME ENGINE ###
 gameLevel = gameLevelFactory()
 musicPlayer, soundPlayer = soundPlayerFactory()
-renderActors, renderScenery = renderFactory(screen, gameLevel.actors, gameLevel.scenery)
-#TODO - get soundPlayer out of here, then easy to move all into initializeLevel function
-playerCharacter = playerCharacterFactory(gameLevel.actors[0], soundPlayer)
+renderer = Renderer(screen)
+player = playerFactory(gameLevel.actors[0])
+game = gameFactory(player, gameLevel, musicPlayer, soundPlayer, renderer, [], None)
+eventHandler = EventHandler(game)
+game.eventHandler=eventHandler
+
 
 #think where this should be called?  (music/ambiance track should be within gameLevel)
 musicPlayer.playSong('saga7-Water')
@@ -38,23 +36,26 @@ while not DONE:
             if event.type == pygame.QUIT:  # @UndefinedVariable
                 DONE = True
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:  # @UndefinedVariable 
-                playerCharacter.defaultAction(playerCharacter)
+                game.events.append(player.defaultAction())
                     
         ### CHECK BUTTON PRESSES ###   
         pressed = pygame.key.get_pressed()    
         #DIRECTIONAL               
         if pressed[pygame.K_UP]:  # @UndefinedVariable
-            playerCharacter.actionMove(playerCharacter,['up'])
+            player.actionMove('up')
         if pressed[pygame.K_DOWN]:  # @UndefinedVariable
-            playerCharacter.actionMove(playerCharacter,['down'])
+            player.actionMove('down')
         if pressed[pygame.K_LEFT]:  # @UndefinedVariable
-            playerCharacter.actionMove(playerCharacter,['left'])
+            player.actionMove('left')
         if pressed[pygame.K_RIGHT]:  # @UndefinedVariable
-            playerCharacter.actionMove(playerCharacter,['right'])
+            player.actionMove('right')
+        
+        ### RUN GENERATED EVENTS ###
+        eventHandler.handleEvents()
         
         ### DRAW THE GRAPHICS ###
-        renderScenery.render()
-        renderActors.render()
+        renderer.renderScenery(game.gameLevel.scenery)
+        renderer.renderActors(game.gameLevel.actors)
         pygame.display.flip()
         CLOCK.tick(60)
 
