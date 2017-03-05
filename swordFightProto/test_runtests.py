@@ -12,7 +12,8 @@ testmodules = [
     'test_events',
     'test_render',
     'test_scenery',
-    'test_sound']
+    'test_sound'
+    ]
 
 suite = unittest.TestSuite()
 
