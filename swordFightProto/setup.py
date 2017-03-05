@@ -19,8 +19,8 @@ def soundPlayerFactory():
         musicPlayer.loadSong(SoundWrapper('song', PRAM.MUSIC_PATH, song, '.mp3'))
     for sound in PRAM.SOUNDEFFECTS:
         soundPlayer.loadSound(SoundWrapper('sound', PRAM.SOUND_PATH, sound, '.wav'))
-    for ambience in PRAM.AMBIENCE:
-        soundPlayer.loadSound(SoundWrapper('sound', PRAM.AMBIENCE_PATH, ambience, '.wav'))        
+    for ambience in PRAM.AMBIANCE:
+        soundPlayer.loadSound(SoundWrapper('sound', PRAM.AMBIANCE_PATH, ambience, '.wav'))        
     return musicPlayer, soundPlayer
 
 '''

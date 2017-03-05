@@ -7,7 +7,7 @@ import os
 
 ### PATHS ###
 MUSIC_PATH = os.path.realpath('')+'\\dir_sound\\dir_music\\'
-AMBIENCE_PATH = os.path.realpath('')+'\\dir_sound\\dir_ambience\\'
+AMBIANCE_PATH = os.path.realpath('')+'\\dir_sound\\dir_ambiance\\'
 SOUND_PATH = os.path.realpath('')+'\\dir_sound\\dir_soundeffects\\'
 IMAGE_PATH = os.path.realpath('')+'\\dir_image\\'
 LEVEL_PATH = os.path.realpath('')+'\\dir_levels\\'
@@ -38,7 +38,7 @@ MUSIC_PLAYLIST = [
     'saga7-Wind',
     'saga7-Water']
 
-AMBIENCE = ['city']
+AMBIANCE = ['city']
 
 SOUNDEFFECTS = [
     'ERROR',
