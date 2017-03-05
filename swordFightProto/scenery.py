@@ -18,7 +18,9 @@ class SolidBackground():
         self.color=color
         return True 
 '''
-Render an image file to a pixel tuple location
+Render an image file to a pixel tuple location.  This image must be initialized by
+    calling pygame.image.load().  e.g:
+        StaticSprite(pygame.image.load(PRAM.IMAGE_PATH+PRAM.IMG_BALL), (20,20))]
 @param image
 @param location
 '''        

@@ -27,6 +27,9 @@ class Game():
                  soundPlayer = None, 
                  renderer = None,
                  gameEvents = [],
+                 keydownEvents = [],
+                 keysPressed = [],
+                 inputHandler = None,
                  eventHandler = None,
                  gameLevel = None, ):
         self.player = player
@@ -34,8 +37,13 @@ class Game():
         self.musicPlayer = musicPlayer
         self.soundPlayer = soundPlayer
         self.renderer = renderer
-        self.gameEvents=gameEvents
+        self.gameEvents = gameEvents
+        self.keydownEvents = keydownEvents
+        self.keysPressed =  keysPressed
+        self.inputHandler = inputHandler
         self.eventHandler = eventHandler
+        self.gameLevel = gameLevel
+        
         self.gameStartup() #load initial settings
 
     '''
@@ -63,6 +71,10 @@ class Game():
             level.layout)
 
         for event in self.gameLevel.gameEvents:
-            self.gameEvents.append(event)
+            self.addEvent(event)
             
         self.player.actor=self.gameLevel.actors[0] #for now convention is for actor[0] to default to player    
+    
+    def addEvent(self,event):
+        self.gameEvents.append(event)
+    

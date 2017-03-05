@@ -16,6 +16,13 @@ LEVEL_PATH = os.path.realpath('')+'\\dir_levels\\'
 DISPLAY_WIDTH = 800
 DISPLAY_HEIGHT = 600
 
+### INPUT ###
+INPUT_DEFAULT = 32 #pygame space bar
+INPUT_UP = 273
+INPUT_DOWN = 274
+INPUT_LEFT = 276
+INPUT_RIGHT = 275
+
 ### ACTORS ###
 SIMPLE_BOX_WIDTH = 60
 SIMPLE_BOX_HEIGHT = 60

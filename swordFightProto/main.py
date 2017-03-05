@@ -9,6 +9,7 @@ from setup import soundPlayerFactory, playerFactory
 from event import EventHandler
 from render import Renderer
 from game import Game
+from input import InputHandler, ButtonMap
 
 ### SETUP ###
 pygame.init()  # @UndefinedVariable
@@ -21,36 +22,27 @@ musicPlayer, soundPlayer = soundPlayerFactory()
 renderer = Renderer(screen)
 player = playerFactory()
 game = Game(player, musicPlayer, soundPlayer, renderer) #on init, loads an event for gameStartup
+buttonMap = ButtonMap()
+inputHandler = InputHandler(game, player, buttonMap)
 eventHandler = EventHandler(game)
-game.eventHandler=eventHandler #these objects contain references to each other (Game may not need the handler though)
+
+game.eventHandler = eventHandler #these objects contain references to each other (Game may not need the handler though)
+game.inputHandler = inputHandler
 
 while not DONE:
-        ### CHECK THE EVENT QUEUE ###
         for event in pygame.event.get():         
             if event.type == pygame.QUIT:  # @UndefinedVariable
-                DONE = True
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:  # @UndefinedVariable 
-                game.gameEvents.append(player.defaultAction())
-                    
-        ### CHECK BUTTON PRESSES ###   
-        pressed = pygame.key.get_pressed()    
-        #DIRECTIONAL               
-            #TODO - should dirrectional events return an event for the queue?
-        if pressed[pygame.K_UP]:  # @UndefinedVariable
-            player.actionMove('up')
-        if pressed[pygame.K_DOWN]:  # @UndefinedVariable
-            player.actionMove('down')
-        if pressed[pygame.K_LEFT]:  # @UndefinedVariable
-            player.actionMove('left')
-        if pressed[pygame.K_RIGHT]:  # @UndefinedVariable
-            player.actionMove('right')
+                DONE = True #TODO make this an input that creates a quit event?
+            if event.type == pygame.KEYDOWN: # @UndefinedVariable 
+                game.keydownEvents.append(event)
+            
+            game.keysPressed = pygame.key.get_pressed()
         
-        ### RUN GAME EVENTS ###
+        inputHandler.handleInputs()
         eventHandler.handleEvents()
         
-        ### DRAW THE GRAPHICS ###
         renderer.renderScenery(game.gameLevel.scenery) #TODO can make local vars for scenery to tidy up
-        renderer.renderActors(game.gameLevel.actors)
+        renderer.renderActors(game.gameLevel.actors) #TODO package together in a def renderAll() call
         pygame.display.flip()
         CLOCK.tick(60) #60 FPS
 
