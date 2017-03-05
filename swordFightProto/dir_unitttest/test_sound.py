@@ -37,7 +37,7 @@ class TestSoundPlayers(unittest.TestCase):
     def test_playSound(self):
         self.assertEqual(self.soundPlayer.playSound(PRAM.SOUND_TEST), True)
         self.assertEqual(self.soundPlayer.playSound('effectnotfound'), False)            
-  
+          
     def test_setSoundVolume(self):
         self.assertEqual(self.soundPlayer.setSoundVolume(PRAM.SOUND_TEST,0), True)
         self.assertEqual(self.soundPlayer.setSoundVolume(PRAM.SOUND_TEST,0.62), True)  
