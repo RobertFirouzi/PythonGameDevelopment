@@ -10,7 +10,7 @@ Created on Mar 4, 2017
 import parameters as PRAM
 from scenery import SolidBackground, StaticSprite
 from actors import SimpleBox
-from event import EventSong, EventSound
+from event import EventSong, EventSound, EventSetInput
 import pygame
 
 #The NPC/PC's for the board.  Current convention is for actor[0] to be player char
@@ -19,7 +19,8 @@ actors = [SimpleBox()]
 #Background, sprites etc
 scenery = [
     SolidBackground(PRAM.COLOR_BLACK),
-    StaticSprite(pygame.image.load(PRAM.IMAGE_PATH+PRAM.IMG_BALL), (20,20))]
+    StaticSprite(pygame.image.load(PRAM.IMAGE_PATH+PRAM.IMG_BALL), (20,20)),
+    ]
 
 #events triggered within the level
 levelEvents = []
@@ -27,7 +28,9 @@ levelEvents = []
 #added to the gameEvent queue on level initialization - e.g. music and ambiant tracks
 gameEvents = [
     EventSong(PRAM.SONG_SAGAWATER),
-    EventSound(PRAM.AMB_CITY)] 
+    EventSound(PRAM.AMB_CITY),
+    EventSetInput(PRAM.INPTYPE_NORMAL),
+    ] 
 
 #level layout map (structure is WIP)
 layout = []

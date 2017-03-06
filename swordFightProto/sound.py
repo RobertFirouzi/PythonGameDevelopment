@@ -71,6 +71,10 @@ class MusicPlayer():
             pygame.mixer.music.load(self.musicDict.get(song).fullPath)
             pygame.mixer.music.play(-1)
         return retVal
+    
+    def stopSong(self):
+        pygame.mixer.music.stop()
+        
 
 '''
 Class to play sound effects.  Default is one playthrough of a soundeffect.  Up to
@@ -119,6 +123,9 @@ class SoundEffectPlayer():
         else:
             self.soundDict[sound].soundObject.play()
         return retVal
+
+    def stopSound(self):
+        pygame.mixer.stop()
    
     '''
     Sets the volume on a specific sound.  Sound must be in the soundDict.  Range

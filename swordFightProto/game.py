@@ -6,8 +6,8 @@ Created on Mar 4, 2017
 
 import parameters as PRAM
 import sys, importlib
-from game_level import GameLevel
-from event import EventLoadLevel
+from game_level import GameLevel, GameCutscene, GameMenu
+from event import EventLoadMenu
 
 '''
 The highest level object which contains references to the game level and
@@ -31,9 +31,9 @@ class Game():
                  keysPressed = [],
                  inputHandler = None,
                  eventHandler = None,
-                 gameLevel = None, ):
+                 gameScene = None, ):
         self.player = player
-        self.gameLevel = gameLevel
+        self.gameScene = gameScene
         self.musicPlayer = musicPlayer
         self.soundPlayer = soundPlayer
         self.renderer = renderer
@@ -42,15 +42,13 @@ class Game():
         self.keysPressed =  keysPressed
         self.inputHandler = inputHandler
         self.eventHandler = eventHandler
-        self.gameLevel = gameLevel
-        
-        self.gameStartup() #load initial settings
 
     '''
     Run at Game() initialization to setup the starting point
     '''
     def gameStartup(self):
-        self.gameEvents.append(EventLoadLevel(PRAM.LEV_TEST1))
+        self.addEvent(EventLoadMenu(PRAM.MENU_TEST1))
+#         self.addEvent(EventLoadLevel(PRAM.LEV_TEST1))
     
     '''
     Imports the level based on filename and initializes the fields in the 
@@ -58,23 +56,56 @@ class Game():
         immediately run
     @param levelFile
     '''
-    def initializeLevel(self, levelFile):
+    def loadLevel(self, levelFile):
+        self.unloadScene() 
         sys.path.append(PRAM.LEVEL_PATH)
         level = importlib.import_module(levelFile)                       
         sys.path.pop()
         
-        self.gameLevel = GameLevel(
+        self.gameScene = GameLevel(
             level.actors,
             level.scenery,
             level.levelEvents,
             level.gameEvents,
             level.layout)
 
-        for event in self.gameLevel.gameEvents:
+        for event in self.gameScene.gameEvents:
             self.addEvent(event)
             
-        self.player.actor=self.gameLevel.actors[0] #for now convention is for actor[0] to default to player    
+        self.player.actor = self.gameScene.actors[0] #for now convention is for actor[0] to default to player    
     
+    def loadMenu(self, menuFile):
+        self.unloadScene()
+        sys.path.append(PRAM.MENU_PATH)
+        menu = importlib.import_module(menuFile)
+        sys.path.pop()
+        
+        self.gameScene = GameMenu(
+            [], #actors
+            menu.scenery,
+            [], #levelEvents
+            menu.gameEvents,
+            menu.layout)
+
+        for event in self.gameScene.gameEvents:
+            self.addEvent(event)
+
+    def loadCutscene(self, cutsceneFile): #TODO - everything about this
+        self.unloadScene()
+        sys.path.append(PRAM.MENU_PATH)
+        cutscene = importlib.import_module(cutsceneFile)
+        sys.path.pop()
+        
+        self.gameScene = GameCutscene(cutscene) 
+    
+    '''
+    Halt any running events, unload any assets, etc
+    ''' 
+    def unloadScene(self):
+        self.soundPlayer.stopSound()
+        self.musicPlayer.stopSong()
+        
     def addEvent(self,event):
         self.gameEvents.append(event)
+    
     

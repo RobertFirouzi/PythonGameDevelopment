@@ -25,9 +25,9 @@ game = Game(player, musicPlayer, soundPlayer, renderer) #on init, loads an event
 buttonMap = ButtonMap()
 inputHandler = InputHandler(game, player, buttonMap)
 eventHandler = EventHandler(game)
-
 game.eventHandler = eventHandler #these objects contain references to each other (Game may not need the handler though)
 game.inputHandler = inputHandler
+game.gameStartup()
 
 while not DONE:
         for event in pygame.event.get():         
@@ -41,8 +41,8 @@ while not DONE:
         inputHandler.handleInputs()
         eventHandler.handleEvents()
         
-        renderer.renderScenery(game.gameLevel.scenery) #TODO can make local vars for scenery to tidy up
-        renderer.renderActors(game.gameLevel.actors) #TODO package together in a def renderAll() call
+        renderer.renderScenery(game.gameScene.scenery) #TODO can make local vars for scenery to tidy up
+        renderer.renderActors(game.gameScene.actors) #TODO package together in a def renderAll() call
         pygame.display.flip()
         CLOCK.tick(60) #60 FPS
 

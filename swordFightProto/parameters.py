@@ -11,13 +11,22 @@ AMBIANCE_PATH = os.path.realpath('')+'\\dir_sound\\dir_ambiance\\'
 SOUND_PATH = os.path.realpath('')+'\\dir_sound\\dir_soundeffects\\'
 IMAGE_PATH = os.path.realpath('')+'\\dir_image\\'
 LEVEL_PATH = os.path.realpath('')+'\\dir_levels\\'
+MENU_PATH = os.path.realpath('')+'\\dir_menu\\'
+CUTSCENE_PATH = os.path.realpath('')+'\\dir_cutscene\\'
+
 
 ### SCREEN ###
 DISPLAY_WIDTH = 800
 DISPLAY_HEIGHT = 600
 
-### INPUT ###
-INPUT_DEFAULT = 32 #pygame space bar
+### INPUT TYPES###
+INPTYPE_OBSERVER = 'observe'
+INPTYPE_MENU = 'menu'
+INPTYPE_NORMAL = 'normal'
+
+### KEYS ### - pygame.<keyname>
+INPUT_ACTION = 32 #pygame space bar
+INPUT_STATUS = 13 #pygame enter key
 INPUT_UP = 273
 INPUT_DOWN = 274
 INPUT_LEFT = 276
@@ -53,6 +62,7 @@ SOUNDEFFECTS = [
 
 ### SONGMAP ###
 SONG_SAGAWATER = 'saga7-Water'
+SONG_SAGAWIND = 'saga7-Wind'
 SONG_TEST = 'testsong'
 SONG_ERROR = 'ERROR'
 
@@ -69,5 +79,15 @@ LEVEL_LIBRARY = ['level_test01'] #may not be needed
 
 ### LEVEL MAP ###
 LEV_TEST1 = 'level_test01'
+
+### GAME MENUS ###
+MENU_LIBRARY = ['menu_test01']
+
+### MENU MAP ###
+MENU_TEST1 = 'menu_test01'
+
+
+
+
 
 
