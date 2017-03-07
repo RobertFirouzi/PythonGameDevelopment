@@ -6,7 +6,7 @@ Created on Mar 4, 2017
 
 import parameters as PRAM
 import sys, importlib
-from game_level import GameLevel, GameCutscene, GameMenu
+from game_level import GameLevel, GameCutscene, GameMenu, LevelTriggerTouch
 from event import EventLoadMenu
 from scenery import StaticSprite, SceneryWrapper
 from actors import ActorsWrapper
@@ -26,11 +26,13 @@ class Game():
         self.musicPlayer = musicPlayer
         self.soundPlayer = soundPlayer
         self.renderer = renderer
+        
         #explicitly name Class fields
         self.gameEvents = []
         self.keydownEvents = []
         self.gameScene = None
         self.inputHandler = None
+
 
     '''
     Run at Game() initialization to setup the starting point
@@ -41,8 +43,7 @@ class Game():
     
     '''
     Imports the level based on filename and initializes the fields in the 
-        gameLevel object.  Loads the game events from the level to be 
-        immediately run
+        gameLevel object.  Loads the game events from the level to be immediately run
     @param levelFile
     '''
     def loadLevel(self, levelFile):
@@ -58,11 +59,17 @@ class Game():
             level.gameEvents,
             level.layout)
         
-        for event in self.gameScene.gameEvents:
+        for event in self.gameScene.gameEvents: #add to eventQueue, e.g. song to play
             self.addEvent(event)
+        
+        for event in self.gameScene.levelEvents: #the triggers need to be initialized for level events
+            if type(event) is LevelTriggerTouch:
+                if event.subject == 'player':
+                    self.player.addListener(PRAM.LISTENER_MOVE, event)
+                    event.subject = self.player
             
         self.player.actor = self.gameScene.actorsWrapper.actors[0] #for now convention is for actor[0] to default to player    
-    
+
     def loadMenu(self, menuFile):
         self.unloadScene()
         sys.path.append(PRAM.MENU_PATH)
@@ -84,18 +91,22 @@ class Game():
         sys.path.append(PRAM.MENU_PATH)
         cutscene = importlib.import_module(cutsceneFile)
         sys.path.pop()
-        
         self.gameScene = GameCutscene(cutscene) 
+
 
     def loadActors(self, actors):
         actorDict = {}
         for actor in actors:
-            if type(actor) is StaticSprite: #TODO this will be type Sprite
+            if type(actor) is StaticSprite: #TODO this will be type Sprite or similar
                 if actorDict.get(actor.image) == None:
                     actorDict[actor.image] = pygame.image.load(actor.path+actor.image).convert()
                     
         return ActorsWrapper(actorDict, actors)
 
+    '''
+    Creates a dictionary with the reference being an image name, and the item being a
+        loaded image file.  Each unique image only needs to be loaded once
+    '''
     def loadImages(self, scenery):
         imageDict = {}
         for sprite in scenery:
@@ -106,8 +117,7 @@ class Game():
         return SceneryWrapper(imageDict, scenery)
        
     def render(self):
-        self.renderer.render(self.gameScene.sceneryWrapper, 
-                             self.gameScene.actorsWrapper) #TODO can make local vars for scenery to tidy up        
+        self.renderer.render(self.gameScene.sceneryWrapper, self.gameScene.actorsWrapper)  
     
     '''
     Halt any running events, unload any assets, etc

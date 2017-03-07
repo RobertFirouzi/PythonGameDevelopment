@@ -18,10 +18,10 @@ class Test(unittest.TestCase):
         self.player = playerFactory(actor)
         
     def test_actionMove(self):
-        self.assertEqual(self.player.actionMove('up'),'')
-        self.assertEqual(self.player.actionMove('down'),'')
-        self.assertEqual(self.player.actionMove('left'),'')
-        self.assertEqual(self.player.actionMove('right'),'')
+        self.player.actionMove('up')
+        self.player.actionMove('down')
+        self.player.actionMove('left')
+        self.player.actionMove('right')
 
     def test_actionColorSwap(self):
         self.assertEqual(type(self.player.defaultAction()) is EventSound,True)

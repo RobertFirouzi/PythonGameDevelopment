@@ -5,7 +5,7 @@ Created on Feb 25, 2017
 '''
 
 import parameters as PRAM
-from event import EventSound
+from event import EventSound, EventMoved
 
 '''
 Base class for an Action object.  Extend for specific functionality
@@ -30,19 +30,24 @@ class ActionMove(ActionBase):
         super(ActionMove, self).__init__(character, params)
     
     def act(self,params=()):
+        retVal = ''
         if params=='up':
             if self.character.actor.y>0:
                 self.character.actor.y -= self.character.actor.moveSpeed
+                retVal = EventMoved(self.character)
         elif params=='down':
             if self.character.actor.y<PRAM.DISPLAY_HEIGHT:  # @UndefinedVariable
                 self.character.actor.y += self.character.actor.moveSpeed
+                retVal = EventMoved(self.character)
         elif params=='left':
             if self.character.actor.x>0:
                 self.character.actor.x -= self.character.actor.moveSpeed
+                retVal = EventMoved(self.character)
         elif params=='right':
             if self.character.actor.x < PRAM.DISPLAY_WIDTH: # @UndefinedVariable
                 self.character.actor.x += self.character.actor.moveSpeed
-        return '' #TODO return a move event here to check the characters new position?
+                retVal = EventMoved(self.character)
+        return retVal
         
 
 '''

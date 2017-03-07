@@ -14,6 +14,22 @@ class EventGeneratedBase():
     #define in extended class
     def run(self):
         pass
+'''
+Create an event when a character moves
+'''
+class EventMoved(EventGeneratedBase):
+    def __init__(self, character, params = ()):
+        super(EventMoved, self).__init__(params)
+        self.character = character
+
+'''
+If a character moves, notify any listeners, passing in the character and the 
+    listener list
+'''
+class EventNotifyMove(EventGeneratedBase):
+    def __init__(self, character, params = ()):
+        super(EventNotifyMove, self).__init__(params)
+        self.character = character
 
 '''
 Play a sound effect with the sound player
@@ -72,9 +88,11 @@ class EventHandler():
     '''
     def handleEvents(self):
         while len(self.game.gameEvents) > 0:
-            retVal = self.run(self.game.gameEvents.pop()) #once an event has run, it can be discarded
-            if retVal != '':
-                self.game.gameEvents.push(retVal) #events can generate additional events
+            event = self.game.gameEvents.pop()
+            if event != '':
+                retVal = self.run(event)
+                if retVal != '':
+                    self.game.gameEvents.append(retVal) #events can generate additional events
         return
      
     '''
@@ -85,18 +103,34 @@ class EventHandler():
     '''    
     def run(self, event):
         retVal = ''
-        if type(event) is EventSound:
+        
+        if type(event) is EventMoved:
+            retVal = EventNotifyMove(event.character) #NOTE: may want more actions based on an event move
+        
+        elif type(event) is EventNotifyMove:
+            for listener in event.character.moveListeners:
+                listenerEvent = listener.notify()
+                if listenerEvent != None:
+                    self.game.addEvent(listenerEvent)
+        
+        elif type(event) is EventSound:
             self.game.soundPlayer.playSound(event.sound)
+        
         elif type(event) is EventSong:
             self.game.musicPlayer.playSong(event.song)
+        
         elif type(event) is EventLoadLevel:
             self.game.loadLevel(event.levelFile)
+        
         elif type(event) is EventLoadMenu:
             self.game.loadMenu(event.menuFile)
+        
         elif type(event) is EventLoadCutscene:
             self.game.loadCutscene(event.cutsceneFile)
+        
         elif type(event) is EventSetInput:
             self.game.inputHandler.setInputBehavior(event.inputType)    
+        
         return retVal
 
 

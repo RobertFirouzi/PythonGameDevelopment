@@ -10,7 +10,8 @@ Created on Mar 4, 2017
 import parameters as PRAM
 from scenery import SolidBackground, StaticSprite
 from actors import SimpleBox
-from event import EventSong, EventSound, EventSetInput
+from event import EventSong, EventSound, EventSetInput, EventLoadMenu
+from game_level import LevelTriggerTouch
 
 #The NPC/PC's for the board.  Current convention is for actor[0] to be player char
 actors = [SimpleBox()]
@@ -24,7 +25,9 @@ scenery = [
     ]
 
 #events triggered within the level
-levelEvents = []
+levelEvents = [
+    LevelTriggerTouch(EventLoadMenu(PRAM.MENU_TEST1),(20,20,0,0))
+    ]
 
 #added to the gameEvent queue on level initialization - e.g. music and ambiant tracks
 gameEvents = [

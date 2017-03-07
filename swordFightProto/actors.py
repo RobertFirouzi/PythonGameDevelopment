@@ -23,7 +23,7 @@ Draws a box
 '''
 class SimpleBox():
     def __init__(self, color = PRAM.COLOR_BLUE, width = PRAM.SIMPLE_BOX_WIDTH, # @UndefinedVariable
-                 height = PRAM.SIMPLE_BOX_HEIGHT, x = 0, y = 0): # @UndefinedVariable
+                 height = PRAM.SIMPLE_BOX_HEIGHT, x = 100, y = 100): # @UndefinedVariable
         self.color=color
         self.width=width
         self.height=height

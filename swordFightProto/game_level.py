@@ -38,3 +38,26 @@ Loads a cutscene
 class GameCutscene(): #TODO
     def __init__(self, cutscene = []):
         self.cutscene = cutscene
+
+'''
+Level events require a trigger event (whereas gameEvents run immediately)
+    This event triggers if it is touched. Default subject is player.
+    Zone is width, height, x, y
+'''
+class LevelTriggerTouch():
+    def __init__(self, gameEvent, triggerZone = (0,0,0,0), subject = 'player'):
+        self.gameEvent = gameEvent
+        self.triggerZone = triggerZone
+        self.subject = subject
+
+    def notify(self):
+        if self.subject.actor.x >= self.triggerZone[2] and self.subject.actor.x <= self.triggerZone[2] + self.triggerZone[0]:
+            if self.subject.actor.y >= self.triggerZone[3] and self.subject.actor.y <= self.triggerZone[3] + self.triggerZone[1]:
+                return self.gameEvent
+        return None
+
+
+
+
+    
+    
