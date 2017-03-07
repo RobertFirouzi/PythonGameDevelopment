@@ -8,6 +8,9 @@ import parameters as PRAM
 import sys, importlib
 from game_level import GameLevel, GameCutscene, GameMenu
 from event import EventLoadMenu
+from scenery import StaticSprite, SceneryWrapper
+from actors import ActorsWrapper
+import pygame
 
 '''
 The highest level object which contains references to the game level and
@@ -63,16 +66,16 @@ class Game():
         sys.path.pop()
         
         self.gameScene = GameLevel(
-            level.actors,
-            level.scenery,
+            self.loadActors(level.actors), #returns an actorsWrapper object
+            self.loadImages(level.scenery), #returns a sceneryWrapper object
             level.levelEvents,
             level.gameEvents,
             level.layout)
-
+        
         for event in self.gameScene.gameEvents:
             self.addEvent(event)
             
-        self.player.actor = self.gameScene.actors[0] #for now convention is for actor[0] to default to player    
+        self.player.actor = self.gameScene.actorsWrapper.actors[0] #for now convention is for actor[0] to default to player    
     
     def loadMenu(self, menuFile):
         self.unloadScene()
@@ -81,8 +84,8 @@ class Game():
         sys.path.pop()
         
         self.gameScene = GameMenu(
-            [], #actors
-            menu.scenery,
+            self.loadActors(menu.actors), #returns an actorWrapper object
+            self.loadImages(menu.scenery), #returns a sceneryWrapper object
             [], #levelEvents
             menu.gameEvents,
             menu.layout)
@@ -97,6 +100,24 @@ class Game():
         sys.path.pop()
         
         self.gameScene = GameCutscene(cutscene) 
+
+    def loadActors(self, actors):
+        actorDict = {}
+        for actor in actors:
+            if type(actor) is StaticSprite: #TODO this will be type Sprite
+                if actorDict.get(actor.image) == None:
+                    actorDict[actor.image] = pygame.image.load(actor.path+actor.image).convert()
+                    
+        return ActorsWrapper(actorDict, actors)
+
+    def loadImages(self, scenery):
+        imageDict = {}
+        for sprite in scenery:
+            if type(sprite) is StaticSprite:
+                if imageDict.get(sprite.image) == None:
+                    imageDict[sprite.image] = pygame.image.load(sprite.path+sprite.image).convert()
+                    
+        return SceneryWrapper(imageDict, scenery)
     
     '''
     Halt any running events, unload any assets, etc

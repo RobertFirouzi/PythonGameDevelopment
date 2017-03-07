@@ -7,6 +7,16 @@ Created on Feb 24, 2017
 import parameters as PRAM
 
 '''
+Class contains the dictionary which has the reference to all loaded sprites, and
+    the list of scenery items to place.  Sprites are loaded only once to the dictionary
+    but can be placed as many times as they appear in the list
+'''
+class ActorsWrapper():
+    def __init__(self, actorDict = {}, actors = []):
+        self.actorDict = actorDict
+        self.actors = actors
+
+'''
 Draws a box
 @param color
 @param width, height, startx, starty
@@ -31,4 +41,4 @@ class SimpleBox():
             self.setColor(PRAM.COLOR_BLUE) # @UndefinedVariable
         
     def setColor(self,color):
-        self.color=color 
+        self.color=color

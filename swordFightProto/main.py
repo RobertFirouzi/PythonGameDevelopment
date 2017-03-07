@@ -21,11 +21,11 @@ DONE = False
 musicPlayer, soundPlayer = soundPlayerFactory()
 renderer = Renderer(screen)
 player = playerFactory()
-game = Game(player, musicPlayer, soundPlayer, renderer) #on init, loads an event for gameStartup
+game = Game(player, musicPlayer, soundPlayer, renderer)
 buttonMap = ButtonMap()
 inputHandler = InputHandler(game, player, buttonMap)
 eventHandler = EventHandler(game)
-game.eventHandler = eventHandler #these objects contain references to each other (Game may not need the handler though)
+game.eventHandler = eventHandler #these objects contain references to each other (Game may not need the handlers though?)
 game.inputHandler = inputHandler
 game.gameStartup()
 
@@ -38,11 +38,11 @@ while not DONE:
             
             game.keysPressed = pygame.key.get_pressed()
         
-        inputHandler.handleInputs()
+        inputHandler.handleInputs() #iterates through the keydown and keypressed events
         eventHandler.handleEvents()
         
-        renderer.renderScenery(game.gameScene.scenery) #TODO can make local vars for scenery to tidy up
-        renderer.renderActors(game.gameScene.actors) #TODO package together in a def renderAll() call
+        renderer.renderScenery(game.gameScene.sceneryWrapper) #TODO can make local vars for scenery to tidy up
+        renderer.renderActors(game.gameScene.actorsWrapper) #TODO package together in a def renderAll() call
         pygame.display.flip()
         CLOCK.tick(60) #60 FPS
 

@@ -23,11 +23,10 @@ class Test(unittest.TestCase):
         buttonMap = ButtonMap()
         actor = SimpleBox()
         musicPlayer, soundPlayer = soundPlayerFactory()
-        renderer = Renderer(screen)
+        self.renderer = Renderer(screen)
         player = playerFactory(actor)
         
-        #Game will load the events: load level, playSound, playSong
-        self.game = Game(player, musicPlayer, soundPlayer, renderer)
+        self.game = Game(player, musicPlayer, soundPlayer, self.renderer)
         self.inputHandler = InputHandler(self.game, player, buttonMap)
         self.eventHandler = EventHandler(self.game)
         self.game.eventHandler = self.eventHandler
@@ -37,7 +36,6 @@ class Test(unittest.TestCase):
         self.game.addEvent(EventLoadMenu(PRAM.MENU_TEST1))
         self.game.addEvent(EventLoadLevel(PRAM.LEV_TEST1))
         self.eventHandler.handleEvents()
-
 
     def test_inputHandler(self):                
         ### sudo create key events ###
@@ -57,7 +55,7 @@ class Test(unittest.TestCase):
         self.game.addEvent(EventLoadMenu(PRAM.MENU_TEST1))
         self.eventHandler.handleEvents()
         self.inputHandler.handleInputs()        
-
+    
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

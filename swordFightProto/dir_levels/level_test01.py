@@ -11,7 +11,6 @@ import parameters as PRAM
 from scenery import SolidBackground, StaticSprite
 from actors import SimpleBox
 from event import EventSong, EventSound, EventSetInput
-import pygame
 
 #The NPC/PC's for the board.  Current convention is for actor[0] to be player char
 actors = [SimpleBox()]
@@ -19,7 +18,9 @@ actors = [SimpleBox()]
 #Background, sprites etc
 scenery = [
     SolidBackground(PRAM.COLOR_BLACK),
-    StaticSprite(pygame.image.load(PRAM.IMAGE_PATH+PRAM.IMG_BALL), (20,20)),
+    StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (20,20)),
+    StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (200,20)),
+    StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (20,200))
     ]
 
 #events triggered within the level

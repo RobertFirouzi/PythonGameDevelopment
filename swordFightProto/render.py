@@ -20,25 +20,25 @@ class Renderer():
     Render all actors
     @param actors
     '''
-    def renderActors(self, actors):
-        for actor in actors:
-            self.renderActor(actor)
+    def renderActors(self, actorsWrapper):
+        for actor in actorsWrapper.actors:
+            self.renderActor(actor, actorsWrapper.actorDict)
         return
     
     '''
     Render all scenery
     @param scenery
     '''
-    def renderScenery(self, scenery):
-        for feature in scenery:
-            self.renderFeature(feature)
+    def renderScenery(self, sceneryWrapper):
+        for feature in sceneryWrapper.scenery:
+            self.renderFeature(feature, sceneryWrapper.imageDict)
         return
     
     '''
     Render an actor onto the screen.  Contains method to render all game actors
     @param actor
     '''
-    def renderActor(self, actor):
+    def renderActor(self, actor, actorDict):
         if type(actor) is SimpleBox:
             pygame.draw.rect(self.screen, actor.color, 
                              pygame.Rect(actor.x, actor.y, actor.width, actor.height))
@@ -49,9 +49,9 @@ class Renderer():
         scenery features
     @param feature
     '''    
-    def renderFeature(self, feature):
+    def renderFeature(self, feature, imageDict):
         if type(feature) is SolidBackground:
             self.screen.fill(feature.color)
         elif type(feature) is StaticSprite:
-            self.screen.blit(feature.image, feature.location)
+            self.screen.blit(imageDict[feature.image], feature.location)
         return
