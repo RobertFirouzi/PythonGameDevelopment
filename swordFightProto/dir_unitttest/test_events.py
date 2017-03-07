@@ -39,7 +39,8 @@ class Test(unittest.TestCase):
 
     def test_inputHandler(self):                
         ### sudo create key events ###
-        keyPressDefault = SudoKeyEvent(PRAM.INPUT_ACTION)        
+        keyPressDefault = SudoKeyEvent(PRAM.INPUT_ACTION)
+        self.game.keydownEvents=[]        
         self.game.keydownEvents.append(keyPressDefault)
         self.game.keysPressed = list(pygame.key.get_pressed())
         self.game.keysPressed[PRAM.INPUT_UP] = 1

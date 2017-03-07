@@ -47,7 +47,6 @@ class EventLoadLevel(EventGeneratedBase):
         super(EventLoadLevel, self).__init__(params)
         self.levelFile = levelFile
 
-#TODO
 class EventLoadMenu(EventGeneratedBase):
     def __init__(self, menuFile, params = ()):
         super(EventLoadMenu, self).__init__(params)

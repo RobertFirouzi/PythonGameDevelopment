@@ -19,32 +19,18 @@ The highest level object which contains references to the game level and
 @param musicPlayer
 @param soundPlayer
 @param renderer
-@param gameEvents
-@param eventHandler
-@param gameLevel
 '''
 class Game():
-    def __init__(self, 
-                 player = None,
-                 musicPlayer = None, 
-                 soundPlayer = None, 
-                 renderer = None,
-                 gameEvents = [],
-                 keydownEvents = [],
-                 keysPressed = [],
-                 inputHandler = None,
-                 eventHandler = None,
-                 gameScene = None, ):
+    def __init__(self, player = None, musicPlayer = None, soundPlayer = None, renderer = None):
         self.player = player
-        self.gameScene = gameScene
         self.musicPlayer = musicPlayer
         self.soundPlayer = soundPlayer
         self.renderer = renderer
-        self.gameEvents = gameEvents
-        self.keydownEvents = keydownEvents
-        self.keysPressed =  keysPressed
-        self.inputHandler = inputHandler
-        self.eventHandler = eventHandler
+        #explicitly name Class fields
+        self.gameEvents = []
+        self.keydownEvents = []
+        self.gameScene = None
+        self.inputHandler = None
 
     '''
     Run at Game() initialization to setup the starting point
@@ -118,6 +104,10 @@ class Game():
                     imageDict[sprite.image] = pygame.image.load(sprite.path+sprite.image).convert()
                     
         return SceneryWrapper(imageDict, scenery)
+       
+    def render(self):
+        self.renderer.render(self.gameScene.sceneryWrapper, 
+                             self.gameScene.actorsWrapper) #TODO can make local vars for scenery to tidy up        
     
     '''
     Halt any running events, unload any assets, etc
