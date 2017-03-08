@@ -40,5 +40,6 @@ class Renderer():
         for actor in actorsWrapper.actors:
             if type(actor) is SimpleBox:
                 pygame.draw.rect(self.screen, actor.color, 
-                                 pygame.Rect(actor.x, actor.y, actor.width, actor.height))
+                                 pygame.Rect(actor.position[0], actor.position[1], 
+                                             actor.size[0], actor.size[1]))
         return

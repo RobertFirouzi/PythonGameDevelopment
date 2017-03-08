@@ -14,7 +14,10 @@ from event import EventSong, EventSound, EventSetInput, EventLoadMenu
 from game_level import LevelTriggerTouch
 
 #The NPC/PC's for the board.  Current convention is for actor[0] to be player char
-actors = [SimpleBox()]
+actors = [SimpleBox(),
+          SimpleBox(PRAM.COLOR_ORANGE, [32,32],[100,416]),
+          SimpleBox(PRAM.COLOR_ORANGE, [48,48],[164,400]),
+          SimpleBox(PRAM.COLOR_ORANGE, [64,64],[292,384]),]
 
 #Background, sprites etc
 scenery = [
@@ -26,7 +29,7 @@ scenery = [
 
 #events triggered within the level
 levelEvents = [
-    LevelTriggerTouch(EventLoadMenu(PRAM.MENU_TEST1),(20,20,0,0))
+    LevelTriggerTouch(EventLoadMenu(PRAM.MENU_TEST1),(20,20),(0,0))
     ]
 
 #added to the gameEvent queue on level initialization - e.g. music and ambiant tracks

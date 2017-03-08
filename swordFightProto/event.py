@@ -59,9 +59,10 @@ Loads a new level into game
 @param levelFile
 '''
 class EventLoadLevel(EventGeneratedBase):
-    def __init__(self, levelFile, params = ()):
+    def __init__(self, levelFile, startingPosition = [0,0], params = ()):
         super(EventLoadLevel, self).__init__(params)
         self.levelFile = levelFile
+        self.startingPosition = startingPosition
 
 class EventLoadMenu(EventGeneratedBase):
     def __init__(self, menuFile, params = ()):
@@ -120,7 +121,7 @@ class EventHandler():
             self.game.musicPlayer.playSong(event.song)
         
         elif type(event) is EventLoadLevel:
-            self.game.loadLevel(event.levelFile)
+            self.game.loadLevel(event)
         
         elif type(event) is EventLoadMenu:
             self.game.loadMenu(event.menuFile)

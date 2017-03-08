@@ -16,21 +16,29 @@ class ActorsWrapper():
         self.actorDict = actorDict
         self.actors = actors
 
+class ActorBase():
+    def __init__(self, size, position):
+        self.size = size
+        self.position = position
+    
+    def setPosition(self, position = [0,0]):
+        self.position = position
+    
+    def getPosition(self):
+        return self.position
+
+
 '''
 Draws a box
 @param color
 @param width, height, startx, starty
 '''
-class SimpleBox():
-    def __init__(self, color = PRAM.COLOR_BLUE, width = PRAM.SIMPLE_BOX_WIDTH, # @UndefinedVariable
-                 height = PRAM.SIMPLE_BOX_HEIGHT, x = 100, y = 100): # @UndefinedVariable
+class SimpleBox(ActorBase):
+    def __init__(self, color = PRAM.COLOR_BLUE, size = [PRAM.SIMPLE_BOX_WIDTH, # @UndefinedVariable
+                 PRAM.SIMPLE_BOX_HEIGHT], position =[100,100]): # @UndefinedVariable
+        super(SimpleBox, self).__init__(size, position)
         self.color=color
-        self.width=width
-        self.height=height
-        self.x=x
-        self.y=y   
-        self.moveSpeed = 10
-    
+
     '''
     Swaps its color between 2 predefined values
     '''

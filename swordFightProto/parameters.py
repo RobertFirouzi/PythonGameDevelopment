@@ -14,10 +14,19 @@ LEVEL_PATH = os.path.realpath('')+'\\dir_levels\\'
 MENU_PATH = os.path.realpath('')+'\\dir_menu\\'
 CUTSCENE_PATH = os.path.realpath('')+'\\dir_cutscene\\'
 
+'''
+a 1600x896 screen gives about 50x32 tiles of size 32
+33x19 of size 48 tiles
+This makes a ~100x100 tile map reasonable, and provides a good 5 screens 
+of scrolling
+
+'''
+
 
 ### SCREEN ###
-DISPLAY_WIDTH = 800
-DISPLAY_HEIGHT = 600
+DISPLAY_WIDTH = 1600 
+DISPLAY_HEIGHT = 900 
+TILESIZE = 48
 
 ### INPUT TYPES###
 INPTYPE_OBSERVER = 'observe'
@@ -33,8 +42,8 @@ INPUT_LEFT = 276
 INPUT_RIGHT = 275
 
 ### ACTORS ###
-SIMPLE_BOX_WIDTH = 60
-SIMPLE_BOX_HEIGHT = 60
+SIMPLE_BOX_WIDTH = 64
+SIMPLE_BOX_HEIGHT = 128
 
 ### LISTENER TYPES ###
 LISTENER_MOVE = 'move'

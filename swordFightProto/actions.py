@@ -32,20 +32,20 @@ class ActionMove(ActionBase):
     def act(self,params=()):
         retVal = ''
         if params=='up':
-            if self.character.actor.y>0:
-                self.character.actor.y -= self.character.actor.moveSpeed
+            if self.character.actor.position[1]>0:
+                self.character.actor.position[1] -= self.character.moveSpeed
                 retVal = EventMoved(self.character)
         elif params=='down':
-            if self.character.actor.y<PRAM.DISPLAY_HEIGHT:  # @UndefinedVariable
-                self.character.actor.y += self.character.actor.moveSpeed
+            if self.character.actor.position[1]<PRAM.DISPLAY_HEIGHT:  # @UndefinedVariable
+                self.character.actor.position[1] += self.character.moveSpeed
                 retVal = EventMoved(self.character)
         elif params=='left':
-            if self.character.actor.x>0:
-                self.character.actor.x -= self.character.actor.moveSpeed
+            if self.character.actor.position[0]>0:
+                self.character.actor.position[0] -= self.character.moveSpeed
                 retVal = EventMoved(self.character)
         elif params=='right':
-            if self.character.actor.x < PRAM.DISPLAY_WIDTH: # @UndefinedVariable
-                self.character.actor.x += self.character.actor.moveSpeed
+            if self.character.actor.position[0] < PRAM.DISPLAY_WIDTH: # @UndefinedVariable
+                self.character.actor.position[0] += self.character.moveSpeed
                 retVal = EventMoved(self.character)
         return retVal
         

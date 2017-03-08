@@ -17,7 +17,7 @@ class GameLevel():
         self.actorsWrapper = actorsWrapper
         self.sceneryWrapper = sceneryWrapper
         self.levelEvents = levelEvents
-        self.gameEvents = gameEvents
+        self.gameEvents = gameEvents #automatically load and run when level loads
         self.layout = layout
         
 '''
@@ -42,17 +42,19 @@ class GameCutscene(): #TODO
 '''
 Level events require a trigger event (whereas gameEvents run immediately)
     This event triggers if it is touched. Default subject is player.
-    Zone is width, height, x, y
+    size and position can be hardcoded, or set as the size and position of 
+    another actor (if the event should move with an actor)
 '''
 class LevelTriggerTouch():
-    def __init__(self, gameEvent, triggerZone = (0,0,0,0), subject = 'player'):
+    def __init__(self, gameEvent, size = (0,0) , position = (0,0), subject = 'player'):
         self.gameEvent = gameEvent
-        self.triggerZone = triggerZone
+        self.size = size
+        self.position = position
         self.subject = subject
 
     def notify(self):
-        if self.subject.actor.x >= self.triggerZone[2] and self.subject.actor.x <= self.triggerZone[2] + self.triggerZone[0]:
-            if self.subject.actor.y >= self.triggerZone[3] and self.subject.actor.y <= self.triggerZone[3] + self.triggerZone[1]:
+        if self.subject.actor.position[0] >= self.position[0] and self.subject.actor.position[0] <= self.position[0] + self.size[0]:
+            if self.subject.actor.position[1] >= self.position[1] and self.subject.actor.position[1] <= self.position[1] + self.size[1]:
                 return self.gameEvent
         return None
 

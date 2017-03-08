@@ -46,10 +46,10 @@ class Game():
         gameLevel object.  Loads the game events from the level to be immediately run
     @param levelFile
     '''
-    def loadLevel(self, levelFile):
+    def loadLevel(self, eventLoadLevel):
         self.unloadScene() 
         sys.path.append(PRAM.LEVEL_PATH)
-        level = importlib.import_module(levelFile)                       
+        level = importlib.import_module(eventLoadLevel.levelFile)                       
         sys.path.pop()
         
         self.gameScene = GameLevel(
@@ -69,6 +69,8 @@ class Game():
                     event.subject = self.player
             
         self.player.actor = self.gameScene.actorsWrapper.actors[0] #for now convention is for actor[0] to default to player    
+        self.player.actor.setPosition(eventLoadLevel.startingPosition)
+
 
     def loadMenu(self, menuFile):
         self.unloadScene()
