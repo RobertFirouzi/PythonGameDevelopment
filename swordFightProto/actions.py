@@ -5,7 +5,7 @@ Created on Feb 25, 2017
 '''
 
 import parameters as PRAM
-from event import EventSound, EventMoved
+from event import EventSound, EventMove
 
 '''
 Base class for an Action object.  Extend for specific functionality
@@ -29,25 +29,27 @@ class ActionMove(ActionBase):
     def __init__(self, character, params=()):
         super(ActionMove, self).__init__(character, params)
     
-    def act(self,params=()):
-        retVal = ''
-        if params=='up':
-            if self.character.actor.position[1]>0:
-                self.character.actor.position[1] -= self.character.moveSpeed
-                retVal = EventMoved(self.character)
-        elif params=='down':
-            if self.character.actor.position[1]<PRAM.DISPLAY_HEIGHT:  # @UndefinedVariable
-                self.character.actor.position[1] += self.character.moveSpeed
-                retVal = EventMoved(self.character)
-        elif params=='left':
-            if self.character.actor.position[0]>0:
-                self.character.actor.position[0] -= self.character.moveSpeed
-                retVal = EventMoved(self.character)
-        elif params=='right':
-            if self.character.actor.position[0] < PRAM.DISPLAY_WIDTH: # @UndefinedVariable
-                self.character.actor.position[0] += self.character.moveSpeed
-                retVal = EventMoved(self.character)
-        return retVal
+    def act(self, direction):
+        return EventMove(self.character, direction)
+#         retVal = ''
+#         if params=='up':
+#             if self.character.actor.position[1]>0:
+#                 self.character.actor.position[1] -= self.character.moveSpeed
+#                 retVal = EventMoved(self.character)
+#         elif params=='down':
+#             if self.character.actor.position[1]<PRAM.DISPLAY_HEIGHT:  # @UndefinedVariable
+#                 self.character.actor.position[1] += self.character.moveSpeed
+#                 retVal = EventMoved(self.character)
+#         elif params=='left':
+#             if self.character.actor.position[0]>0:
+#                 self.character.actor.position[0] -= self.character.moveSpeed
+#                 retVal = EventMoved(self.character)
+#         elif params=='right':
+#             if self.character.actor.position[0] < PRAM.DISPLAY_WIDTH: # @UndefinedVariable
+#                 self.character.actor.position[0] += self.character.moveSpeed
+#                 retVal = EventMoved(self.character)
+#         return retVal
+
         
 
 '''

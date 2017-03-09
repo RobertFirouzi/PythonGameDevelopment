@@ -13,13 +13,20 @@ Data container class for a game level, contained within the game object
 @param layout
 '''
 class GameLevel():
-    def __init__(self, actorsWrapper = None, sceneryWrapper = None, levelEvents = [], gameEvents = [], layout = []):
+    def __init__(self, 
+                 actorsWrapper = None, 
+                 sceneryWrapper = None, 
+                 levelEvents = [], 
+                 gameEvents = [], 
+                 layout = [],
+                 levelBarriers = []):
         self.actorsWrapper = actorsWrapper
         self.sceneryWrapper = sceneryWrapper
         self.levelEvents = levelEvents
         self.gameEvents = gameEvents #automatically load and run when level loads
         self.layout = layout
-        
+        self.levelBarriers = levelBarriers
+                
 '''
 Data container for a game menu, which can be loaded as an event (akin to loading a level).
     EG load the title screen, or options, save/load etc...

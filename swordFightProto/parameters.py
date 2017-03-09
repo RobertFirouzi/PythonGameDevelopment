@@ -22,10 +22,9 @@ of scrolling
 
 '''
 
-
 ### SCREEN ###
-DISPLAY_WIDTH = 1600 
-DISPLAY_HEIGHT = 900 
+DISPLAY_WIDTH = 800 #1600 
+DISPLAY_HEIGHT = 600 #900 
 TILESIZE = 48
 
 ### INPUT TYPES###
@@ -52,6 +51,7 @@ LISTENER_MOVE = 'move'
 COLOR_BLACK = (0, 0, 0)
 COLOR_BLUE = (0, 128, 255)
 COLOR_ORANGE = (255, 100, 0)
+COLOR_WHITE = (255, 255, 255)
 
 ### IMAGES ###
 IMAGE_LIBRARY = ['ball.png'] #may not be needed

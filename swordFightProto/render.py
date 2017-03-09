@@ -28,8 +28,14 @@ class Renderer():
         for feature in sceneryWrapper.scenery:
             if type(feature) is SolidBackground:
                 self.screen.fill(feature.color)
+                
             elif type(feature) is StaticSprite:
                 self.screen.blit(sceneryWrapper.imageDict[feature.image], feature.location)
+                
+            elif type(feature) is SimpleBox:
+                pygame.draw.rect(self.screen, feature.color, 
+                                 pygame.Rect(feature.position[0], feature.position[1], 
+                                             feature.size[0], feature.size[1]))                
         return
     
     '''

@@ -57,7 +57,8 @@ class Game():
             self.loadImages(level.scenery), #returns a sceneryWrapper object
             level.levelEvents,
             level.gameEvents,
-            level.layout)
+            level.layout,
+            level.levelBarriers)
         
         for event in self.gameScene.gameEvents: #add to eventQueue, e.g. song to play
             self.addEvent(event)

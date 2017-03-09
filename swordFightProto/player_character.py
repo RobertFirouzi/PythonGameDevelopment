@@ -22,3 +22,15 @@ class PlayerCharacter():
     def addListener(self, listenerType, listener):
         if listenerType == PRAM.LISTENER_MOVE:
             self.moveListeners.append(listener)
+
+    def getTilePosition(self, x_modifier = 0, y_modifier = 0):
+        return self.actor.getTilePosition(x_modifier, y_modifier)
+    
+    def getPosition(self):
+        return self.actor.getPosition()
+    
+    def setPosition(self, position = [0,0]):
+        self.actor.setPosition(position)
+    
+    def getSize(self):
+        return self.actor.size

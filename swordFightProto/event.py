@@ -4,6 +4,8 @@ Created on Mar 4, 2017
 @author: Robert
 '''
 
+import parameters as PRAM
+
 '''
 Base class is extended for specific event types
 '''
@@ -14,12 +16,24 @@ class EventGeneratedBase():
     #define in extended class
     def run(self):
         pass
+
 '''
-Create an event when a character moves
+An event for when a character attempts to move
 '''
-class EventMoved(EventGeneratedBase):
+
+class EventMove(EventGeneratedBase):
+    def __init__(self, character, direction, params = ()):
+        super(EventMove, self).__init__(params)
+        self.character = character
+        self.direction = direction
+
+
+'''
+Create an event when a character has moved
+'''
+class EventHasMoved(EventGeneratedBase):
     def __init__(self, character, params = ()):
-        super(EventMoved, self).__init__(params)
+        super(EventHasMoved, self).__init__(params)
         self.character = character
 
 '''
@@ -104,8 +118,70 @@ class EventHandler():
     '''    
     def run(self, event):
         retVal = ''
-        
-        if type(event) is EventMoved:
+
+        if type(event) is EventMove:
+            char = event.character
+            charPixel = char.getPosition()
+            charSize = char.getSize()
+            charTile = char.getTilePosition()
+            
+            if event.direction =='up':
+                target = char.getTilePosition(0, -char.moveSpeed)
+                if target == charTile:
+                    char.setPosition([charPixel[0], charPixel[1] - char.moveSpeed])
+                    retVal = EventHasMoved(char)  
+                else:
+                    if self.game.gameScene.levelBarriers[target[1]][target[0]] &0b0001: #barrier in the way
+                        if charPixel[1] > charTile[1] * PRAM.TILESIZE: #move character up to barrier
+                            char.setPosition([charPixel[0], charTile[1]*PRAM.TILESIZE])
+                            retVal = EventHasMoved(char)
+                    else:
+                        char.setPosition([charPixel[0], charPixel[1] - char.moveSpeed ])
+                        retVal = EventHasMoved(char)
+                
+            elif event.direction =='down':
+                target = char.getTilePosition(0, char.moveSpeed)
+                if target == charTile:
+                    char.setPosition([charPixel[0], charPixel[1] + char.moveSpeed])
+                    retVal = EventHasMoved(char)  
+                else:
+                    if self.game.gameScene.levelBarriers[target[1]][target[0]] &0b1000: #barrier in the way
+                        if charPixel[1] < charTile[1] * PRAM.TILESIZE: #move character up to barrier
+                            char.setPosition([charPixel[0], charTile[1]*PRAM.TILESIZE-1])
+                            retVal = EventHasMoved(char)
+                    else:
+                        char.setPosition([charPixel[0], charPixel[1] + char.moveSpeed ])
+                        retVal = EventHasMoved(char)
+                    
+            elif event.direction =='left':
+                target = char.getTilePosition(-char.moveSpeed, 0)
+                if target == charTile:
+                    char.setPosition([charPixel[0] - char.moveSpeed, charPixel[1]])
+                    retVal = EventHasMoved(char)  
+                else:
+                    if self.game.gameScene.levelBarriers[target[1]][target[0]] &0b0010: #barrier in the way
+                        if charPixel[0] > charTile[0] * PRAM.TILESIZE: #move character up to barrier
+                            char.setPosition([charTile[0]*PRAM.TILESIZE, charPixel[1]])
+                            retVal = EventHasMoved(char)
+                    else:
+                        char.setPosition([charPixel[0] - char.moveSpeed, charPixel[1]])
+                        retVal = EventHasMoved(char) 
+                                                                              
+            else: # 'right'
+                target = char.getTilePosition(char.moveSpeed, 0)
+                if target == charTile:
+                    char.setPosition([charPixel[0] + char.moveSpeed, charPixel[1]])
+                    retVal = EventHasMoved(char)  
+                else:
+                    if self.game.gameScene.levelBarriers[target[1]][target[0]] &0b0100: #barrier in the way
+                        if charPixel[0] < charTile[0] * PRAM.TILESIZE: #move character up to barrier
+                            char.setPosition([charTile[0]*PRAM.TILESIZE, charPixel[1]])
+                            retVal = EventHasMoved(char)
+                    else:
+                        char.setPosition([charPixel[0] + char.moveSpeed, charPixel[1]])
+                        retVal = EventHasMoved(char) 
+            
+        elif type(event) is EventHasMoved:
             retVal = EventNotifyMove(event.character) #NOTE: may want more actions based on an event move
         
         elif type(event) is EventNotifyMove:
