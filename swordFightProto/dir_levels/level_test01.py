@@ -11,7 +11,7 @@ import parameters as PRAM
 from scenery import SolidBackground, StaticSprite
 from actors import SimpleBox
 from event import EventSong, EventSound, EventSetInput, EventLoadMenu
-from game_level import LevelTriggerTouch
+from game_level import LevelTriggerTouch, LevelTile
 
 #The NPC/PC's for the board.  Current convention is for actor[0] to be player char
 actors = [SimpleBox(),
@@ -29,7 +29,7 @@ scenery = [
 
 #events triggered within the level
 levelEvents = [
-    LevelTriggerTouch(EventLoadMenu(PRAM.MENU_TEST1),(53,53),(-5,-5))
+#     LevelTriggerTouch(EventLoadMenu(PRAM.MENU_TEST1),(53,53),(-5,-5))
     ]
 
 #added to the gameEvent queue on level initialization - e.g. music and ambiant tracks
@@ -54,31 +54,33 @@ bits correspond to True/False for a barrier
     Note that to make the layout appear as a level, read x/y inversely
     e.g. for tile 2,3, get levelBarriers[3][2]
 '''
-levelBarriers = ( 
-#   X    0        1      2       3       4       5       6       7       8       9       Y   
-     (0b0011, 0b0001, 0b0001, 0b0001, 0b0001, 0b0001, 0b0001, 0b0001, 0b0001, 0b0101), # 0 
+layout = (  
+     (LevelTile('','','',0b0011,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), 
+      LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0101,None)),  
      
-     (0b0010, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0100), # 1
+     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
+      LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
      
-     (0b0010, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0100), # 2
+     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
+      LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
      
-     (0b0010, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0100), # 3
+     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
+      LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
      
-     (0b0010, 0b0000, 0b0000, 0b0000, 0b1111, 0b1111, 0b0000, 0b0000, 0b0000, 0b0100), # 4
+     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b1111,None), 
+      LevelTile('','','',0b1111,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
      
-     (0b0010, 0b0000, 0b0000, 0b0000, 0b1111, 0b1111, 0b0000, 0b0000, 0b0000, 0b0100), # 5
+     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b1111,None), 
+      LevelTile('','','',0b1111,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
      
-     (0b0010, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0100), # 6
+     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
+      LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
      
-     (0b0010, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0100), # 7
+     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
+      LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
      
-     (0b0010, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0100), # 8
+     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
+      LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
      
-     (0b1010, 0b1000, 0b1000, 0b1000, 0b1000, 0b1000, 0b1000, 0b1000, 0b1000, 0b1100),  # 9
-    )
-
-
-layout = []
-
-
-
+     (LevelTile('','','',0b1010,None), LevelTile('','','',0b1000,None), LevelTile('','','',0b1000,None), LevelTile('','','',0b1000,None), LevelTile('','','',0b1000,None), 
+      LevelTile('','','',0b1000,None), LevelTile('','','',0b1000,None), LevelTile('','','',0b1000,None), LevelTile('','','',0b1000,None), LevelTile('','','',0b1100,None)))

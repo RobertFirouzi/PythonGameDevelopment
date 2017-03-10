@@ -32,6 +32,11 @@ INPTYPE_OBSERVER = 'observe'
 INPTYPE_MENU = 'menu'
 INPTYPE_NORMAL = 'normal'
 
+### TRIGGER TYPES ###
+TRIG_TOUCH = 'touch'
+TRIG_ACTION = 'action'
+
+
 ### KEYS ### - pygame.<keyname>
 INPUT_ACTION = 32 #pygame space bar
 INPUT_STATUS = 13 #pygame enter key
@@ -41,8 +46,8 @@ INPUT_LEFT = 276
 INPUT_RIGHT = 275
 
 ### ACTORS ###
-SIMPLE_BOX_WIDTH = 64
-SIMPLE_BOX_HEIGHT = 128
+SIMPLE_BOX_WIDTH = 50
+SIMPLE_BOX_HEIGHT = 102
 
 ### LISTENER TYPES ###
 LISTENER_MOVE = 'move'

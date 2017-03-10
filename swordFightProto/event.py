@@ -5,7 +5,7 @@ Created on Mar 4, 2017
 '''
 
 import parameters as PRAM
-
+import utility as UTIL
 '''
 Base class is extended for specific event types
 '''
@@ -26,15 +26,6 @@ class EventMove(EventGeneratedBase):
         super(EventMove, self).__init__(params)
         self.character = character
         self.direction = direction
-
-
-'''
-Create an event when a character has moved
-'''
-class EventHasMoved(EventGeneratedBase):
-    def __init__(self, character, params = ()):
-        super(EventHasMoved, self).__init__(params)
-        self.character = character
 
 '''
 If a character moves, notify any listeners, passing in the character and the 
@@ -105,9 +96,7 @@ class EventHandler():
         while len(self.game.gameEvents) > 0:
             event = self.game.gameEvents.pop()
             if event != '':
-                retVal = self.run(event)
-                if retVal != '':
-                    self.game.gameEvents.append(retVal) #events can generate additional events
+                self.run(event)
         return
      
     '''
@@ -117,73 +106,61 @@ class EventHandler():
     @return event
     '''    
     def run(self, event):
-        retVal = ''
-
         if type(event) is EventMove:
             char = event.character
             charPixel = char.getPosition()
             charSize = char.getSize()
-            charTile = char.getTilePosition()
+            charPixel = [charPixel[0] + charSize[0]//2, charPixel[1] + charSize[1]*2//3] #adjust to middle of char
+            charTile = UTIL.calcTileFromPix(charPixel) #relative tile that char appears to stand on
+            layout = self.game.gameScene.layout
             
             if event.direction =='up':
-                target = char.getTilePosition(0, -char.moveSpeed)
+                target = UTIL.calcTileFromPix([charPixel[0],charPixel[1]-char.moveSpeed])
                 if target == charTile:
-                    char.setPosition([charPixel[0], charPixel[1] - char.moveSpeed])
-                    retVal = EventHasMoved(char)  
+                    char.adjustPosition(0,-char.moveSpeed)
                 else:
-                    if self.game.gameScene.levelBarriers[target[1]][target[0]] &0b0001: #barrier in the way
-                        if charPixel[1] > charTile[1] * PRAM.TILESIZE: #move character up to barrier
-                            char.setPosition([charPixel[0], charTile[1]*PRAM.TILESIZE])
-                            retVal = EventHasMoved(char)
+                    if layout[target[1]][target[0]].barrier & 0b0001: #barrier in the way
+                        char.adjustPosition(0, (target[1]+1) * PRAM.TILESIZE - charPixel[1]) #move next to barrier
                     else:
-                        char.setPosition([charPixel[0], charPixel[1] - char.moveSpeed ])
-                        retVal = EventHasMoved(char)
+                        char.adjustPosition(0,-char.moveSpeed)
                 
             elif event.direction =='down':
-                target = char.getTilePosition(0, char.moveSpeed)
+                target = UTIL.calcTileFromPix([charPixel[0], charPixel[1] + char.moveSpeed])
                 if target == charTile:
-                    char.setPosition([charPixel[0], charPixel[1] + char.moveSpeed])
-                    retVal = EventHasMoved(char)  
+                    char.adjustPosition(0, char.moveSpeed)
                 else:
-                    if self.game.gameScene.levelBarriers[target[1]][target[0]] &0b1000: #barrier in the way
-                        if charPixel[1] < charTile[1] * PRAM.TILESIZE: #move character up to barrier
-                            char.setPosition([charPixel[0], charTile[1]*PRAM.TILESIZE-1])
-                            retVal = EventHasMoved(char)
+                    if layout[target[1]][target[0]].barrier & 0b1000: #barrier in the way
+                        char.adjustPosition(0, target[1] * PRAM.TILESIZE - charPixel[1]-1) #move next to barrier
                     else:
-                        char.setPosition([charPixel[0], charPixel[1] + char.moveSpeed ])
-                        retVal = EventHasMoved(char)
+                        char.adjustPosition(0, char.moveSpeed)
                     
             elif event.direction =='left':
-                target = char.getTilePosition(-char.moveSpeed, 0)
+                target = UTIL.calcTileFromPix([charPixel[0] - char.moveSpeed, charPixel[1]])
                 if target == charTile:
-                    char.setPosition([charPixel[0] - char.moveSpeed, charPixel[1]])
-                    retVal = EventHasMoved(char)  
+                    char.adjustPosition(-char.moveSpeed, 0) 
                 else:
-                    if self.game.gameScene.levelBarriers[target[1]][target[0]] &0b0010: #barrier in the way
-                        if charPixel[0] > charTile[0] * PRAM.TILESIZE: #move character up to barrier
-                            char.setPosition([charTile[0]*PRAM.TILESIZE, charPixel[1]])
-                            retVal = EventHasMoved(char)
+                    if layout[target[1]][target[0]].barrier & 0b0010: #barrier in the way
+                        char.adjustPosition((target[0]+1) * PRAM.TILESIZE - charPixel[0], 0) #move next to barrier
                     else:
-                        char.setPosition([charPixel[0] - char.moveSpeed, charPixel[1]])
-                        retVal = EventHasMoved(char) 
+                        char.adjustPosition(-char.moveSpeed, 0)
                                                                               
             else: # 'right'
-                target = char.getTilePosition(char.moveSpeed, 0)
+                target = UTIL.calcTileFromPix([charPixel[0] + char.moveSpeed, charPixel[1]])
                 if target == charTile:
-                    char.setPosition([charPixel[0] + char.moveSpeed, charPixel[1]])
-                    retVal = EventHasMoved(char)  
+                    char.adjustPosition(char.moveSpeed, 0) 
                 else:
-                    if self.game.gameScene.levelBarriers[target[1]][target[0]] &0b0100: #barrier in the way
-                        if charPixel[0] < charTile[0] * PRAM.TILESIZE: #move character up to barrier
-                            char.setPosition([charTile[0]*PRAM.TILESIZE, charPixel[1]])
-                            retVal = EventHasMoved(char)
+                    if layout[target[1]][target[0]].barrier & 0b0100: #barrier in the way
+                        char.adjustPosition(target[0] * PRAM.TILESIZE - charPixel[0]-1, 0) #move next to barrier
                     else:
-                        char.setPosition([charPixel[0] + char.moveSpeed, charPixel[1]])
-                        retVal = EventHasMoved(char) 
+                        char.adjustPosition(char.moveSpeed, 0)
             
-        elif type(event) is EventHasMoved:
-            retVal = EventNotifyMove(event.character) #NOTE: may want more actions based on an event move
-        
+            if target !=charTile:
+                pass
+                #TODO check for and add any events trigger by touching this tile
+
+            if len(char.moveListeners) > 0:
+                self.game.addEvent(EventNotifyMove(event.character))
+
         elif type(event) is EventNotifyMove:
             for listener in event.character.moveListeners:
                 listenerEvent = listener.notify()
@@ -208,6 +185,6 @@ class EventHandler():
         elif type(event) is EventSetInput:
             self.game.inputHandler.setInputBehavior(event.inputType)    
         
-        return retVal
+        return
 
 

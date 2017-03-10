@@ -5,7 +5,6 @@ Created on Feb 24, 2017
 '''
 
 import parameters as PRAM
-from parameters import TILESIZE
 
 '''
 Class contains the dictionary which has the reference to all loaded sprites, and
@@ -27,15 +26,6 @@ class ActorBase():
     
     def getPosition(self):
         return self.position
-
-    '''
-        Returns the absolute tile position of the character.  Can calculate a target tile
-            position by passing in the x and y pixel values
-    '''
-    def getTilePosition(self, x_modifier = 0, y_modifier = 0):
-        return ((self.position[0] + x_modifier) // PRAM.TILESIZE, 
-                (self.position[1] + y_modifier)//PRAM.TILESIZE)
-
 
 '''
 Draws a box

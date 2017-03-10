@@ -57,8 +57,7 @@ class Game():
             self.loadImages(level.scenery), #returns a sceneryWrapper object
             level.levelEvents,
             level.gameEvents,
-            level.layout,
-            level.levelBarriers)
+            level.layout)
         
         for event in self.gameScene.gameEvents: #add to eventQueue, e.g. song to play
             self.addEvent(event)
@@ -126,6 +125,7 @@ class Game():
     Halt any running events, unload any assets, etc
     ''' 
     def unloadScene(self):
+        #TODO - empty game event queue
         self.soundPlayer.stopSound()
         self.musicPlayer.stopSong()
         

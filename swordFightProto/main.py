@@ -34,13 +34,14 @@ while not DONE:
             if event.type == pygame.KEYDOWN: # @UndefinedVariable 
                 game.keydownEvents.append(event)
             
-            game.keysPressed = pygame.key.get_pressed()
+        game.keysPressed = pygame.key.get_pressed()
         
         inputHandler.handleInputs() #iterates through the keydown and keypressed events
         eventHandler.handleEvents()
         
         game.render()
         
+        #debug helper, draw the tile gridlines
         for i in range(10):
             pygame.draw.line(screen, PRAM.COLOR_BLACK,(0, 48*i), (480, 48*i))
             pygame.draw.line(screen, PRAM.COLOR_BLACK,(48*i, 0), (48*i, 480))
