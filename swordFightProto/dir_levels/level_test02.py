@@ -13,6 +13,8 @@ from actors import SimpleBox
 from event import EventSong, EventSound, EventSetInput, EventLoadLevel
 from game_level import LevelTile, LevelEvent
 
+size = [10,10]
+
 #The NPC/PC's for the board.  Current convention is for actor[0] to be player char
 actors = [SimpleBox(PRAM.COLOR_ORANGE, [48,48],[192,0])]
 
@@ -20,8 +22,8 @@ actors = [SimpleBox(PRAM.COLOR_ORANGE, [48,48],[192,0])]
 scenery = [
     SolidBackground(PRAM.COLOR_BLACK),
     SimpleBox(PRAM.COLOR_WHITE, [480,480],[0,0]),
-    StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (240,192)),
-    StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (240,240))
+#     StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (240,192)),
+#     StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (240,240))
     ]
 
 #events triggered within the level

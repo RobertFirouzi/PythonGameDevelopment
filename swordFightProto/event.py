@@ -111,7 +111,7 @@ class EventHandler():
             char = event.character
             charPixel = UTIL.calcCharPix(char.actor)
             charTile = UTIL.calcTileFromPix(charPixel) #relative tile that char appears to stand on
-            layout = self.game.gameScene.layout
+            layout = self.game.gameScene.layoutWrapper.layout
             
             if event.direction =='up':
                 char.setDirection('up')
@@ -171,7 +171,7 @@ class EventHandler():
             char = event.character
             charPixel = UTIL.calcCharPix(char.actor)
             charTile = UTIL.calcTileFromPix(charPixel) #relative tile that char appears to stand on
-            layout = self.game.gameScene.layout           
+            layout = self.game.gameScene.layoutWrapper.layout           
             
             if layout[charTile[1]][charTile[0]].levelEvent != None: #check the space you are standing on
                 if layout[charTile[1]][charTile[0]].levelEvent.trigger == PRAM.TRIG_ACTION:

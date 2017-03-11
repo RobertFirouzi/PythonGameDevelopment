@@ -13,17 +13,19 @@ Data container class for a game level, contained within the game object
 @param layout
 '''
 class GameLevel():
-    def __init__(self, 
+    def __init__(self,
+                 size = (10,10), 
                  actorsWrapper = None, 
                  sceneryWrapper = None, 
                  levelEvents = [], 
                  gameEvents = [], 
-                 layout = []):
+                 layoutWrapper = None):
+        self.size =size
         self.actorsWrapper = actorsWrapper
         self.sceneryWrapper = sceneryWrapper
         self.levelEvents = levelEvents
         self.gameEvents = gameEvents #automatically load and run when level loads
-        self.layout = layout
+        self.layoutWrapper = layoutWrapper
     
     def addActor(self, actor):
         self.actorsWrapper.actors.append(actor)
@@ -51,6 +53,13 @@ Loads a cutscene
 class GameCutscene(): #TODO
     def __init__(self, cutscene = []):
         self.cutscene = cutscene
+        
+    
+class LayoutWrapper():
+    def __init__(self, tileDict = {}, layout = [], size = [10,10]):
+        self.tileDict = tileDict
+        self.layout = layout
+        self.size = size
 
 '''
 Defines the event that is triggered on a level tile, and how it is triggered

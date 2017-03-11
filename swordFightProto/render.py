@@ -6,8 +6,9 @@ Created on Feb 25, 2017
 
 from actors import SimpleBox
 from scenery import StaticSprite, SolidBackground
+import utility as UTIL
 import pygame
-
+from game_level import GameLevel
 '''
 Class which renders images to the screen
 @param screen
@@ -16,9 +17,37 @@ class Renderer():
     def __init__(self, screen):
         self.screen = screen
     
-    def render(self, sceneryWrapper, actorsWrapper):
-        self.renderScenery(sceneryWrapper)
-        self.renderActors(actorsWrapper)
+    '''
+     1) render background.
+     2) render lower tiles 
+     3) render mid tiles
+     4) render actors
+     5) render upper tiles
+    '''
+    def render(self, gameScene):
+        self.renderScenery(gameScene.sceneryWrapper)
+        if type(gameScene) is GameLevel:
+            self.renderTiles(gameScene.layoutWrapper)
+        self.renderActors(gameScene.actorsWrapper)
+        if type(gameScene) is GameLevel:
+            self.renderTiles(gameScene.layoutWrapper, False, False, True)
+    
+    def renderTiles(self, layoutWrapper, lower = True, mid = True, upper = False):
+        for x in range(layoutWrapper.size[0]):
+            for y in range(layoutWrapper.size[1]):
+                tile = layoutWrapper.layout[x][y]
+                location = UTIL.calcPixFromTile((y,x))
+                if lower:
+                    if tile.lower != '':
+                        self.screen.blit(layoutWrapper.tileDict[tile.lower], location)
+                if mid:
+                    if tile.mid != '':
+                        self.screen.blit(layoutWrapper.tileDict[tile.mid], location)
+                if upper:
+                    if tile.upper != '':                    
+                        self.screen.blit(layoutWrapper.tileDict[tile.upper], location)
+                
+        
             
     '''
     Render all scenery

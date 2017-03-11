@@ -6,7 +6,7 @@ Created on Mar 4, 2017
 
 import parameters as PRAM
 import sys, importlib
-from game_level import GameLevel, GameCutscene, GameMenu, LevelTriggerTouch
+from game_level import GameLevel, GameCutscene, GameMenu, LevelTriggerTouch, LayoutWrapper
 from event import EventLoadMenu
 from scenery import StaticSprite, SceneryWrapper
 from actors import ActorsWrapper
@@ -53,11 +53,12 @@ class Game():
         sys.path.pop()
         
         self.gameScene = GameLevel(
+            level.size,
             self.loadActors(level.actors), #returns an actorsWrapper object
             self.loadImages(level.scenery), #returns a sceneryWrapper object
             level.levelEvents,
             level.gameEvents,
-            level.layout)
+            self.loadLayout(level.tileDict, level.layout, level.size)) #returns a layoutWrapper object
         
         for event in self.gameScene.gameEvents: #add to eventQueue, e.g. song to play
             self.addEvent(event)
@@ -117,9 +118,23 @@ class Game():
                     imageDict[sprite.image] = pygame.image.load(sprite.path+sprite.image).convert()
                     
         return SceneryWrapper(imageDict, scenery)
+
+    def loadLayout(self, tileDict, layout, size):
+        layoutDict = {}
+        for x in range(size[0]):
+            for y in range(size[1]):
+                tile = layout[x][y]
+                if tile.lower != '' and layoutDict.get(tile.lower) == None:
+                    layoutDict[tile.lower] = pygame.image.load(tileDict[tile.lower]).convert()
+                if tile.mid != '' and layoutDict.get(tile.mid) == None:
+                    layoutDict[tile.mid] = pygame.image.load(tileDict[tile.mid]).convert()
+                if tile.upper != '' and layoutDict.get(tile.upper) == None:
+                    layoutDict[tile.upper] = pygame.image.load(tileDict[tile.upper]).convert()
+                                                            
+        return LayoutWrapper(layoutDict, layout, size)
        
     def render(self):
-        self.renderer.render(self.gameScene.sceneryWrapper, self.gameScene.actorsWrapper)  
+        self.renderer.render(self.gameScene)  
     
     '''
     Halt any running events, unload any assets, etc
