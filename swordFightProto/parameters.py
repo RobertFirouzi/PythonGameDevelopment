@@ -6,13 +6,15 @@ Created on Feb 24, 2017
 import os
 
 ### PATHS ###
-MUSIC_PATH = os.path.realpath('')+'\\dir_sound\\dir_music\\'
-AMBIANCE_PATH = os.path.realpath('')+'\\dir_sound\\dir_ambiance\\'
-SOUND_PATH = os.path.realpath('')+'\\dir_sound\\dir_soundeffects\\'
-IMAGE_PATH = os.path.realpath('')+'\\dir_image\\'
-LEVEL_PATH = os.path.realpath('')+'\\dir_levels\\'
-MENU_PATH = os.path.realpath('')+'\\dir_menu\\'
-CUTSCENE_PATH = os.path.realpath('')+'\\dir_cutscene\\'
+REAL_PATH =  os.path.realpath('')
+MUSIC_PATH = REAL_PATH+'\\dir_sound\\dir_music\\'
+AMBIANCE_PATH = REAL_PATH+'\\dir_sound\\dir_ambiance\\'
+SOUND_PATH = REAL_PATH+'\\dir_sound\\dir_soundeffects\\'
+IMAGE_PATH = REAL_PATH+'\\dir_image\\'
+LEVEL_PATH = REAL_PATH+'\\dir_levels\\'
+MENU_PATH = REAL_PATH+'\\dir_menu\\'
+CUTSCENE_PATH = REAL_PATH+'\\dir_cutscene\\'
+TILE_PATH = IMAGE_PATH +'dir_tilesets\\'
 
 '''
 a 1600x896 screen gives about 50x32 tiles of size 32

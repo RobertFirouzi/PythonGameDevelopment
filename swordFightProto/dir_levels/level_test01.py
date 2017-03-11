@@ -20,10 +20,10 @@ actors = [SimpleBox(PRAM.COLOR_ORANGE, [48,48],[0,0])]
 scenery = [
     SolidBackground(PRAM.COLOR_BLACK),
     SimpleBox(PRAM.COLOR_WHITE, [480,480],[0,0]),
-    StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (192,192)),
-    StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (192,240)),
-    StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (240,192)),
-    StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (240,240))
+#     StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (192,192)),
+#     StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (192,240)),
+#     StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (240,192)),
+#     StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (240,240))
     ]
 
 #events triggered within the level
@@ -39,11 +39,11 @@ gameEvents = [
     ] 
 
 #level layout map (structure is WIP)
-background = [] #imagery that goes behind all other layers
-tilemap_ground = []
-tilemap_obstacle = []
-tilemap_top = []
-
+tileDict = {
+    'grass' : PRAM.TILE_PATH + 'tile_grass.bmp',
+    'rock' : PRAM.TILE_PATH + 'tile_rock.bmp',
+    'tree' : PRAM.TILE_PATH + 'tile_tree.bmp'
+    }
 loadMenu_test1 = LevelEvent(PRAM.TRIG_TOUCH, EventLoadMenu(PRAM.MENU_TEST1))
 loadLevel_test2 = LevelEvent(PRAM.TRIG_TOUCH, EventLoadLevel(PRAM.LEV_TEST2, [50,192]))
 
@@ -57,32 +57,32 @@ bits correspond to True/False for a barrier
     e.g. for tile 2,3, get levelBarriers[3][2]
 '''
 layout = (  
-     (LevelTile('','','',0b0011,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), 
-      LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0101,None)),  
+     (LevelTile('grass','','',0b0011,None), LevelTile('grass','','',0b0001,None), LevelTile('grass','','',0b0001,None), LevelTile('grass','','',0b0001,None), LevelTile('grass','','',0b0001,None), 
+      LevelTile('grass','','',0b0001,None), LevelTile('grass','','',0b0001,None), LevelTile('grass','','',0b0001,None), LevelTile('grass','','',0b0001,None), LevelTile('grass','','',0b0101,None)),  
      
-     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
-      LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
+     (LevelTile('grass','','',0b0010,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), 
+      LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0100,None)),
      
-     (LevelTile('','','',0b0010,loadMenu_test1), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
-      LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
+     (LevelTile('grass','','',0b0010,loadMenu_test1), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','rock','tree',0b0000,None), 
+      LevelTile('grass','rock','tree',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0100,None)),
      
-     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
-      LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,loadLevel_test2)),
+     (LevelTile('grass','','',0b0010,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','rock','tree',0b0000,None), 
+      LevelTile('grass','rock','tree',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0100,loadLevel_test2)),
      
-     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b1111,None), 
-      LevelTile('','','',0b1111,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,loadLevel_test2)),
+     (LevelTile('grass','','',0b0010,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','rock','',0b1111,None), 
+      LevelTile('grass','rock','',0b1111,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0100,loadLevel_test2)),
      
-     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b1111,None), 
-      LevelTile('','','',0b1111,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
+     (LevelTile('grass','','',0b0010,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','rock','',0b1111,None), 
+      LevelTile('grass','rock','',0b1111,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0100,None)),
      
-     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
-      LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
+     (LevelTile('grass','','',0b0010,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), 
+      LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0100,None)),
      
-     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
-      LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
+     (LevelTile('grass','','',0b0010,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), 
+      LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0100,None)),
      
-     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
-      LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
+     (LevelTile('grass','','',0b0010,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), 
+      LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0000,None), LevelTile('grass','','',0b0100,None)),
      
-     (LevelTile('','','',0b1010,None), LevelTile('','','',0b1000,None), LevelTile('','','',0b1000,None), LevelTile('','','',0b1000,None), LevelTile('','','',0b1000,None), 
-      LevelTile('','','',0b1000,None), LevelTile('','','',0b1000,None), LevelTile('','','',0b1000,None), LevelTile('','','',0b1000,None), LevelTile('','','',0b1100,None)))
+     (LevelTile('grass','','',0b1010,None), LevelTile('grass','','',0b1000,None), LevelTile('grass','','',0b1000,None), LevelTile('grass','','',0b1000,None), LevelTile('grass','','',0b1000,None), 
+      LevelTile('grass','','',0b1000,None), LevelTile('grass','','',0b1000,None), LevelTile('grass','','',0b1000,None), LevelTile('grass','','',0b1000,None), LevelTile('grass','','',0b1100,None)))
