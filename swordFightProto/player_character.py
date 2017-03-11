@@ -12,7 +12,7 @@ Class to contain data and actions for a PC.  Actions are added to the object
 @param actor
 '''
 class PlayerCharacter():
-    def __init__(self, actor=None):
+    def __init__(self, actor = None):
         self.actor = actor #link to the actor player is controlling
                 
         #explicitly declare fields
@@ -30,7 +30,7 @@ class PlayerCharacter():
     def getPosition(self):
         return self.actor.getPosition()
     
-    def setPosition(self, position = [0,0]):
+    def setPosition(self, position):
         self.actor.setPosition(position)
     
     def getSize(self):

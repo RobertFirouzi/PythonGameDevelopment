@@ -10,18 +10,16 @@ Created on Mar 4, 2017
 import parameters as PRAM
 from scenery import SolidBackground, StaticSprite
 from actors import SimpleBox
-from event import EventSong, EventSound, EventSetInput, EventLoadMenu, EventLoadLevel
+from event import EventSong, EventSound, EventSetInput, EventLoadLevel
 from game_level import LevelTile, LevelEvent
 
 #The NPC/PC's for the board.  Current convention is for actor[0] to be player char
-actors = [SimpleBox(PRAM.COLOR_ORANGE, [48,48],[0,0])]
+actors = [SimpleBox(PRAM.COLOR_ORANGE, [48,48],[192,0])]
 
 #Background, sprites etc
 scenery = [
     SolidBackground(PRAM.COLOR_BLACK),
     SimpleBox(PRAM.COLOR_WHITE, [480,480],[0,0]),
-    StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (192,192)),
-    StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (192,240)),
     StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (240,192)),
     StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (240,240))
     ]
@@ -44,8 +42,7 @@ tilemap_ground = []
 tilemap_obstacle = []
 tilemap_top = []
 
-loadMenu_test1 = LevelEvent(PRAM.TRIG_TOUCH, EventLoadMenu(PRAM.MENU_TEST1))
-loadLevel_test2 = LevelEvent(PRAM.TRIG_TOUCH, EventLoadLevel(PRAM.LEV_TEST2, [50,192]))
+loadLevel_test1 = LevelEvent(PRAM.TRIG_TOUCH, EventLoadLevel(PRAM.LEV_TEST1, [430,192]))
 
 '''
 bits correspond to True/False for a barrier
@@ -63,16 +60,16 @@ layout = (
      (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
       LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
      
-     (LevelTile('','','',0b0010,loadMenu_test1), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
+     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
       LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
      
      (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
-      LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,loadLevel_test2)),
+      LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
      
-     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b1111,None), 
-      LevelTile('','','',0b1111,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,loadLevel_test2)),
+     (LevelTile('','','',0b0010,loadLevel_test1), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b1111,None), 
+      LevelTile('','','',0b1111,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
      
-     (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b1111,None), 
+     (LevelTile('','','',0b0010,loadLevel_test1), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b1111,None), 
       LevelTile('','','',0b1111,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
      
      (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 

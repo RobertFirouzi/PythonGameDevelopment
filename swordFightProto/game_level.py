@@ -24,6 +24,9 @@ class GameLevel():
         self.levelEvents = levelEvents
         self.gameEvents = gameEvents #automatically load and run when level loads
         self.layout = layout
+    
+    def addActor(self, actor):
+        self.actorsWrapper.actors.append(actor)
                 
 '''
 Data container for a game menu, which can be loaded as an event (akin to loading a level).
@@ -79,7 +82,7 @@ class LevelTile():
         self.mid = mid
         self.upper = upper
         self.barrier = barrier
-        self.event = levelEvent
+        self.levelEvent = levelEvent
 
 
 '''

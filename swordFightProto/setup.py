@@ -6,6 +6,7 @@ Created on Mar 1, 2017
 from sound import MusicPlayer, SoundEffectPlayer, SoundWrapper
 from player_character import PlayerCharacter
 from actions import ActionColorSwap, ActionMove
+from actors import SimpleBox
 import parameters as PRAM
 
 '''
@@ -30,6 +31,8 @@ with an actor initialized
 '''
 def playerFactory(actor=None):
     player = PlayerCharacter(actor)
+    actor = SimpleBox()
+    player.actor=SimpleBox()
     actionMove = ActionMove(player)
     defaultAction = ActionColorSwap(player)
     player.actionMove=actionMove.act

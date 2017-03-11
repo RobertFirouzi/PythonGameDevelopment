@@ -155,8 +155,10 @@ class EventHandler():
                         char.adjustPosition(char.moveSpeed, 0)
             
             if target !=charTile:
-                pass
-                #TODO check for and add any events trigger by touching this tile
+                targetTile = layout[target[1]][target[0]]
+                if targetTile.levelEvent != None:
+                    if targetTile.levelEvent.trigger == PRAM.TRIG_TOUCH:
+                        self.game.addEvent(targetTile.levelEvent.gameEvent)
 
             if len(char.moveListeners) > 0:
                 self.game.addEvent(EventNotifyMove(event.character))

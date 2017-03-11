@@ -68,8 +68,9 @@ class Game():
                     self.player.addListener(PRAM.LISTENER_MOVE, event)
                     event.subject = self.player
             
-        self.player.actor = self.gameScene.actorsWrapper.actors[0] #for now convention is for actor[0] to default to player    
-        self.player.actor.setPosition(eventLoadLevel.startingPosition)
+#         self.player.actor = self.gameScene.actorsWrapper.actors[0] #for now convention is for actor[0] to default to player    
+        self.gameScene.addActor(self.player.actor)
+        self.player.setPosition(eventLoadLevel.startingPosition)
 
 
     def loadMenu(self, menuFile):

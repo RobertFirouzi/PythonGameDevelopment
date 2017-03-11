@@ -96,6 +96,7 @@ LEVEL_LIBRARY = ['level_test01'] #may not be needed
 
 ### LEVEL MAP ###
 LEV_TEST1 = 'level_test01'
+LEV_TEST2 = 'level_test02'
 
 ### GAME MENUS ###
 MENU_LIBRARY = ['menu_test01']
