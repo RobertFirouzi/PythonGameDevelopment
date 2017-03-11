@@ -40,12 +40,12 @@ class GameMenu():
                  sceneryWrapper = None, 
                  levelEvents = [], 
                  gameEvents = [], 
-                 layout = []):
+                 layoutWrapper = []):
         self.actorsWrapper = actorsWrapper
         self.sceneryWrapper = sceneryWrapper
         self.levelEvents = levelEvents
         self.gameEvents = gameEvents
-        self.layout = layout
+        self.layoutWrapper = layoutWrapper
 
 '''
 Loads a cutscene

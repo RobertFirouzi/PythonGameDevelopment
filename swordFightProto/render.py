@@ -9,6 +9,8 @@ from scenery import StaticSprite, SolidBackground
 import utility as UTIL
 import pygame
 from game_level import GameLevel
+import parameters as PRAM
+
 '''
 Class which renders images to the screen
 @param screen
@@ -75,6 +77,8 @@ class Renderer():
         for actor in actorsWrapper.actors:
             if type(actor) is SimpleBox:
                 pygame.draw.rect(self.screen, actor.color, 
-                                 pygame.Rect(actor.position[0], actor.position[1], 
-                                             actor.size[0], actor.size[1]))
+                                 pygame.Rect(actor.position[0]+PRAM.BOX_FUDGE, actor.position[1], 
+                                             actor.size[0] - PRAM.BOX_FUDGE*2, actor.size[1]))
         return
+    
+    

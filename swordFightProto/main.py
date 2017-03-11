@@ -42,9 +42,9 @@ while not DONE:
         game.render()
         
         #debug helper, draw the tile gridlines
-        for i in range(10):
-            pygame.draw.line(screen, PRAM.COLOR_BLACK,(0, 48*i), (480, 48*i))
-            pygame.draw.line(screen, PRAM.COLOR_BLACK,(48*i, 0), (48*i, 480))
+#         for i in range(10):
+#             pygame.draw.line(screen, PRAM.COLOR_BLACK,(0, 48*i), (480, 48*i))
+#             pygame.draw.line(screen, PRAM.COLOR_BLACK,(48*i, 0), (48*i, 480))
         
         pygame.display.flip()
         CLOCK.tick(60) #60 FPS
