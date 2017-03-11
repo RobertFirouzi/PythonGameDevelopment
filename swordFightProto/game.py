@@ -67,9 +67,8 @@ class Game():
                 if event.subject == 'player':
                     self.player.addListener(PRAM.LISTENER_MOVE, event)
                     event.subject = self.player
-            
-#         self.player.actor = self.gameScene.actorsWrapper.actors[0] #for now convention is for actor[0] to default to player    
-        self.gameScene.addActor(self.player.actor)
+
+        self.gameScene.addActor(self.player.actor) #add the player character to the level actors list
         self.player.setPosition(eventLoadLevel.startingPosition)
 
 

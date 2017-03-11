@@ -3,7 +3,7 @@ Created on Mar 5, 2017
 
 @author: Robert
 '''
-from event import EventLoadLevel, EventLoadMenu
+from event import EventLoadLevel, EventLoadMenu, EventDefaultAction
 
 '''
 Class to store the type of input received (keydown, presseed, mousemove, etc) and
@@ -114,7 +114,7 @@ class InputHandler():
         self.game.addEvent(self.player.actionMove('right'))
     
     def defaultAction(self):
-        self.game.addEvent(self.player.defaultAction()) #'default behavior'
+        self.game.addEvent(EventDefaultAction(self.player)) #'default behavior'
     
     def statusAction(self):
         self.game.addEvent(EventLoadMenu(PRAM.MENU_TEST1)) #TODO temp code to test menu/level load       

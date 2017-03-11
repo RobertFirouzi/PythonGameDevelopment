@@ -35,3 +35,7 @@ class PlayerCharacter():
     
     def getSize(self):
         return self.actor.size
+    
+    def setDirection(self, direction):
+        self.actor.direction = direction
+        

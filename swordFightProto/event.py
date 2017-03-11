@@ -13,9 +13,6 @@ class EventGeneratedBase():
     def __init__(self, params=()):
         self.params=params
 
-    #define in extended class
-    def run(self):
-        pass
 
 '''
 An event for when a character attempts to move
@@ -27,6 +24,10 @@ class EventMove(EventGeneratedBase):
         self.character = character
         self.direction = direction
 
+class EventDefaultAction(EventGeneratedBase):
+    def __init__(self, character, params = ()):
+        super(EventDefaultAction, self).__init__(params)
+        self.character = character
 '''
 If a character moves, notify any listeners, passing in the character and the 
     listener list
@@ -108,13 +109,12 @@ class EventHandler():
     def run(self, event):
         if type(event) is EventMove:
             char = event.character
-            charPixel = char.getPosition()
-            charSize = char.getSize()
-            charPixel = [charPixel[0] + charSize[0]//2, charPixel[1] + charSize[1]*2//3] #adjust to middle of char
+            charPixel = UTIL.calcCharPix(char.actor)
             charTile = UTIL.calcTileFromPix(charPixel) #relative tile that char appears to stand on
             layout = self.game.gameScene.layout
             
             if event.direction =='up':
+                char.setDirection('up')
                 target = UTIL.calcTileFromPix([charPixel[0],charPixel[1]-char.moveSpeed])
                 if target == charTile:
                     char.adjustPosition(0,-char.moveSpeed)
@@ -125,6 +125,7 @@ class EventHandler():
                         char.adjustPosition(0,-char.moveSpeed)
                 
             elif event.direction =='down':
+                char.setDirection('down')
                 target = UTIL.calcTileFromPix([charPixel[0], charPixel[1] + char.moveSpeed])
                 if target == charTile:
                     char.adjustPosition(0, char.moveSpeed)
@@ -135,6 +136,7 @@ class EventHandler():
                         char.adjustPosition(0, char.moveSpeed)
                     
             elif event.direction =='left':
+                char.setDirection('left')
                 target = UTIL.calcTileFromPix([charPixel[0] - char.moveSpeed, charPixel[1]])
                 if target == charTile:
                     char.adjustPosition(-char.moveSpeed, 0) 
@@ -145,6 +147,7 @@ class EventHandler():
                         char.adjustPosition(-char.moveSpeed, 0)
                                                                               
             else: # 'right'
+                char.setDirection('right')
                 target = UTIL.calcTileFromPix([charPixel[0] + char.moveSpeed, charPixel[1]])
                 if target == charTile:
                     char.adjustPosition(char.moveSpeed, 0) 
@@ -162,6 +165,49 @@ class EventHandler():
 
             if len(char.moveListeners) > 0:
                 self.game.addEvent(EventNotifyMove(event.character))
+
+        elif type(event) is EventDefaultAction:
+            triggered = False
+            char = event.character
+            charPixel = UTIL.calcCharPix(char.actor)
+            charTile = UTIL.calcTileFromPix(charPixel) #relative tile that char appears to stand on
+            layout = self.game.gameScene.layout           
+            
+            if layout[charTile[1]][charTile[0]].levelEvent != None: #check the space you are standing on
+                if layout[charTile[1]][charTile[0]].levelEvent.trigger == PRAM.TRIG_ACTION:
+                    self.game.addEvent(layout[charTile[1]][charTile[0]].levelEvent.gameEvent)
+                    triggered = True
+            #now check the tile next to you that you are facing
+            elif char.actor.direction =='up': 
+                target = UTIL.calcTileFromPix([charPixel[0],charPixel[1]-PRAM.TILESIZE])
+                if layout[target[1]][target[0]].levelEvent != None: 
+                    if layout[target[1]][target[0]].levelEvent.trigger == PRAM.TRIG_ACTION:
+                        self.game.addEvent(layout[target[1]][target[0]].levelEvent.gameEvent)
+                        triggered = True
+                    
+            elif char.actor.direction =='down':
+                target = UTIL.calcTileFromPix([charPixel[0], charPixel[1] + PRAM.TILESIZE])
+                if layout[target[1]][target[0]].levelEvent != None:                 
+                    if layout[target[1]][target[0]].levelEvent.trigger == PRAM.TRIG_ACTION:
+                        self.game.addEvent(layout[target[1]][target[0]].levelEvent.gameEvent)
+                        triggered = True    
+                    
+            elif char.actor.direction =='left':
+                target = UTIL.calcTileFromPix([charPixel[0] - PRAM.TILESIZE, charPixel[1]])
+                if layout[target[1]][target[0]].levelEvent != None:                     
+                    if layout[target[1]][target[0]].levelEvent.trigger == PRAM.TRIG_ACTION:
+                        self.game.addEvent(layout[target[1]][target[0]].levelEvent.gameEvent)
+                        triggered = True
+                                                                              
+            else: # 'right'
+                target = UTIL.calcTileFromPix([charPixel[0] + PRAM.TILESIZE, charPixel[1]])
+                if layout[target[1]][target[0]].levelEvent != None: 
+                    if layout[target[1]][target[0]].levelEvent.trigger == PRAM.TRIG_ACTION:
+                        self.game.addEvent(layout[target[1]][target[0]].levelEvent.gameEvent)
+                        triggered = True           
+                
+            if not triggered: #no level event, so perform characters default action
+                self.game.addEvent(char.defaultAction())           
 
         elif type(event) is EventNotifyMove:
             for listener in event.character.moveListeners:

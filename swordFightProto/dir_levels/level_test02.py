@@ -43,6 +43,7 @@ tilemap_obstacle = []
 tilemap_top = []
 
 loadLevel_test1 = LevelEvent(PRAM.TRIG_TOUCH, EventLoadLevel(PRAM.LEV_TEST1, [430,192]))
+triggerSong = LevelEvent(PRAM.TRIG_ACTION, EventSong(PRAM.SONG_SAGAWIND))
 
 '''
 bits correspond to True/False for a barrier
@@ -55,7 +56,7 @@ bits correspond to True/False for a barrier
 '''
 layout = (  
      (LevelTile('','','',0b0011,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), 
-      LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0101,None)),  
+      LevelTile('','','',0b0001,triggerSong), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0001,None), LevelTile('','','',0b0101,None)),  
      
      (LevelTile('','','',0b0010,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), 
       LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0000,None), LevelTile('','','',0b0100,None)),
