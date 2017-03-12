@@ -21,11 +21,16 @@ The highest level object which contains references to the game level and
 @param renderer
 '''
 class Game():
-    def __init__(self, player = None, musicPlayer = None, soundPlayer = None, renderer = None):
+    def __init__(self, player = None, 
+                 musicPlayer = None, 
+                 soundPlayer = None, 
+                 renderer = None,
+                 gameCamera = None):
         self.player = player
         self.musicPlayer = musicPlayer
         self.soundPlayer = soundPlayer
         self.renderer = renderer
+        self.gameCamera = gameCamera
         
         #explicitly name Class fields
         self.gameEvents = []
@@ -58,7 +63,8 @@ class Game():
             self.loadImages(level.scenery), #returns a sceneryWrapper object
             level.levelEvents,
             level.gameEvents,
-            self.loadLayout(level.tileDict, level.layout, level.size)) #returns a layoutWrapper object
+            self.loadLayout(level.tileDict, level.layout, level.size), #returns a layoutWrapper object
+            self.gameCamera) 
         
         for event in self.gameScene.gameEvents: #add to eventQueue, e.g. song to play
             self.addEvent(event)

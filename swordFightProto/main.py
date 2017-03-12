@@ -9,7 +9,7 @@ from setup import soundPlayerFactory, playerFactory, eventHandlerFactory
 from render import Renderer
 from game import Game
 from input import InputHandler, ButtonMap
-
+from camera import GameCamera
 ### SETUP ###
 pygame.init()  # @UndefinedVariable
 screen = pygame.display.set_mode((PRAM.DISPLAY_WIDTH, PRAM.DISPLAY_HEIGHT))
@@ -19,8 +19,9 @@ DONE = False
 ### GAME ENGINE ###
 musicPlayer, soundPlayer = soundPlayerFactory()
 renderer = Renderer(screen)
+gameCamera = GameCamera()
 player = playerFactory()
-game = Game(player, musicPlayer, soundPlayer, renderer)
+game = Game(player, musicPlayer, soundPlayer, renderer, gameCamera)
 inputHandler = InputHandler(game, player, ButtonMap())
 eventHandler = eventHandlerFactory(game)
 game.inputHandler = inputHandler
@@ -41,9 +42,9 @@ while not DONE:
         game.render()
         
         #debug helper, draw the tile gridlines
-#         for i in range(10):
-#             pygame.draw.line(screen, PRAM.COLOR_BLACK,(0, 48*i), (480, 48*i))
-#             pygame.draw.line(screen, PRAM.COLOR_BLACK,(48*i, 0), (48*i, 480))
+        for i in range(35):
+            pygame.draw.line(screen, PRAM.COLOR_BLACK,(0, 48*i), (1600, 48*i))
+            pygame.draw.line(screen, PRAM.COLOR_BLACK,(48*i, 0), (48*i, 900))
         
         pygame.display.flip()
         CLOCK.tick(60) #60 FPS

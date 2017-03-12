@@ -18,6 +18,11 @@ Class which renders images to the screen
 class Renderer():
     def __init__(self, screen):
         self.screen = screen
+        
+        #explicit delceration of class fields
+        self.cameraTile= (0,0)
+        self.cameraOffset = (0,0)
+        self.cameraPosition = (0,0)
     
     '''
      1) render background.
@@ -27,7 +32,13 @@ class Renderer():
      5) render upper tiles
     '''
     def render(self, gameScene):
+        if type(gameScene) is GameLevel:
+            self.cameraTile = gameScene.gameCamera.getTile()
+            self.cameraOffset = gameScene.gameCamera.getOffset()
+            self.cameraPosition = gameScene.gameCamera.getPosition()
+    
         self.renderScenery(gameScene.sceneryWrapper)
+        
         if type(gameScene) is GameLevel:
             self.renderTiles(gameScene.layoutWrapper)
         self.renderActors(gameScene.actorsWrapper)
@@ -35,10 +46,10 @@ class Renderer():
             self.renderTiles(gameScene.layoutWrapper, False, False, True)
     
     def renderTiles(self, layoutWrapper, lower = True, mid = True, upper = False):
-        for x in range(layoutWrapper.size[0]):
-            for y in range(layoutWrapper.size[1]):
-                tile = layoutWrapper.layout[x][y]
-                location = UTIL.calcPixFromTile((y,x))
+        for y in range(PRAM.DISPLAY_TILE_HEIGHT):
+            for x in range(PRAM.DISPLAY_TILE_WIDTH):  #TODOcheck if cam is at border?
+                tile = layoutWrapper.layout[y+self.cameraTile[1]][x+self.cameraTile[0]]
+                location = UTIL.calcPixFromTile((x,y), -self.cameraOffset[0], -self.cameraOffset[1])
                 if lower:
                     if tile.lower != '':
                         self.screen.blit(layoutWrapper.tileDict[tile.lower], location)
@@ -77,8 +88,13 @@ class Renderer():
         for actor in actorsWrapper.actors:
             if type(actor) is SimpleBox:
                 pygame.draw.rect(self.screen, actor.color, 
-                                 pygame.Rect(actor.position[0]+PRAM.BOX_FUDGE, actor.position[1], 
-                                             actor.size[0] - PRAM.BOX_FUDGE*2, actor.size[1]))
+                                 pygame.Rect(actor.position[0]+PRAM.BOX_FUDGE - self.cameraPosition[0], 
+                                             actor.position[1] - self.cameraPosition[1], 
+                                             actor.size[0] - PRAM.BOX_FUDGE*2, 
+                                             actor.size[1]))
         return
+    
+    
+    
     
     

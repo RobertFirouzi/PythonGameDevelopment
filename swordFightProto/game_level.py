@@ -19,13 +19,15 @@ class GameLevel():
                  sceneryWrapper = None, 
                  levelEvents = [], 
                  gameEvents = [], 
-                 layoutWrapper = None):
+                 layoutWrapper = None,
+                 gameCamera = None):
         self.size =size
         self.actorsWrapper = actorsWrapper
         self.sceneryWrapper = sceneryWrapper
         self.levelEvents = levelEvents
         self.gameEvents = gameEvents #automatically load and run when level loads
         self.layoutWrapper = layoutWrapper
+        self.gameCamera = gameCamera
     
     def addActor(self, actor):
         self.actorsWrapper.actors.append(actor)
