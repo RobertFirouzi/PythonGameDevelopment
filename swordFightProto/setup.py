@@ -7,6 +7,7 @@ from sound import MusicPlayer, SoundEffectPlayer, SoundWrapper
 from player_character import PlayerCharacter
 from actions import ActionColorSwap, ActionMove
 from actors import SimpleBox
+from event import EventHandler
 import parameters as PRAM
 
 '''
@@ -40,5 +41,19 @@ def playerFactory(actor=None):
     return player
 
     
+def eventHandlerFactory(game):
+    eventHandler = EventHandler(game)
+    eventHandler.eventDict.update({
+     'MOVE' : eventHandler.runMove,
+     'DEFAULTACTION' : eventHandler.runDefaultAction,
+     'NOTIFYMOVE' : eventHandler.runNotifyMove,
+     'SOUND' : eventHandler.runSound,
+     'SONG' : eventHandler.runSong,
+     'SETINPUT' : eventHandler.runSetInput,
+     'LOADLEVEL' : eventHandler.runLoadLevel,
+     'LOADMENU' : eventHandler.runLoadMenu,  
+     'LOADCUTSCENE' : eventHandler.runLoadCutscene,    
+     })
     
+    return eventHandler   
     

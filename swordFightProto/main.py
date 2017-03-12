@@ -5,8 +5,7 @@ Created on Feb 24, 2017
 '''
 import pygame
 import parameters as PRAM
-from setup import soundPlayerFactory, playerFactory
-from event import EventHandler
+from setup import soundPlayerFactory, playerFactory, eventHandlerFactory
 from render import Renderer
 from game import Game
 from input import InputHandler, ButtonMap
@@ -23,7 +22,7 @@ renderer = Renderer(screen)
 player = playerFactory()
 game = Game(player, musicPlayer, soundPlayer, renderer)
 inputHandler = InputHandler(game, player, ButtonMap())
-eventHandler = EventHandler(game)
+eventHandler = eventHandlerFactory(game)
 game.inputHandler = inputHandler
 
 game.gameStartup()
