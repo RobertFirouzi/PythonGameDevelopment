@@ -153,6 +153,11 @@ class EventHandler():
                 else:
                     char.adjustPosition(char.moveSpeed, 0)
         
+        #check if the camera needs to be adjusted
+        if char.actor.isFocus:
+            self.game.gameCamera.panToChar(char.getPosition())
+        
+        #Check if the target tile has an event that triggers on touch
         if target !=charTile:
             targetTile = layout[target[1]][target[0]]
             if targetTile.levelEvent != None:

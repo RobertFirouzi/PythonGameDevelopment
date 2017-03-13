@@ -17,10 +17,11 @@ class ActorsWrapper():
         self.actors = actors
 
 class ActorBase():
-    def __init__(self, size, position, direction = 'right'):
+    def __init__(self, size, position, direction = 'right', isFocus = False):
         self.size = size
         self.position = position
         self.direction = direction
+        self.isFocus = isFocus
     
     def setPosition(self, position = [0,0]):
         self.position = position

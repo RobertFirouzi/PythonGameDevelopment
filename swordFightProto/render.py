@@ -47,7 +47,7 @@ class Renderer():
     
     def renderTiles(self, layoutWrapper, lower = True, mid = True, upper = False):
         for y in range(PRAM.DISPLAY_TILE_HEIGHT):
-            for x in range(PRAM.DISPLAY_TILE_WIDTH):  #TODOcheck if cam is at border?
+            for x in range(PRAM.DISPLAY_TILE_WIDTH):
                 tile = layoutWrapper.layout[y+self.cameraTile[1]][x+self.cameraTile[0]]
                 location = UTIL.calcPixFromTile((x,y), -self.cameraOffset[0], -self.cameraOffset[1])
                 if lower:

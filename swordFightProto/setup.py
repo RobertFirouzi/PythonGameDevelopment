@@ -32,8 +32,8 @@ with an actor initialized
 '''
 def playerFactory(actor=None):
     player = PlayerCharacter(actor)
-    actor = SimpleBox()
     player.actor=SimpleBox()
+    player.actor.isFocus = True
     actionMove = ActionMove(player)
     defaultAction = ActionColorSwap(player)
     player.actionMove=actionMove.act

@@ -28,8 +28,12 @@ of scrolling
 DISPLAY_WIDTH = 1600 
 DISPLAY_HEIGHT = 900 
 TILESIZE = 48
-DISPLAY_TILE_WIDTH = DISPLAY_WIDTH // TILESIZE + 1 
-DISPLAY_TILE_HEIGHT = DISPLAY_HEIGHT // TILESIZE + 1
+DISPLAY_TILE_WIDTH = DISPLAY_WIDTH // TILESIZE + 2 #make sure to render tiles on the edge
+DISPLAY_TILE_HEIGHT = DISPLAY_HEIGHT // TILESIZE + 2
+#determine when to pan the camera with the char
+CAMERA_WIDTH = DISPLAY_WIDTH // 5 #the min number of pixels from char to edge of screen
+CAMERA_HEIGHT = DISPLAY_HEIGHT // 4
+
 
 ### INPUT TYPES###
 INPTYPE_OBSERVER = 'observe'

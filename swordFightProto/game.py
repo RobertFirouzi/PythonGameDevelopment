@@ -11,6 +11,7 @@ from event import EventLoadMenu
 from scenery import StaticSprite, SceneryWrapper
 from actors import ActorsWrapper
 import pygame
+from parameters import TILESIZE
 
 '''
 The highest level object which contains references to the game level and
@@ -77,6 +78,9 @@ class Game():
 
         self.gameScene.addActor(self.player.actor) #add the player character to the level actors list
         self.player.setPosition(eventLoadLevel.startingPosition)
+        self.gameCamera.maxPosition = [
+            (level.size[0] - PRAM.DISPLAY_TILE_WIDTH)*PRAM.TILESIZE,
+            (level.size[1] - PRAM.DISPLAY_TILE_HEIGHT)*PRAM.TILESIZE]
 
 
     def loadMenu(self, menuFile):
