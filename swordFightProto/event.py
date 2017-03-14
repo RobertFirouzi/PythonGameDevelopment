@@ -107,7 +107,14 @@ class EventHandler():
         char = event.character
         charPixel = UTIL.calcCharPix(char.actor)
         charTile = UTIL.calcTileFromPix(charPixel) #relative tile that char appears to stand on
+        charTileSize = UTIL.calcTileSizeFromPix(char.getSize())
+        
         layout = self.game.gameScene.layoutWrapper.layout
+        
+        print('charpixel: ' + str(charPixel))
+        print('charTile: ' + str(charTile))
+        print('charTileSize: ' + str(charTileSize))                
+
         
         if event.direction =='up':
             char.setDirection('up')
@@ -120,6 +127,23 @@ class EventHandler():
                 else:
                     char.adjustPosition(0,-char.moveSpeed)
             
+            #Check for tiles which have a potential graphics change
+            maxX = charTile[0] + charTileSize[0]
+            maxY = charTile[1] + charTileSize[1] +1
+                        
+            if maxY > len(layout): #stay in the index bounds
+                maxY = len(layout)
+            if maxX >= len(layout[0]):
+                maxX = len(layout[0])
+                
+            for x in range (charTile[0], maxX):
+                for y in range(target[1], maxY):
+                    print('(' + str(x)+','+str(y)+')')
+                    layout[y][x].changed = True
+            
+            print('minY: ' + str(maxY))
+            print('maxX: ' + str(maxX))
+            
         elif event.direction =='down':
             char.setDirection('down')
             target = UTIL.calcTileFromPix([charPixel[0], charPixel[1] + char.moveSpeed])
@@ -130,6 +154,27 @@ class EventHandler():
                     char.adjustPosition(0, target[1] * PRAM.TILESIZE - charPixel[1]-1) #move next to barrier
                 else:
                     char.adjustPosition(0, char.moveSpeed)
+            
+            #Check for tiles which have a potential graphics change
+            maxX = charTile[0] + charTileSize[0]
+            minY = charTile[1] - charTileSize[1]
+            maxY = target[1] + charTileSize[1]
+                        
+            if maxY > len(layout): #stay in the index bounds
+                maxY = len(layout)
+            if maxX >= len(layout[0]):
+                maxX = len(layout[0])
+            if minY < 0:
+                minY = 0
+                            
+            for x in range (charTile[0], maxX):
+                for y in range(minY, maxY):
+                    print('(' + str(x)+','+str(y)+')')
+                    layout[y][x].changed = True
+            
+            print('maxY: ' + str(maxY))
+            print('maxX: ' + str(maxX))
+            
                 
         elif event.direction =='left':
             char.setDirection('left')
@@ -166,7 +211,7 @@ class EventHandler():
 
         if len(char.moveListeners) > 0:
             self.game.addEvent(EventNotifyMove(event.character))
-
+            
 
     def runDefaultAction(self, event):
         triggered = False

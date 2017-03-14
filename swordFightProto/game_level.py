@@ -88,13 +88,14 @@ class LevelTile():
                  mid = '', 
                  upper = '', 
                  barrier = 0b0000, 
-                 levelEvent = None):
+                 levelEvent = None,
+                 changed = True):
         self.lower = lower
         self.mid = mid
         self.upper = upper
         self.barrier = barrier
         self.levelEvent = levelEvent
-
+        self.changed = changed
 
 '''
 Level events require a trigger event (whereas gameEvents run immediately)

@@ -31,34 +31,40 @@ class Renderer():
      4) render actors
      5) render upper tiles
     '''
-    def render(self, gameScene):
+    def render(self, gameScene): #TODO - remove need for the brnach on gamescene type
         if type(gameScene) is GameLevel:
             self.cameraTile = gameScene.gameCamera.getTile()
             self.cameraOffset = gameScene.gameCamera.getOffset()
             self.cameraPosition = gameScene.gameCamera.getPosition()
+            moveFlag = gameScene.gameCamera.moveFlag
     
-        self.renderScenery(gameScene.sceneryWrapper)
+#         self.renderScenery(gameScene.sceneryWrapper)
         
         if type(gameScene) is GameLevel:
-            self.renderTiles(gameScene.layoutWrapper)
+            self.renderTiles(gameScene.layoutWrapper, moveFlag)
         self.renderActors(gameScene.actorsWrapper)
         if type(gameScene) is GameLevel:
-            self.renderTiles(gameScene.layoutWrapper, False, False, True)
+            self.renderTiles(gameScene.layoutWrapper, moveFlag, False, False, True)
+        
+        if type(gameScene) is GameLevel:
+            gameScene.gameCamera.moveFlag=False
     
-    def renderTiles(self, layoutWrapper, lower = True, mid = True, upper = False):
+    def renderTiles(self, layoutWrapper, moveFlag, lower = True, mid = True, upper = False):
         for y in range(PRAM.DISPLAY_TILE_HEIGHT):
             for x in range(PRAM.DISPLAY_TILE_WIDTH):
                 tile = layoutWrapper.layout[y+self.cameraTile[1]][x+self.cameraTile[0]]
-                location = UTIL.calcPixFromTile((x,y), -self.cameraOffset[0], -self.cameraOffset[1])
-                if lower:
-                    if tile.lower != '':
-                        self.screen.blit(layoutWrapper.tileDict[tile.lower], location)
-                if mid:
-                    if tile.mid != '':
-                        self.screen.blit(layoutWrapper.tileDict[tile.mid], location)
-                if upper:
-                    if tile.upper != '':                    
-                        self.screen.blit(layoutWrapper.tileDict[tile.upper], location)
+                if moveFlag == True or tile.changed == True:
+                    location = UTIL.calcPixFromTile((x,y), -self.cameraOffset[0], -self.cameraOffset[1])
+                    if lower:
+                        if tile.lower != '':
+                            self.screen.blit(layoutWrapper.tileDict[tile.lower], location)
+                    if mid:
+                        if tile.mid != '':
+                            self.screen.blit(layoutWrapper.tileDict[tile.mid], location)
+                    if upper:
+                        if tile.upper != '':                    
+                            self.screen.blit(layoutWrapper.tileDict[tile.upper], location)
+                        tile.changed = False
                 
         
             

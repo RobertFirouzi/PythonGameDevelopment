@@ -12,6 +12,7 @@ class GameCamera():
         self.tile = tile #tile position of top left corner of camera
         self.offset = offset  #pixels that camera is offset from the boundry of the tile
         self.maxPosition = maxPosition #don't pan further than this coordinate 
+        self.moveFlag = False #set true when the camera has move, means re-render the entire screen
         
     def getPosition(self):
         return self.position
@@ -40,6 +41,8 @@ class GameCamera():
         self.setPosition([self.position[0] + xChange, self.position[1] + yChange])
         
     def panToChar(self, charPosition):
+        origin = self.position[:]
+        
         if charPosition[0] - self.position[0] < PRAM.CAMERA_WIDTH:
             xChange = charPosition[0] - self.position[0] - PRAM.CAMERA_WIDTH 
         elif charPosition[0] - self.position[0] > PRAM.DISPLAY_WIDTH - PRAM.CAMERA_WIDTH:
@@ -56,3 +59,7 @@ class GameCamera():
             
         if xChange != 0 or yChange != 0:
             self.adjustPosition(xChange, yChange)
+            
+        if origin != self.position: #if camera actually moved, set the flag so the screen re-renders
+            self.moveFlag = True
+            

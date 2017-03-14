@@ -16,3 +16,9 @@ def calcCharPix(actor):
 
 def calcPixFromTile(tilePos, xOffset = 0, yOffset = 0):
     return (tilePos[0]*PRAM.TILESIZE + xOffset,tilePos[1]*PRAM.TILESIZE + yOffset)
+
+'''
+Note this errors on the side of large (1 pixel into a tile = 1 tile)
+'''
+def calcTileSizeFromPix(actorSize):
+    return [actorSize[0]//PRAM.TILESIZE + 1, actorSize[1]//PRAM.TILESIZE + 1]
