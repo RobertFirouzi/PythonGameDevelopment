@@ -92,12 +92,14 @@ class Renderer():
     '''
     def renderActors(self, actorsWrapper):
         for actor in actorsWrapper.actors:
-            if type(actor) is SimpleBox:
-                pygame.draw.rect(self.screen, actor.color, 
-                                 pygame.Rect(actor.position[0]+PRAM.BOX_FUDGE - self.cameraPosition[0], 
-                                             actor.position[1] - self.cameraPosition[1], 
-                                             actor.size[0] - PRAM.BOX_FUDGE*2, 
-                                             actor.size[1]))
+            if actor.changed == True:
+                if type(actor) is SimpleBox:
+                    pygame.draw.rect(self.screen, actor.color, 
+                                     pygame.Rect(actor.position[0]+PRAM.BOX_FUDGE - self.cameraPosition[0], 
+                                                 actor.position[1] - self.cameraPosition[1], 
+                                                 actor.size[0] - PRAM.BOX_FUDGE*2, 
+                                                 actor.size[1]))
+                actor.changed = False
         return
     
     

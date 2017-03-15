@@ -100,114 +100,138 @@ class EventHandler():
         while len(self.game.gameEvents) > 0:
             event = self.game.gameEvents.pop()
             if event != '':
-                self.eventDict[event.eventType](event )
+                self.eventDict[event.eventType](event)
         return
     
     def runMove(self, event):
         char = event.character
-        charPixel = UTIL.calcCharPix(char.actor)
-        charTile = UTIL.calcTileFromPix(charPixel) #relative tile that char appears to stand on
-        charTileSize = UTIL.calcTileSizeFromPix(char.getSize())
+        charPixRelative = UTIL.calcCharPix(char.actor)
+        charTileRelative = UTIL.calcTileFromPix(charPixRelative) #relative tile that char appears to stand on
         
+        #for re-rendering calculations
+        charTileSize = UTIL.calcTileSizeFromPix(char.getSize()) 
+        charTileAbsolute = UTIL.calcTileFromPix(char.getPosition()) #tile the actor is in  
         layout = self.game.gameScene.layoutWrapper.layout
-        
-        print('charpixel: ' + str(charPixel))
-        print('charTile: ' + str(charTile))
-        print('charTileSize: ' + str(charTileSize))                
-
-        
+        mapSizeX = len(layout[0])
+        mapSizeY = len(layout)
+                      
         if event.direction =='up':
             char.setDirection('up')
-            target = UTIL.calcTileFromPix([charPixel[0],charPixel[1]-char.moveSpeed])
-            if target == charTile:
+            targetTile = UTIL.calcTileFromPix([charPixRelative[0],charPixRelative[1]-char.moveSpeed])
+            if targetTile == charTileRelative:
                 char.adjustPosition(0,-char.moveSpeed)
             else:
-                if layout[target[1]][target[0]].barrier & 0b0001: #barrier in the way
-                    char.adjustPosition(0, (target[1]+1) * PRAM.TILESIZE - charPixel[1]) #move next to barrier
+                if layout[targetTile[1]][targetTile[0]].barrier & 0b0001: #barrier in the way
+                    char.adjustPosition(0, (targetTile[1]+1) * PRAM.TILESIZE - charPixRelative[1]) #move next to barrier
                 else:
-                    char.adjustPosition(0,-char.moveSpeed)
-            
-            #Check for tiles which have a potential graphics change
-            maxX = charTile[0] + charTileSize[0]
-            maxY = charTile[1] + charTileSize[1] +1
-                        
-            if maxY > len(layout): #stay in the index bounds
-                maxY = len(layout)
-            if maxX >= len(layout[0]):
-                maxX = len(layout[0])
+                    char.adjustPosition(0,-char.moveSpeed)            
+
+            #Check for tiles which have a potential graphics change            
+            minXTile = charTileAbsolute[0] - 1
+            maxXTile = charTileAbsolute[0] + charTileSize[0] + 1
+            if minXTile < 0:
+                minXTile = 0
+            if maxXTile > mapSizeX:
+                maxXTile = mapSizeX
+            maxYTile = charTileAbsolute[1] + charTileSize[1] +1
+            minYTile = charTileAbsolute[1] - (targetTile[1] - charTileRelative[1])         
+            if maxYTile > mapSizeY:
+                maxYTile = mapSizeY
+            if minYTile < 0:
+                minYTile = 0
                 
-            for x in range (charTile[0], maxX):
-                for y in range(target[1], maxY):
-                    print('(' + str(x)+','+str(y)+')')
+            for x in range(minXTile, maxXTile):
+                for y in range(minYTile, maxYTile):
                     layout[y][x].changed = True
-            
-            print('minY: ' + str(maxY))
-            print('maxX: ' + str(maxX))
             
         elif event.direction =='down':
             char.setDirection('down')
-            target = UTIL.calcTileFromPix([charPixel[0], charPixel[1] + char.moveSpeed])
-            if target == charTile:
+            targetTile = UTIL.calcTileFromPix([charPixRelative[0], charPixRelative[1] + char.moveSpeed])
+            if targetTile == charTileRelative:
                 char.adjustPosition(0, char.moveSpeed)
             else:
-                if layout[target[1]][target[0]].barrier & 0b1000: #barrier in the way
-                    char.adjustPosition(0, target[1] * PRAM.TILESIZE - charPixel[1]-1) #move next to barrier
+                if layout[targetTile[1]][targetTile[0]].barrier & 0b1000: #barrier in the way
+                    char.adjustPosition(0, targetTile[1] * PRAM.TILESIZE - charPixRelative[1]-1) #move next to barrier
                 else:
                     char.adjustPosition(0, char.moveSpeed)
             
-            #Check for tiles which have a potential graphics change
-            maxX = charTile[0] + charTileSize[0]
-            minY = charTile[1] - charTileSize[1]
-            maxY = target[1] + charTileSize[1]
-                        
-            if maxY > len(layout): #stay in the index bounds
-                maxY = len(layout)
-            if maxX >= len(layout[0]):
-                maxX = len(layout[0])
-            if minY < 0:
-                minY = 0
-                            
-            for x in range (charTile[0], maxX):
-                for y in range(minY, maxY):
-                    print('(' + str(x)+','+str(y)+')')
+            #Check for tiles which have a potential graphics change            
+            minXTile = charTileAbsolute[0] - 1
+            maxXTile = charTileAbsolute[0] + charTileSize[0] + 1
+            if minXTile < 0:
+                minXTile = 0
+            if maxXTile > mapSizeX:
+                maxXTile = mapSizeX
+            minYTile = charTileAbsolute[1]
+            maxYTile = charTileAbsolute[1] + (targetTile[1] - charTileRelative[1]) + charTileSize[1] +1
+            if maxYTile > mapSizeY:
+                maxYTile = mapSizeY            
+            for x in range(minXTile, maxXTile):
+                for y in range(minYTile, maxYTile):
                     layout[y][x].changed = True
-            
-            print('maxY: ' + str(maxY))
-            print('maxX: ' + str(maxX))
-            
                 
         elif event.direction =='left':
             char.setDirection('left')
-            target = UTIL.calcTileFromPix([charPixel[0] - char.moveSpeed, charPixel[1]])
-            if target == charTile:
+            targetTile = UTIL.calcTileFromPix([charPixRelative[0] - char.moveSpeed, charPixRelative[1]])
+            if targetTile == charTileRelative:
                 char.adjustPosition(-char.moveSpeed, 0) 
             else:
-                if layout[target[1]][target[0]].barrier & 0b0010: #barrier in the way
-                    char.adjustPosition((target[0]+1) * PRAM.TILESIZE - charPixel[0], 0) #move next to barrier
+                if layout[targetTile[1]][targetTile[0]].barrier & 0b0010: #barrier in the way
+                    char.adjustPosition((targetTile[0]+1) * PRAM.TILESIZE - charPixRelative[0], 0) #move next to barrier
                 else:
                     char.adjustPosition(-char.moveSpeed, 0)
+
+            #Check for tiles which have a potential graphics change            
+            maxXTile = charTileAbsolute[0] + charTileSize[0] + 1
+            minXTile = charTileAbsolute[0] - (charTileRelative[0] - targetTile[0]) - charTileSize[0]
+            if minXTile < 0:
+                minXTile = 0
+            if maxXTile > mapSizeX:
+                maxXTile = mapSizeX                
+            minYTile = charTileAbsolute[1]
+            maxYTile = charTileAbsolute[1] + charTileSize[1] +1        
+            if maxYTile > mapSizeY:
+                maxYTile = mapSizeY
+            for x in range(minXTile, maxXTile):
+                for y in range(minYTile, maxYTile):
+                    layout[y][x].changed = True
                                                                           
         else: # 'right'
             char.setDirection('right')
-            target = UTIL.calcTileFromPix([charPixel[0] + char.moveSpeed, charPixel[1]])
-            if target == charTile:
+            targetTile = UTIL.calcTileFromPix([charPixRelative[0] + char.moveSpeed, charPixRelative[1]])
+            if targetTile == charTileRelative:
                 char.adjustPosition(char.moveSpeed, 0) 
             else:
-                if layout[target[1]][target[0]].barrier & 0b0100: #barrier in the way
-                    char.adjustPosition(target[0] * PRAM.TILESIZE - charPixel[0]-1, 0) #move next to barrier
+                if layout[targetTile[1]][targetTile[0]].barrier & 0b0100: #barrier in the way
+                    char.adjustPosition(targetTile[0] * PRAM.TILESIZE - charPixRelative[0]-1, 0) #move next to barrier
                 else:
                     char.adjustPosition(char.moveSpeed, 0)
+
+            #Check for tiles which have a potential graphics change            
+            minXTile = charTileAbsolute[0]
+            maxXTile = charTileAbsolute[0] + (targetTile[0]- charTileRelative[0]) + charTileSize[0] +1
+            if maxXTile > mapSizeX:
+                maxXTile = mapSizeX                
+            minYTile = charTileAbsolute[1]
+            maxYTile = charTileAbsolute[1] + charTileSize[1] +1        
+            if maxYTile > mapSizeY:
+                maxYTile = mapSizeY
+            for x in range(minXTile, maxXTile):
+                for y in range(minYTile, maxYTile):
+                    layout[y][x].changed = True
         
+        char.actor.changed = True #re-render the character
+                            
         #check if the camera needs to be adjusted
         if char.actor.isFocus:
             self.game.gameCamera.panToChar(char.getPosition())
         
-        #Check if the target tile has an event that triggers on touch
-        if target !=charTile:
-            targetTile = layout[target[1]][target[0]]
-            if targetTile.levelEvent != None:
-                if targetTile.levelEvent.trigger == PRAM.TRIG_TOUCH:
-                    self.game.addEvent(targetTile.levelEvent.gameEvent)
+        #Check if the targetTile tile has an event that triggers on touch
+        if targetTile !=charTileRelative:
+            targetTileTile = layout[targetTile[1]][targetTile[0]]
+            if targetTileTile.levelEvent != None:
+                if targetTileTile.levelEvent.trigger == PRAM.TRIG_TOUCH:
+                    self.game.addEvent(targetTileTile.levelEvent.gameEvent)
 
         if len(char.moveListeners) > 0:
             self.game.addEvent(EventNotifyMove(event.character))
@@ -216,41 +240,41 @@ class EventHandler():
     def runDefaultAction(self, event):
         triggered = False
         char = event.character
-        charPixel = UTIL.calcCharPix(char.actor)
-        charTile = UTIL.calcTileFromPix(charPixel) #relative tile that char appears to stand on
+        charPixRelative = UTIL.calcCharPix(char.actor)
+        charTileRelative = UTIL.calcTileFromPix(charPixRelative) #relative tile that char appears to stand on
         layout = self.game.gameScene.layoutWrapper.layout           
         
-        if layout[charTile[1]][charTile[0]].levelEvent != None: #check the space you are standing on
-            if layout[charTile[1]][charTile[0]].levelEvent.trigger == PRAM.TRIG_ACTION:
-                self.game.addEvent(layout[charTile[1]][charTile[0]].levelEvent.gameEvent)
+        if layout[charTileRelative[1]][charTileRelative[0]].levelEvent != None: #check the space you are standing on
+            if layout[charTileRelative[1]][charTileRelative[0]].levelEvent.trigger == PRAM.TRIG_ACTION:
+                self.game.addEvent(layout[charTileRelative[1]][charTileRelative[0]].levelEvent.gameEvent)
                 triggered = True
         #now check the tile next to you that you are facing
         elif char.actor.direction =='up': 
-            target = UTIL.calcTileFromPix([charPixel[0],charPixel[1]-PRAM.TILESIZE])
-            if layout[target[1]][target[0]].levelEvent != None: 
-                if layout[target[1]][target[0]].levelEvent.trigger == PRAM.TRIG_ACTION:
-                    self.game.addEvent(layout[target[1]][target[0]].levelEvent.gameEvent)
+            targetTile = UTIL.calcTileFromPix([charPixRelative[0],charPixRelative[1]-PRAM.TILESIZE])
+            if layout[targetTile[1]][targetTile[0]].levelEvent != None: 
+                if layout[targetTile[1]][targetTile[0]].levelEvent.trigger == PRAM.TRIG_ACTION:
+                    self.game.addEvent(layout[targetTile[1]][targetTile[0]].levelEvent.gameEvent)
                     triggered = True
                 
         elif char.actor.direction =='down':
-            target = UTIL.calcTileFromPix([charPixel[0], charPixel[1] + PRAM.TILESIZE])
-            if layout[target[1]][target[0]].levelEvent != None:                 
-                if layout[target[1]][target[0]].levelEvent.trigger == PRAM.TRIG_ACTION:
-                    self.game.addEvent(layout[target[1]][target[0]].levelEvent.gameEvent)
+            targetTile = UTIL.calcTileFromPix([charPixRelative[0], charPixRelative[1] + PRAM.TILESIZE])
+            if layout[targetTile[1]][targetTile[0]].levelEvent != None:                 
+                if layout[targetTile[1]][targetTile[0]].levelEvent.trigger == PRAM.TRIG_ACTION:
+                    self.game.addEvent(layout[targetTile[1]][targetTile[0]].levelEvent.gameEvent)
                     triggered = True    
                 
         elif char.actor.direction =='left':
-            target = UTIL.calcTileFromPix([charPixel[0] - PRAM.TILESIZE, charPixel[1]])
-            if layout[target[1]][target[0]].levelEvent != None:                     
-                if layout[target[1]][target[0]].levelEvent.trigger == PRAM.TRIG_ACTION:
-                    self.game.addEvent(layout[target[1]][target[0]].levelEvent.gameEvent)
+            targetTile = UTIL.calcTileFromPix([charPixRelative[0] - PRAM.TILESIZE, charPixRelative[1]])
+            if layout[targetTile[1]][targetTile[0]].levelEvent != None:                     
+                if layout[targetTile[1]][targetTile[0]].levelEvent.trigger == PRAM.TRIG_ACTION:
+                    self.game.addEvent(layout[targetTile[1]][targetTile[0]].levelEvent.gameEvent)
                     triggered = True
                                                                           
         else: # 'right'
-            target = UTIL.calcTileFromPix([charPixel[0] + PRAM.TILESIZE, charPixel[1]])
-            if layout[target[1]][target[0]].levelEvent != None: 
-                if layout[target[1]][target[0]].levelEvent.trigger == PRAM.TRIG_ACTION:
-                    self.game.addEvent(layout[target[1]][target[0]].levelEvent.gameEvent)
+            targetTile = UTIL.calcTileFromPix([charPixRelative[0] + PRAM.TILESIZE, charPixRelative[1]])
+            if layout[targetTile[1]][targetTile[0]].levelEvent != None: 
+                if layout[targetTile[1]][targetTile[0]].levelEvent.trigger == PRAM.TRIG_ACTION:
+                    self.game.addEvent(layout[targetTile[1]][targetTile[0]].levelEvent.gameEvent)
                     triggered = True           
             
         if not triggered: #no level event, so perform characters default action

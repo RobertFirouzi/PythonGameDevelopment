@@ -22,6 +22,7 @@ class ActorBase():
         self.position = position
         self.direction = direction
         self.isFocus = isFocus
+        self.changed = True #render if true, change to false after rendered
     
     def setPosition(self, position = [0,0]):
         self.position = position
