@@ -11,10 +11,8 @@ def calcTileFromPix(pixelPos):
     return (pixelPos[0]//PRAM.TILESIZE,pixelPos[1]//PRAM.TILESIZE)
 
 #The mid point of the character width and lower third of height
-def calcCharPix(actor):
-    pixel = actor.getPosition()
-    size = actor.size
-    return [pixel[0] + size[0]//2, pixel[1] + size[1]*2//3]
+def calcCharPix(actorPosition, actorSize):
+    return [actorPosition[0] + actorSize[0]//2, actorPosition[1] + actorSize[1]*2//3]
 
 #return the pixel from the tile position + offsets 
 def calcPixFromTile(tilePos, xOffset = 0, yOffset = 0):

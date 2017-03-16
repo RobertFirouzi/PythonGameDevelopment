@@ -44,6 +44,10 @@ INPTYPE_NORMAL = 'normal'
 TRIG_TOUCH = 'touch'
 TRIG_ACTION = 'action'
 
+UP = 0
+DOWN = 1
+LEFT = 2
+RIGHT = 3
 
 ### KEYS ### - pygame.<keyname>
 INPUT_ACTION = 32 #pygame space bar

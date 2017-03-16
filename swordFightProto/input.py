@@ -102,16 +102,16 @@ class InputHandler():
                         
 #TODO - should dirrectional events return an event for the queue?    
     def movementUp(self):
-        self.game.addEvent(self.player.actionMove('up'))
+        self.game.addEvent(self.player.actionMove(PRAM.UP))
         
     def movementDown(self):
-        self.game.addEvent(self.player.actionMove('down'))
+        self.game.addEvent(self.player.actionMove(PRAM.DOWN))
     
     def movementLeft(self):
-        self.game.addEvent(self.player.actionMove('left'))
+        self.game.addEvent(self.player.actionMove(PRAM.LEFT))
     
     def movementRight(self):
-        self.game.addEvent(self.player.actionMove('right'))
+        self.game.addEvent(self.player.actionMove(PRAM.RIGHT))
     
     def defaultAction(self):
         self.game.addEvent(EventDefaultAction(self.player)) #'default behavior'

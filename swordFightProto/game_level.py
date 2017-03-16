@@ -12,6 +12,10 @@ Data container class for a game level, contained within the game object
 @param gameEvents
 @param layout
 '''
+
+import utility as UTIL
+import parameters as PRAM
+
 class GameLevel():
     def __init__(self,
                  size = (10,10), 
@@ -28,7 +32,73 @@ class GameLevel():
         self.gameEvents = gameEvents #automatically load and run when level loads
         self.layoutWrapper = layoutWrapper
         self.gameCamera = gameCamera
+
     
+    '''
+        Based on an actor and target, add tiles to the render queue that should
+            be redrawn
+    '''
+    def calcRenderChanges(self, actor, origin, target, direction):
+        actorTileAbsolute = UTIL.calcTileFromPix(origin)
+        actorTileSize = UTIL.calcTileSizeFromPix(actor.size)
+        actorPixRelative = UTIL.calcCharPix(origin, actor.size)
+        actorTileRelative = UTIL.calcTileFromPix(actorPixRelative)
+
+        mapSizeX = len(self.layoutWrapper.layout[0])
+        mapSizeY = len(self.layoutWrapper.layout)
+                
+        if direction == PRAM.UP:
+            minXTile = actorTileAbsolute[0] - 1
+            maxXTile = actorTileAbsolute[0] + actorTileSize[0] + 1
+            if minXTile < 0:
+                minXTile = 0
+            if maxXTile > mapSizeX:
+                maxXTile = mapSizeX
+            maxYTile = actorTileAbsolute[1] + actorTileSize[1] +1
+            minYTile = actorTileAbsolute[1] - (target[1] - actorTileRelative[1])         
+            if maxYTile > mapSizeY:
+                maxYTile = mapSizeY
+            if minYTile < 0:
+                minYTile = 0       
+        
+        elif direction == PRAM.DOWN:
+            minXTile = actorTileAbsolute[0] - 1
+            maxXTile = actorTileAbsolute[0] + actorTileSize[0] + 1
+            if minXTile < 0:
+                minXTile = 0
+            if maxXTile > mapSizeX:
+                maxXTile = mapSizeX
+            minYTile = actorTileAbsolute[1]
+            maxYTile = actorTileAbsolute[1] + (target[1] - actorTileRelative[1]) + actorTileSize[1] +1
+            if maxYTile > mapSizeY:
+                maxYTile = mapSizeY
+               
+        elif direction == PRAM.LEFT:
+            maxXTile = actorTileAbsolute[0] + actorTileSize[0] + 1
+            minXTile = actorTileAbsolute[0] - (actorTileRelative[0] - target[0]) - actorTileSize[0]
+            if minXTile < 0:
+                minXTile = 0
+            if maxXTile > mapSizeX:
+                maxXTile = mapSizeX                
+            minYTile = actorTileAbsolute[1]
+            maxYTile = actorTileAbsolute[1] + actorTileSize[1] +1        
+            if maxYTile > mapSizeY:
+                maxYTile = mapSizeY
+                
+        else: #right
+            minXTile = actorTileAbsolute[0]
+            maxXTile = actorTileAbsolute[0] + (target[0]- actorTileRelative[0]) + actorTileSize[0] +1
+            if maxXTile > mapSizeX:
+                maxXTile = mapSizeX                
+            minYTile = actorTileAbsolute[1]
+            maxYTile = actorTileAbsolute[1] + actorTileSize[1] +1        
+            if maxYTile > mapSizeY:
+                maxYTile = mapSizeY
+        
+        for x in range(minXTile, maxXTile):
+            for y in range(minYTile, maxYTile):
+                self.layoutWrapper.layout[y][x].changed = True 
+                    
     def addActor(self, actor):
         self.actorsWrapper.actors.append(actor)
                 

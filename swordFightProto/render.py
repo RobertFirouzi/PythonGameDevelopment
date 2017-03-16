@@ -37,37 +37,30 @@ class Renderer():
             self.cameraOffset = gameScene.gameCamera.getOffset()
             self.cameraPosition = gameScene.gameCamera.getPosition()
             moveFlag = gameScene.gameCamera.moveFlag
-    
-#         self.renderScenery(gameScene.sceneryWrapper)
-        
-        if type(gameScene) is GameLevel:
-            self.renderTiles(gameScene.layoutWrapper, moveFlag)
-        self.renderActors(gameScene.actorsWrapper)
-        if type(gameScene) is GameLevel:
-            self.renderTiles(gameScene.layoutWrapper, moveFlag, False, False, True)
-        
-        if type(gameScene) is GameLevel:
-            gameScene.gameCamera.moveFlag=False
-    
-    def renderTiles(self, layoutWrapper, moveFlag, lower = True, mid = True, upper = False):
+#         self.renderScenery(gameScene.sceneryWrapper) # this will probably go away
+            self.renderTiles(gameScene.layoutWrapper, moveFlag)  
+            self.renderActors(gameScene.actorsWrapper)
+            self.renderTiles(gameScene.layoutWrapper, moveFlag, False)
+            gameScene.gameCamera.moveFlag = False       
+        else:
+            pass #work on menu rendering    
+            
+    def renderTiles(self, layoutWrapper, moveFlag, lower = True):
         for y in range(PRAM.DISPLAY_TILE_HEIGHT):
             for x in range(PRAM.DISPLAY_TILE_WIDTH):
                 tile = layoutWrapper.layout[y+self.cameraTile[1]][x+self.cameraTile[0]]
-                if moveFlag == True or tile.changed == True:
+                if moveFlag or tile.changed:
                     location = UTIL.calcPixFromTile((x,y), -self.cameraOffset[0], -self.cameraOffset[1])
                     if lower:
                         if tile.lower != '':
                             self.screen.blit(layoutWrapper.tileDict[tile.lower], location)
-                    if mid:
                         if tile.mid != '':
                             self.screen.blit(layoutWrapper.tileDict[tile.mid], location)
-                    if upper:
+                    else:
                         if tile.upper != '':                    
                             self.screen.blit(layoutWrapper.tileDict[tile.upper], location)
                         tile.changed = False
-                
-        
-            
+               
     '''
     Render all scenery
     @param sceneryWrapper

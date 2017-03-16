@@ -45,6 +45,7 @@ class ActionColorSwap(ActionBase):
     
     def act(self, params=()):
         self.character.actor.colorSwap()
+        self.character.actor.changed = True #re-render
         return EventSound(PRAM.SOUND_COLORSWAP)      
         
         
