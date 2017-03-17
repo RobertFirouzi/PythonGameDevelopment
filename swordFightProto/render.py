@@ -19,7 +19,7 @@ class Renderer():
     def __init__(self, screen):
         self.screen = screen
         
-        #explicit delceration of class fields
+        #explicit declaration of class fields
         self.cameraTile= (0,0)
         self.cameraOffset = (0,0)
         self.cameraPosition = (0,0)
@@ -38,28 +38,53 @@ class Renderer():
             self.cameraPosition = gameScene.gameCamera.getPosition()
             moveFlag = gameScene.gameCamera.moveFlag
 #         self.renderScenery(gameScene.sceneryWrapper) # this will probably go away
-            self.renderTiles(gameScene.layoutWrapper, moveFlag)  
-            self.renderActors(gameScene.actorsWrapper)
-            self.renderTiles(gameScene.layoutWrapper, moveFlag, False)
+            if moveFlag == True:
+                self.renderTiles(gameScene.layoutWrapper, moveFlag)  
+                self.renderActors(gameScene.actorsWrapper)
+                self.renderTiles(gameScene.layoutWrapper, moveFlag, False)
+                
+            else:
+                self.renderChangedTiles(gameScene.renderQueue, gameScene.layoutWrapper)
+                self.renderActors(gameScene.actorsWrapper)                
+                self.renderChangedTiles(gameScene.renderQueue, gameScene.layoutWrapper, False)
+            gameScene.renderQueue.clear()
             gameScene.gameCamera.moveFlag = False       
         else:
             pass #work on menu rendering    
-            
+    
+    def renderChangedTiles(self, renderQueue, layoutWrapper, lower = True):
+        for tile in renderQueue:
+            location = UTIL.calcPixFromTile((tile[1][0] - self.cameraTile[0], 
+                                             tile[1][1] - self.cameraTile[1]), 
+                                            -self.cameraOffset[0], 
+                                            -self.cameraOffset[1])
+            if lower:
+                if tile[0].changed == False: #prevents rendering tiles twice if in queue twice
+                    if tile[0].lower != '':
+                        self.screen.blit(layoutWrapper.tileDict[tile[0].lower], location)
+                    if tile[0].mid != '':
+                        self.screen.blit(layoutWrapper.tileDict[tile[0].mid], location)
+                tile[0].changed = True
+            else:
+                if tile[0].changed == True: #prevents rendering tiles twice if in queue twice                
+                    if tile[0].upper != '':                    
+                        self.screen.blit(layoutWrapper.tileDict[tile[0].upper], location)
+                tile[0].changed = False
+                  
+                   
     def renderTiles(self, layoutWrapper, moveFlag, lower = True):
         for y in range(PRAM.DISPLAY_TILE_HEIGHT):
             for x in range(PRAM.DISPLAY_TILE_WIDTH):
                 tile = layoutWrapper.layout[y+self.cameraTile[1]][x+self.cameraTile[0]]
-                if moveFlag or tile.changed:
-                    location = UTIL.calcPixFromTile((x,y), -self.cameraOffset[0], -self.cameraOffset[1])
-                    if lower:
-                        if tile.lower != '':
-                            self.screen.blit(layoutWrapper.tileDict[tile.lower], location)
-                        if tile.mid != '':
-                            self.screen.blit(layoutWrapper.tileDict[tile.mid], location)
-                    else:
-                        if tile.upper != '':                    
-                            self.screen.blit(layoutWrapper.tileDict[tile.upper], location)
-                        tile.changed = False
+                location = UTIL.calcPixFromTile((x,y), -self.cameraOffset[0], -self.cameraOffset[1])
+                if lower:
+                    if tile.lower != '':
+                        self.screen.blit(layoutWrapper.tileDict[tile.lower], location)
+                    if tile.mid != '':
+                        self.screen.blit(layoutWrapper.tileDict[tile.mid], location)
+                else:
+                    if tile.upper != '':                    
+                        self.screen.blit(layoutWrapper.tileDict[tile.upper], location)
                
     '''
     Render all scenery

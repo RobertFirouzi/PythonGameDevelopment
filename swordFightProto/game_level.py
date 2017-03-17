@@ -32,6 +32,8 @@ class GameLevel():
         self.gameEvents = gameEvents #automatically load and run when level loads
         self.layoutWrapper = layoutWrapper
         self.gameCamera = gameCamera
+        
+        self.renderQueue = []
 
     
     '''
@@ -97,8 +99,8 @@ class GameLevel():
         
         for x in range(minXTile, maxXTile):
             for y in range(minYTile, maxYTile):
-                self.layoutWrapper.layout[y][x].changed = True 
-                    
+                self.renderQueue.append((self.layoutWrapper.layout[y][x],(x,y)))
+                                    
     def addActor(self, actor):
         self.actorsWrapper.actors.append(actor)
                 
@@ -159,7 +161,7 @@ class LevelTile():
                  upper = '', 
                  barrier = 0b0000, 
                  levelEvent = None,
-                 changed = True):
+                 changed = False):
         self.lower = lower
         self.mid = mid
         self.upper = upper

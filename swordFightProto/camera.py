@@ -12,7 +12,8 @@ class GameCamera():
         self.tile = tile #tile position of top left corner of camera
         self.offset = offset  #pixels that camera is offset from the boundry of the tile
         self.maxPosition = maxPosition #don't pan further than this coordinate 
-        self.moveFlag = False #set true when the camera has move, means re-render the entire screen
+        
+        self.moveFlag = True #set true when the camera has move, means re-render the entire screen
         
     def getPosition(self):
         return self.position
