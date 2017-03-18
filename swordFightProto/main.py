@@ -33,7 +33,7 @@ while not DONE:
                 DONE = True #TODO make this an input that creates a quit event?
             if event.type == pygame.KEYDOWN: # @UndefinedVariable 
                 game.keydownEvents.append(event)
-            
+            #TODO can tell pygame to only check fro specific events
         game.keysPressed = pygame.key.get_pressed()
         
         inputHandler.handleInputs() #iterates through the keydown and keypressed events
@@ -42,12 +42,12 @@ while not DONE:
         game.render()
         
         #debug helper, draw the tile gridlines
-#         for i in range(35):
-#             pygame.draw.line(screen, PRAM.COLOR_BLACK,(0, 48*i), (1600, 48*i))
-#             pygame.draw.line(screen, PRAM.COLOR_BLACK,(48*i, 0), (48*i, 900))
-        
+        for i in range(35):
+            pygame.draw.line(screen, PRAM.COLOR_BLACK,(0, 48*i), (1600, 48*i))
+            pygame.draw.line(screen, PRAM.COLOR_BLACK,(48*i, 0), (48*i, 900))
+         
         pygame.display.flip()
-        CLOCK.tick(55) #60 FPS
+        CLOCK.tick(55) #55 FPS
 
 #this will only run if the module is run as the main module, not if imported.
 if __name__ == '__main__':

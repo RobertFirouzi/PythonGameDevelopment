@@ -77,6 +77,7 @@ IMAGE_LIBRARY = ['ball.png'] #may not be needed
 ### IMAGE MAP ###
 IMG_BALL = 'ball.png'
 IMG_TEST = 'testsprite.png'
+BACKGROUND_TEST = 'background.jpg' 
 
 ### SOUNDTRACK ###
 MUSIC_PLAYLIST = [

@@ -5,7 +5,7 @@ Created on Feb 25, 2017
 '''
 
 from actors import SimpleBox
-from scenery import StaticSprite, SolidBackground
+from scenery import StaticSprite, SolidBackground, SceneryWrapper
 import utility as UTIL
 import pygame
 from game_level import GameLevel
@@ -39,20 +39,20 @@ class Renderer():
             moveFlag = gameScene.gameCamera.moveFlag
 #         self.renderScenery(gameScene.sceneryWrapper) # this will probably go away
             if moveFlag == True:
-                self.renderTiles(gameScene.layoutWrapper, moveFlag)  
+                self.renderTiles(gameScene.layoutWrapper, gameScene.sceneryWrapper)  
                 self.renderActors(gameScene.actorsWrapper)
-                self.renderTiles(gameScene.layoutWrapper, moveFlag, False)
+                self.renderTiles(gameScene.layoutWrapper, [], False)
                 
             else:
-                self.renderChangedTiles(gameScene.renderQueue, gameScene.layoutWrapper)
+                self.renderChangedTiles(gameScene.renderQueue, gameScene.layoutWrapper, gameScene.sceneryWrapper)
                 self.renderActors(gameScene.actorsWrapper)                
-                self.renderChangedTiles(gameScene.renderQueue, gameScene.layoutWrapper, False)
+                self.renderChangedTiles(gameScene.renderQueue, gameScene.layoutWrapper, gameScene.sceneryWrapper, False)
             gameScene.renderQueue.clear()
             gameScene.gameCamera.moveFlag = False       
         else:
             pass #work on menu rendering    
     
-    def renderChangedTiles(self, renderQueue, layoutWrapper, lower = True):
+    def renderChangedTiles(self, renderQueue, layoutWrapper, sceneryWrapper = [], lower = True):
         for tile in renderQueue:
             location = UTIL.calcPixFromTile((tile[1][0] - self.cameraTile[0], 
                                              tile[1][1] - self.cameraTile[1]), 
@@ -60,6 +60,13 @@ class Renderer():
                                             -self.cameraOffset[1])
             if lower:
                 if tile[0].changed == False: #prevents rendering tiles twice if in queue twice
+                    if tile[0].background == True:
+                        backgroundCrop = UTIL.calcPixFromTile(sceneryWrapper.background.calcTile(
+                            (tile[1][0],
+                             tile[1][1])))
+                        self.screen.blit(sceneryWrapper.imageDict[sceneryWrapper.background.image], 
+                                         location,
+                                         (backgroundCrop[0], backgroundCrop[1], PRAM.TILESIZE,PRAM.TILESIZE))
                     if tile[0].lower != '':
                         self.screen.blit(layoutWrapper.tileDict[tile[0].lower], location)
                     if tile[0].mid != '':
@@ -72,12 +79,18 @@ class Renderer():
                 tile[0].changed = False
                   
                    
-    def renderTiles(self, layoutWrapper, moveFlag, lower = True):
+    def renderTiles(self, layoutWrapper, sceneryWrapper= [], lower = True):
         for y in range(PRAM.DISPLAY_TILE_HEIGHT):
             for x in range(PRAM.DISPLAY_TILE_WIDTH):
                 tile = layoutWrapper.layout[y+self.cameraTile[1]][x+self.cameraTile[0]]
                 location = UTIL.calcPixFromTile((x,y), -self.cameraOffset[0], -self.cameraOffset[1])
                 if lower:
+                    if tile.background == True:
+                        backgroundLocation = sceneryWrapper.background.calcBackgroundLocation(location, (x,y))
+                        backgroundCrop = sceneryWrapper.background.calcBackgroundCrop((x,y), self.cameraTile, self.cameraOffset)
+                        self.screen.blit(sceneryWrapper.imageDict[sceneryWrapper.background.image],
+                                         backgroundLocation, 
+                                        (backgroundCrop[0], backgroundCrop[1], PRAM.TILESIZE, PRAM.TILESIZE))
                     if tile.lower != '':
                         self.screen.blit(layoutWrapper.tileDict[tile.lower], location)
                     if tile.mid != '':

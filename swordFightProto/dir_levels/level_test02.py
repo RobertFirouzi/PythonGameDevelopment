@@ -8,7 +8,7 @@ Created on Mar 4, 2017
 #create objects that would be better!
 
 import parameters as PRAM
-from scenery import SolidBackground, StaticSprite
+from scenery import SolidBackground, StaticSprite, BackgroundImage
 from actors import SimpleBox
 from event import EventSong, EventSound, EventSetInput, EventLoadLevel
 from game_level import LevelTile, LevelEvent
@@ -16,15 +16,11 @@ from game_level import LevelTile, LevelEvent
 size = (100,100)
 
 #The NPC/PC's for the board.  Current convention is for actor[0] to be player char
-actors = [SimpleBox(PRAM.COLOR_ORANGE, [48,48],[192,0])]
+actors = []
 
 #Background, sprites etc
-scenery = [
-    SolidBackground(PRAM.COLOR_BLACK),
-    SimpleBox(PRAM.COLOR_WHITE, [480,480],[0,0]),
-#     StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (240,192)),
-#     StaticSprite(PRAM.IMAGE_PATH, PRAM.IMG_BALL, (240,240))
-    ]
+scenery = []
+background = BackgroundImage(PRAM.IMAGE_PATH, PRAM.BACKGROUND_TEST, (1800,1100), size, True, True)
 
 #events triggered within the level
 levelEvents = [

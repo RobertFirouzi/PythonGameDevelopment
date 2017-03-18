@@ -61,12 +61,41 @@ class Game():
         self.gameScene = GameLevel(
             level.size,
             self.loadActors(level.actors), #returns an actorsWrapper object
-            self.loadImages(level.scenery), #returns a sceneryWrapper object
+            self.loadImages(level.scenery, level.background), #returns a sceneryWrapper object
             level.levelEvents,
             level.gameEvents,
             self.loadLayout(level.tileDict, level.layout, level.size), #returns a layoutWrapper object
             self.gameCamera) 
         
+        layoutHack = self.gameScene.layoutWrapper.layout
+        for x in range(0,100):
+            for y in range(0,5):
+                layoutHack[y][x].lower = ''
+#                 layoutHack[y][x].mid = ''
+#                 layoutHack[y][x].upper = ''            
+                layoutHack[y][x].background = True
+        
+        for y in range(0,100):
+            for x in range(0,3):
+                layoutHack[y][x].lower = ''
+#                 layoutHack[y][x].mid = ''
+#                 layoutHack[y][x].upper = ''            
+                layoutHack[y][x].background = True                
+
+        for y in range(0,100):
+            for x in range(97,100):
+                layoutHack[y][x].lower = ''
+#                 layoutHack[y][x].mid = ''
+#                 layoutHack[y][x].upper = ''            
+                layoutHack[y][x].background = True  
+
+        for x in range(0,100):
+            for y in range(97,100):
+                layoutHack[y][x].lower = ''
+#                 layoutHack[y][x].mid = ''
+#                 layoutHack[y][x].upper = ''            
+                layoutHack[y][x].background = True  
+                    
         for event in self.gameScene.gameEvents: #add to eventQueue, e.g. song to play
             self.addEvent(event)
         
@@ -91,7 +120,7 @@ class Game():
         
         self.gameScene = GameMenu(
             self.loadActors(menu.actors), #returns an actorWrapper object
-            self.loadImages(menu.scenery), #returns a sceneryWrapper object
+            [],#self.loadImages(menu.scenery, False), #returns a sceneryWrapper object
             [], #levelEvents
             menu.gameEvents,
             menu.layout)
@@ -120,14 +149,17 @@ class Game():
     Creates a dictionary with the reference being an image name, and the item being a
         loaded image file.  Each unique image only needs to be loaded once
     '''
-    def loadImages(self, scenery):
+    def loadImages(self, scenery, background):
         imageDict = {}
         for sprite in scenery:
             if type(sprite) is StaticSprite:
                 if imageDict.get(sprite.image) == None:
                     imageDict[sprite.image] = pygame.image.load(sprite.path+sprite.image).convert()
+        
+        if background != False:
+            imageDict[background.image] = pygame.image.load(background.path+background.image).convert()
                     
-        return SceneryWrapper(imageDict, scenery)
+        return SceneryWrapper(imageDict, scenery, background)
 
     def loadLayout(self, tileDict, layout, size):
         layoutDict = {}
