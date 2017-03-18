@@ -50,6 +50,8 @@ class BackgroundImage():
         else:
             self.scrollFactorY = 1
         if  self.scrollFactorY == 0:  self.scrollFactorY = 1
+        
+        print(self.scrollFactorX)
                 
     #based on the camera position and screen tile to render, find the background tile to render    
     def calcTile(self, tileOffset):       
@@ -80,7 +82,20 @@ class BackgroundImage():
             y = location[1]
         
         return((x,y))
-            
+
+#TODO - we need to actually shift the tile we re-render if we scroll      
+    def backgroundAdjust(self, tile):
+        if self.scrollX:
+            x = tile[0]
+        else: 
+            x = tile[0] #don't adjust if we don't have scrolling
+
+        if self.scrollY:
+            y = tile[1]
+        else:
+            y = tile[1]      
+        return ((x,y))
+    
     
 '''
 Wrapper class for an image file. Contains the path and image name, and location

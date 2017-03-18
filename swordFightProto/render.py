@@ -60,13 +60,19 @@ class Renderer():
                                             -self.cameraOffset[1])
             if lower:
                 if tile[0].changed == False: #prevents rendering tiles twice if in queue twice
-                    if tile[0].background == True:
-                        backgroundCrop = UTIL.calcPixFromTile(sceneryWrapper.background.calcTile(
-                            (tile[1][0],
-                             tile[1][1])))
-                        self.screen.blit(sceneryWrapper.imageDict[sceneryWrapper.background.image], 
-                                         location,
-                                         (backgroundCrop[0], backgroundCrop[1], PRAM.TILESIZE,PRAM.TILESIZE))
+                    if tile[0].background == True: #issue - scroll factor!
+                        brTile = sceneryWrapper.background.backgroundAdjust(tile[1])
+                        backgroundLocation = sceneryWrapper.background.calcBackgroundLocation(location, 
+                                                                                              (brTile[0] - self.cameraTile[0],
+                                                                                               brTile[1] - self.cameraTile[1]))
+                        
+                        backgroundCrop = sceneryWrapper.background.calcBackgroundCrop((brTile[0] - self.cameraTile[0],
+                                                                                       brTile[1] - self.cameraTile[1]), 
+                                                                                      self.cameraTile, 
+                                                                                      self.cameraOffset)
+                        self.screen.blit(sceneryWrapper.imageDict[sceneryWrapper.background.image],
+                                         backgroundLocation, 
+                                        (backgroundCrop[0], backgroundCrop[1], PRAM.TILESIZE, PRAM.TILESIZE))
                     if tile[0].lower != '':
                         self.screen.blit(layoutWrapper.tileDict[tile[0].lower], location)
                     if tile[0].mid != '':
