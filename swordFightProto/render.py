@@ -58,21 +58,23 @@ class Renderer():
     def renderChangedBackground(self, backgroundQueue, sceneryWrapper = []):
         for tile in backgroundQueue:
             if tile[0].background == True:
-                location = UTIL.calcPixFromTile((tile[1][0] - self.cameraTile[0], 
-                                                 tile[1][1] - self.cameraTile[1]), 
-                                                -self.cameraOffset[0], 
-                                                -self.cameraOffset[1])
-                backgroundLocation = sceneryWrapper.background.calcBackgroundLocation(location, 
-                                                                                      (tile[1][0] - self.cameraTile[0],
-                                                                                       tile[1][1] - self.cameraTile[1]))
-                
-                backgroundCrop = sceneryWrapper.background.calcBackgroundCrop((tile[1][0] - self.cameraTile[0],
-                                                                               tile[1][1] - self.cameraTile[1]), 
-                                                                              self.cameraTile, 
-                                                                              self.cameraOffset)
-                self.screen.blit(sceneryWrapper.imageDict[sceneryWrapper.background.image],
-                                 backgroundLocation, 
-                                (backgroundCrop[0], backgroundCrop[1], PRAM.TILESIZE, PRAM.TILESIZE))
+                for br in sceneryWrapper.background:
+                    location = UTIL.calcPixFromTile((tile[1][0] - self.cameraTile[0], 
+                                                     tile[1][1] - self.cameraTile[1]), 
+                                                    -self.cameraOffset[0], 
+                                                    -self.cameraOffset[1])
+                    backgroundLocation = br.calcBackgroundLocation(location, 
+                                                                   (tile[1][0] - self.cameraTile[0],
+                                                                    tile[1][1] - self.cameraTile[1]))
+                    
+                    backgroundCrop = br.calcBackgroundCrop((tile[1][0] - self.cameraTile[0],
+                                                            tile[1][1] - self.cameraTile[1]), 
+                                                            self.cameraTile, 
+                                                            self.cameraOffset)
+                    
+                    self.screen.blit(sceneryWrapper.imageDict[br.image],
+                                     backgroundLocation, 
+                                    (backgroundCrop[0], backgroundCrop[1], PRAM.TILESIZE, PRAM.TILESIZE))
    
     def renderChangedTiles(self, renderQueue, layoutWrapper, lower = True):
         for tile in renderQueue:
@@ -101,11 +103,12 @@ class Renderer():
                 location = UTIL.calcPixFromTile((x,y), -self.cameraOffset[0], -self.cameraOffset[1])
                 if lower:
                     if tile.background == True:
-                        backgroundLocation = sceneryWrapper.background.calcBackgroundLocation(location, (x,y))
-                        backgroundCrop = sceneryWrapper.background.calcBackgroundCrop((x,y), self.cameraTile, self.cameraOffset)
-                        self.screen.blit(sceneryWrapper.imageDict[sceneryWrapper.background.image],
-                                         backgroundLocation, 
-                                        (backgroundCrop[0], backgroundCrop[1], PRAM.TILESIZE, PRAM.TILESIZE))
+                        for br in sceneryWrapper.background:
+                            backgroundLocation = br.calcBackgroundLocation(location, (x,y))
+                            backgroundCrop = br.calcBackgroundCrop((x,y), self.cameraTile, self.cameraOffset)
+                            self.screen.blit(sceneryWrapper.imageDict[br.image],
+                                             backgroundLocation, 
+                                            (backgroundCrop[0], backgroundCrop[1], PRAM.TILESIZE, PRAM.TILESIZE))
                     if tile.lower != '':
                         self.screen.blit(layoutWrapper.tileDict[tile.lower], location)
                     if tile.mid != '':

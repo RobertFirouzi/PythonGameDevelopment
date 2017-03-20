@@ -20,7 +20,8 @@ actors = []
 
 #Background, sprites etc
 scenery = []
-background = BackgroundImage(PRAM.IMAGE_PATH, PRAM.BACKGROUND_TEST, (1800,1100), size, True, True)
+background = [BackgroundImage(PRAM.IMAGE_PATH, PRAM.BACKGROUND_TEST, (1800,250), size, True, False),
+			  BackgroundImage(PRAM.IMAGE_PATH, 'skyline.png', (3000,192), size, True, False)]
 
 #events triggered within the level
 levelEvents = [

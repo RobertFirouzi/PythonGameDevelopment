@@ -72,9 +72,7 @@ class GameLevel():
             minXTile = actorTileAbsolute[0]
             maxXTile = actorTileAbsolute[0] + (target[0]- actorTileRelative[0]) + actorTileSize[0] +1              
             minYTile = actorTileAbsolute[1]
-            maxYTile = actorTileAbsolute[1] + actorTileSize[1] +1        
-        
-        
+            maxYTile = actorTileAbsolute[1] + actorTileSize[1] +1               
         
         #add a - 2 fudge factor to accomodate scrolling BR
         minXTile -= 2

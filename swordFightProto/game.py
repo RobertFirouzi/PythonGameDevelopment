@@ -69,28 +69,28 @@ class Game():
         
         layoutHack = self.gameScene.layoutWrapper.layout
         for x in range(0,150):
-            for y in range(0,10):
+            for y in range(0,5):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True
         
         for y in range(0,150):
-            for x in range(0,10):
+            for x in range(0,5):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True                
 
         for y in range(0,150):
-            for x in range(140,150):
+            for x in range(145,150):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True  
 
         for x in range(0,150):
-            for y in range(140,150):
+            for y in range(145,150):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
@@ -107,7 +107,7 @@ class Game():
 
         self.gameScene.addActor(self.player.actor) #add the player character to the level actors list
         self.player.setPosition(eventLoadLevel.startingPosition)
-        self.gameCamera.maxPosition = [
+        self.gameCamera.maxPosition = [  #TODO - may need to modify this to create a bounding box
             (level.size[0] - PRAM.DISPLAY_TILE_WIDTH)*PRAM.TILESIZE,
             (level.size[1] - PRAM.DISPLAY_TILE_HEIGHT)*PRAM.TILESIZE]
 
@@ -156,8 +156,11 @@ class Game():
                 if imageDict.get(sprite.image) == None:
                     imageDict[sprite.image] = pygame.image.load(sprite.path+sprite.image).convert()
         
-        if background != False:
-            imageDict[background.image] = pygame.image.load(background.path+background.image).convert()
+#         if background != False:
+#             imageDict[background.image] = pygame.image.load(background.path+background.image).convert()
+
+        for pic in background:
+            imageDict[pic.image] = pygame.image.load(pic.path+pic.image).convert()    
                     
         return SceneryWrapper(imageDict, scenery, background)
 
