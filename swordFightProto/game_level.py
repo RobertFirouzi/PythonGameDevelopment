@@ -34,6 +34,7 @@ class GameLevel():
         self.gameCamera = gameCamera
         
         self.renderQueue = []
+        self.backgroundQueue = []
 
     
     '''
@@ -52,55 +53,64 @@ class GameLevel():
         if direction == PRAM.UP:
             minXTile = actorTileAbsolute[0] - 1
             maxXTile = actorTileAbsolute[0] + actorTileSize[0] + 1
-            if minXTile < 0:
-                minXTile = 0
-            if maxXTile > mapSizeX:
-                maxXTile = mapSizeX
             maxYTile = actorTileAbsolute[1] + actorTileSize[1] +1
-            minYTile = actorTileAbsolute[1] - (target[1] - actorTileRelative[1])         
-            if maxYTile > mapSizeY:
-                maxYTile = mapSizeY
-            if minYTile < 0:
-                minYTile = 0       
+            minYTile = actorTileAbsolute[1] - (target[1] - actorTileRelative[1])             
         
         elif direction == PRAM.DOWN:
             minXTile = actorTileAbsolute[0] - 1
             maxXTile = actorTileAbsolute[0] + actorTileSize[0] + 1
-            if minXTile < 0:
-                minXTile = 0
-            if maxXTile > mapSizeX:
-                maxXTile = mapSizeX
             minYTile = actorTileAbsolute[1]
             maxYTile = actorTileAbsolute[1] + (target[1] - actorTileRelative[1]) + actorTileSize[1] +1
-            if maxYTile > mapSizeY:
-                maxYTile = mapSizeY
                
         elif direction == PRAM.LEFT:
             maxXTile = actorTileAbsolute[0] + actorTileSize[0] + 1
-            minXTile = actorTileAbsolute[0] - (actorTileRelative[0] - target[0]) - actorTileSize[0]
-            if minXTile < 0:
-                minXTile = 0
-            if maxXTile > mapSizeX:
-                maxXTile = mapSizeX                
+            minXTile = actorTileAbsolute[0] - (actorTileRelative[0] - target[0]) - actorTileSize[0]            
             minYTile = actorTileAbsolute[1]
             maxYTile = actorTileAbsolute[1] + actorTileSize[1] +1        
-            if maxYTile > mapSizeY:
-                maxYTile = mapSizeY
                 
         else: #right
             minXTile = actorTileAbsolute[0]
-            maxXTile = actorTileAbsolute[0] + (target[0]- actorTileRelative[0]) + actorTileSize[0] +1
-            if maxXTile > mapSizeX:
-                maxXTile = mapSizeX                
+            maxXTile = actorTileAbsolute[0] + (target[0]- actorTileRelative[0]) + actorTileSize[0] +1              
             minYTile = actorTileAbsolute[1]
             maxYTile = actorTileAbsolute[1] + actorTileSize[1] +1        
-            if maxYTile > mapSizeY:
-                maxYTile = mapSizeY
+        
+        
+        
+        #add a - 2 fudge factor to accomodate scrolling BR
+        minXTile -= 2
+        minYTile -= 2
+                
+        if minXTile < 0:
+            minXTile = 0
+        if maxXTile > mapSizeX:
+            maxXTile = mapSizeX        
+        if minYTile < 0:
+            minYTile = 0   
+        if maxYTile > mapSizeY:
+            maxYTile = mapSizeY
+        
+        for x in range(minXTile, maxXTile):
+            for y in range(minYTile, maxYTile):
+                self.backgroundQueue.append((self.layoutWrapper.layout[y][x],(x,y)))
+
+        maxXTile +=2
+        maxYTile +=2
+        minXTile -= 2
+        minYTile -= 2
+        
+        if minXTile < 0:
+            minXTile = 0
+        if maxXTile > mapSizeX:
+            maxXTile = mapSizeX        
+        if minYTile < 0:
+            minYTile = 0   
+        if maxYTile > mapSizeY:
+            maxYTile = mapSizeY
         
         for x in range(minXTile, maxXTile):
             for y in range(minYTile, maxYTile):
                 self.renderQueue.append((self.layoutWrapper.layout[y][x],(x,y)))
-                                    
+                                                    
     def addActor(self, actor):
         self.actorsWrapper.actors.append(actor)
                 

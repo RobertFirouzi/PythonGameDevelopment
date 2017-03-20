@@ -68,29 +68,29 @@ class Game():
             self.gameCamera) 
         
         layoutHack = self.gameScene.layoutWrapper.layout
-        for x in range(0,100):
-            for y in range(0,5):
+        for x in range(0,150):
+            for y in range(0,10):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True
         
-        for y in range(0,100):
-            for x in range(0,3):
+        for y in range(0,150):
+            for x in range(0,10):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True                
 
-        for y in range(0,100):
-            for x in range(97,100):
+        for y in range(0,150):
+            for x in range(140,150):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True  
 
-        for x in range(0,100):
-            for y in range(97,100):
+        for x in range(0,150):
+            for y in range(140,150):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            

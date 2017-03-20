@@ -36,8 +36,8 @@ def writeRow(file, tile, count, tree = False, trunk = False):
 
 print('level generator start')
 
-levelName = 'level_test_xx.py'
-levelSize = (100,100)
+levelName = 'level_test_lg.py'
+levelSize = (150,150)
 
 
 
