@@ -69,32 +69,32 @@ class Game():
         
         layoutHack = self.gameScene.layoutWrapper.layout
         for x in range(0,150):
-            for y in range(0,7):
+            for y in range(0,15):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True
         
         for y in range(0,150):
-            for x in range(0,0):
+            for x in range(0,15):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True                
 
         for y in range(0,150):
-            for x in range(150,150):
+            for x in range(135,150):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True  
 
         for x in range(0,150):
-            for y in range(150,150):
-                layoutHack[y][x].lower = ''
+            for y in range(135,150):
+#                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
-                layoutHack[y][x].background = True  
+                layoutHack[y][x].foreground = True  
                     
         for event in self.gameScene.gameEvents: #add to eventQueue, e.g. song to play
             self.addEvent(event)

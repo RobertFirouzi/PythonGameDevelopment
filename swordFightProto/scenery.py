@@ -34,7 +34,7 @@ class BackgroundImage():
     def __init__(self, path, image, size, levelSize = (0,0), scrollX = False, scrollY = False, alpha = False):
         self.path = path
         self.image = image
-#         self.size = size
+        self.size = size
         self.scrollX = scrollX
         self.scrollY = scrollY
         self.alpha = alpha

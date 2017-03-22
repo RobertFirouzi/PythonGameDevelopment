@@ -170,6 +170,7 @@ class LevelTile():
                  barrier = 0b0000, 
                  levelEvent = None,
                  background = False,
+                 foreground = False,
                  changed = False):
         self.lower = lower
         self.mid = mid
@@ -177,6 +178,7 @@ class LevelTile():
         self.barrier = barrier
         self.levelEvent = levelEvent
         self.background = background
+        self.foreground = foreground 
         self.changed = changed
 
 '''
