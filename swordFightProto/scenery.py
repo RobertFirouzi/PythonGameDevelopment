@@ -29,32 +29,40 @@ class SolidBackground():
         self.color=color
         return True 
 
-
+#TODO check for divide by 0 errors
 class BackgroundImage():
-    def __init__(self, path, image, size, levelSize = (0,0), scrollX = False, scrollY = False):
+    def __init__(self, path, image, size, levelSize = (0,0), scrollX = False, scrollY = False, alpha = False):
         self.path = path
         self.image = image
-        self.size = size
+#         self.size = size
         self.scrollX = scrollX
         self.scrollY = scrollY
-        self.tileSize = (self.size[0]//PRAM.TILESIZE,self.size[1]//PRAM.TILESIZE)
+        self.alpha = alpha
+        
+        self.tileSize = (size[0]//PRAM.TILESIZE, size[1]//PRAM.TILESIZE)
         
         if scrollX:
-            self.scrollFactorX = (levelSize[0] * PRAM.TILESIZE - PRAM.DISPLAY_WIDTH) // (self.size[0] - PRAM.DISPLAY_WIDTH)
+            denominator = size[0] - PRAM.DISPLAY_WIDTH
+            if denominator <=0:
+                denominator = 1
+            self.scrollFactorX = (levelSize[0] * PRAM.TILESIZE - PRAM.DISPLAY_WIDTH) // denominator
         else:
             self.scrollFactorX = 1
         if  self.scrollFactorX == 0:  self.scrollFactorX = 1
         
         if scrollY:
-            self.scrollFactorY = (levelSize[1] * PRAM.TILESIZE - PRAM.DISPLAY_HEIGHT) // (self.size[1] - PRAM.DISPLAY_HEIGHT)
+            denominator = size[1] - PRAM.DISPLAY_HEIGHT
+            if denominator <=0:
+                denominator = 1            
+            self.scrollFactorY = (levelSize[1] * PRAM.TILESIZE - PRAM.DISPLAY_HEIGHT) // denominator
         else:
             self.scrollFactorY = 1
         if  self.scrollFactorY == 0:  self.scrollFactorY = 1
         
                 
     #based on the camera position and screen tile to render, find the background tile to render    
-    def calcTile(self, tileOffset):       
-        return (tileOffset[0] % self.tileSize[0], tileOffset[1] % self.tileSize[1])
+#     def calcTile(self, tileOffset):       
+#         return (tileOffset[0] % self.tileSize[0], tileOffset[1] % self.tileSize[1])
 
     def calcBackgroundCrop(self,tile, cameraTile, cameraOffset):
         if self.scrollX:

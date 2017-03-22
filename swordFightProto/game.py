@@ -69,28 +69,28 @@ class Game():
         
         layoutHack = self.gameScene.layoutWrapper.layout
         for x in range(0,150):
-            for y in range(0,5):
+            for y in range(0,7):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True
         
         for y in range(0,150):
-            for x in range(0,5):
+            for x in range(0,0):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True                
 
         for y in range(0,150):
-            for x in range(145,150):
+            for x in range(150,150):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True  
 
         for x in range(0,150):
-            for y in range(145,150):
+            for y in range(150,150):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
@@ -99,11 +99,12 @@ class Game():
         for event in self.gameScene.gameEvents: #add to eventQueue, e.g. song to play
             self.addEvent(event)
         
-        for event in self.gameScene.levelEvents: #the triggers need to be initialized for level events
-            if type(event) is LevelTriggerTouch:
-                if event.subject == 'player':
-                    self.player.addListener(PRAM.LISTENER_MOVE, event)
-                    event.subject = self.player
+        #currently triggered on the tile
+#         for event in self.gameScene.levelEvents: #the triggers need to be initialized for level events
+#             if type(event) is LevelTriggerTouch:
+#                 if event.subject == 'player':
+#                     self.player.addListener(PRAM.LISTENER_MOVE, event)
+#                     event.subject = self.player
 
         self.gameScene.addActor(self.player.actor) #add the player character to the level actors list
         self.player.setPosition(eventLoadLevel.startingPosition)
@@ -141,7 +142,7 @@ class Game():
         for actor in actors:
             if type(actor) is StaticSprite: #TODO this will be type Sprite or similar
                 if actorDict.get(actor.image) == None:
-                    actorDict[actor.image] = pygame.image.load(actor.path+actor.image).convert()
+                    actorDict[actor.image] = pygame.image.load(actor.path+actor.image).convert_alpha()
                     
         return ActorsWrapper(actorDict, actors)
 
@@ -155,13 +156,13 @@ class Game():
             if type(sprite) is StaticSprite:
                 if imageDict.get(sprite.image) == None:
                     imageDict[sprite.image] = pygame.image.load(sprite.path+sprite.image).convert()
-        
-#         if background != False:
-#             imageDict[background.image] = pygame.image.load(background.path+background.image).convert()
 
         for pic in background:
-            imageDict[pic.image] = pygame.image.load(pic.path+pic.image).convert()    
-                    
+            if pic.alpha == True:
+                imageDict[pic.image] = pygame.image.load(pic.path+pic.image).convert_alpha()
+            else:
+                imageDict[pic.image] = pygame.image.load(pic.path+pic.image).convert()
+                        
         return SceneryWrapper(imageDict, scenery, background)
 
     def loadLayout(self, tileDict, layout, size):
