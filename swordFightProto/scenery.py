@@ -12,10 +12,11 @@ Class contains the dictionary which has the reference to all loaded sprites, and
     but can be placed as many times as they appear in the list
 '''
 class SceneryWrapper():
-    def __init__(self, imageDict = {}, scenery = [], background = False):
+    def __init__(self, imageDict = {}, scenery = [], background = False, foreground = False):
         self.imageDict = imageDict
         self.scenery = scenery
         self.background = background
+        self.foreground = foreground
 
 '''
 Render the entire screen a solid color
@@ -29,7 +30,6 @@ class SolidBackground():
         self.color=color
         return True 
 
-#TODO check for divide by 0 errors
 class BackgroundImage():
     def __init__(self, path, image, size, levelSize = (0,0), scrollX = False, scrollY = False, alpha = False):
         self.path = path
@@ -58,12 +58,14 @@ class BackgroundImage():
         else:
             self.scrollFactorY = 1
         if  self.scrollFactorY == 0:  self.scrollFactorY = 1
-        
+
                 
-    #based on the camera position and screen tile to render, find the background tile to render    
+#     based on the camera position and screen tile to render, find the background tile to render    
 #     def calcTile(self, tileOffset):       
 #         return (tileOffset[0] % self.tileSize[0], tileOffset[1] % self.tileSize[1])
 
+
+#TODO return offsets from these methods rather than the full location.  Use the offset to calculate the positions
     def calcBackgroundCrop(self,tile, cameraTile, cameraOffset):
         if self.scrollX:
             x = (cameraTile[0] * PRAM.TILESIZE + cameraOffset[0])//self.scrollFactorX + tile[0]*PRAM.TILESIZE
@@ -90,7 +92,51 @@ class BackgroundImage():
         
         return((x,y))
     
+class ForegroundImage():
+    def __init__(self, path, image, size, scrollSpeed = 1, scrollX = False, scrollY = False, alpha = False):
+        self.path = path
+        self.image = image
+        self.size = size
+        self.scrollSpeed = scrollSpeed
+        self.scrollX = scrollX
+        self.scrollY = scrollY
+        self.alpha = alpha
+        
+        self.tileSize = (size[0]//PRAM.TILESIZE, size[1]//PRAM.TILESIZE)
+        
+#     based on the camera position and screen tile to render, find the background tile to render    
+#     def calcTile(self, tileOffset):       
+#         return (tileOffset[0] % self.tileSize[0], tileOffset[1] % self.tileSize[1])
+
+    def calcForegroundCrop(self,tile, cameraTile, cameraOffset):
+        if self.scrollX:
+            x = (cameraTile[0] * PRAM.TILESIZE + cameraOffset[0])*self.scrollSpeed + tile[0]*PRAM.TILESIZE
+            x = x % self.size[0]
+        else:
+            x = ((tile[0] + cameraTile[0]) % self.tileSize[0]) * PRAM.TILESIZE
+            
+        if self.scrollY:
+            y = (cameraTile[1] * PRAM.TILESIZE + cameraOffset[1])*self.scrollSpeed + tile[1]*PRAM.TILESIZE
+            y = y % self.size[1]
+        else:
+            y = ((tile[1] + cameraTile[1]) % self.tileSize[1]) * PRAM.TILESIZE        
     
+        return ((x,y))
+
+    def calcForegroundLocation(self, location, tile):
+        if self.scrollX:
+            x = tile[0] * PRAM.TILESIZE
+        else: 
+            x = location[0]
+
+        if self.scrollY:
+            y = tile[1] * PRAM.TILESIZE
+        else:
+            y = location[1]
+        
+        return((x,y))
+
+            
 '''
 Wrapper class for an image file. Contains the path and image name, and location
 to place the image

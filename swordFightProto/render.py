@@ -41,13 +41,14 @@ class Renderer():
             if moveFlag == True:
                 self.renderTiles(gameScene.layoutWrapper, gameScene.sceneryWrapper)  
                 self.renderActors(gameScene.actorsWrapper)
-                self.renderTiles(gameScene.layoutWrapper, [], False)
+                self.renderTiles(gameScene.layoutWrapper, gameScene.sceneryWrapper, False)
                 
             else:
                 self.renderChangedBackground(gameScene.backgroundQueue, gameScene.sceneryWrapper)                
                 self.renderChangedTiles(gameScene.renderQueue, gameScene.layoutWrapper)
                 self.renderActors(gameScene.actorsWrapper)                
                 self.renderChangedTiles(gameScene.renderQueue, gameScene.layoutWrapper, False)
+                self.renderChangedForeground(gameScene.renderQueue, gameScene.sceneryWrapper)    
             gameScene.renderQueue.clear()
             gameScene.backgroundQueue.clear()
             gameScene.gameCamera.moveFlag = False       
@@ -55,8 +56,8 @@ class Renderer():
             pass #work on menu rendering    
 
 
-    def renderChangedBackground(self, backgroundQueue, sceneryWrapper = []):
-        for tile in backgroundQueue:
+    def renderChangedBackground(self, tileQueue, sceneryWrapper = []):
+        for tile in tileQueue:
             if tile[0].background == True:
                 for br in sceneryWrapper.background:
                     location = UTIL.calcPixFromTile((tile[1][0] - self.cameraTile[0], 
@@ -75,6 +76,27 @@ class Renderer():
                     self.screen.blit(sceneryWrapper.imageDict[br.image],
                                      backgroundLocation, 
                                     (backgroundCrop[0], backgroundCrop[1], PRAM.TILESIZE, PRAM.TILESIZE))
+
+    def renderChangedForeground(self, backgroundQueue, sceneryWrapper = []):
+        for tile in backgroundQueue:
+            if tile[0].foreground == True:
+                for fg in sceneryWrapper.foreground:
+                    location = UTIL.calcPixFromTile((tile[1][0] - self.cameraTile[0], 
+                                                     tile[1][1] - self.cameraTile[1]), 
+                                                    -self.cameraOffset[0], 
+                                                    -self.cameraOffset[1])
+                    foregroundLocation = fg.calcForegroundLocation(location, 
+                                                                   (tile[1][0] - self.cameraTile[0],
+                                                                    tile[1][1] - self.cameraTile[1]))
+                    
+                    foregroundCrop = fg.calcForegroundCrop((tile[1][0] - self.cameraTile[0],
+                                                            tile[1][1] - self.cameraTile[1]), 
+                                                            self.cameraTile, 
+                                                            self.cameraOffset)
+                    
+                    self.screen.blit(sceneryWrapper.imageDict[fg.image],
+                                     foregroundLocation, 
+                                    (foregroundCrop[0], foregroundCrop[1], PRAM.TILESIZE, PRAM.TILESIZE))
    
     def renderChangedTiles(self, renderQueue, layoutWrapper, lower = True):
         for tile in renderQueue:
@@ -116,6 +138,13 @@ class Renderer():
                 else:
                     if tile.upper != '':                    
                         self.screen.blit(layoutWrapper.tileDict[tile.upper], location)
+                    if tile.foreground == True:
+                        for fg in sceneryWrapper.foreground:
+                            foregroundLocation = fg.calcForegroundLocation(location, (x,y))
+                            foregroundCrop = fg.calcForegroundCrop((x,y), self.cameraTile, self.cameraOffset)
+                            self.screen.blit(sceneryWrapper.imageDict[fg.image],
+                                             foregroundLocation, 
+                                            (foregroundCrop[0], foregroundCrop[1], PRAM.TILESIZE, PRAM.TILESIZE))
                
     '''
     Render all scenery

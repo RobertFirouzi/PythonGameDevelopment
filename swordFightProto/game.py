@@ -61,7 +61,7 @@ class Game():
         self.gameScene = GameLevel(
             level.size,
             self.loadActors(level.actors), #returns an actorsWrapper object
-            self.loadImages(level.scenery, level.background), #returns a sceneryWrapper object
+            self.loadImages(level.scenery, level.background, level.foreground), #returns a sceneryWrapper object
             level.levelEvents,
             level.gameEvents,
             self.loadLayout(level.tileDict, level.layout, level.size), #returns a layoutWrapper object
@@ -74,28 +74,40 @@ class Game():
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True
-        
+                layoutHack[y][x].foreground = True
+
+        for x in range(0,150):
+            for y in range(15,25):
+                layoutHack[y][x].foreground = True
+                        
         for y in range(0,150):
             for x in range(0,15):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True                
-
+                layoutHack[y][x].foreground = True
+                
         for y in range(0,150):
             for x in range(135,150):
                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True  
-
+                layoutHack[y][x].foreground = True
+                
         for x in range(0,150):
             for y in range(135,150):
 #                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].foreground = True  
-                    
+                layoutHack[y][x].foreground = True
+
+        for x in range(0,150):
+            for y in range(125,135):
+                layoutHack[y][x].foreground = True
+                                                    
         for event in self.gameScene.gameEvents: #add to eventQueue, e.g. song to play
             self.addEvent(event)
         
@@ -150,7 +162,7 @@ class Game():
     Creates a dictionary with the reference being an image name, and the item being a
         loaded image file.  Each unique image only needs to be loaded once
     '''
-    def loadImages(self, scenery, background):
+    def loadImages(self, scenery, background, foreground):
         imageDict = {}
         for sprite in scenery:
             if type(sprite) is StaticSprite:
@@ -162,8 +174,14 @@ class Game():
                 imageDict[pic.image] = pygame.image.load(pic.path+pic.image).convert_alpha()
             else:
                 imageDict[pic.image] = pygame.image.load(pic.path+pic.image).convert()
+
+        for pic in foreground:
+            if pic.alpha == True:
+                imageDict[pic.image] = pygame.image.load(pic.path+pic.image).convert_alpha()
+            else:
+                imageDict[pic.image] = pygame.image.load(pic.path+pic.image).convert()
                         
-        return SceneryWrapper(imageDict, scenery, background)
+        return SceneryWrapper(imageDict, scenery, background, foreground)
 
     def loadLayout(self, tileDict, layout, size):
         layoutDict = {}

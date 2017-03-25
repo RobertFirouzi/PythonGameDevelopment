@@ -8,7 +8,7 @@ Created on Mar 4, 2017
 #create objects that would be better!
 
 import parameters as PRAM
-from scenery import SolidBackground, StaticSprite, BackgroundImage
+from scenery import SolidBackground, StaticSprite, BackgroundImage, ForegroundImage
 from actors import SimpleBox
 from event import EventSong, EventSound, EventSetInput, EventLoadLevel
 from game_level import LevelTile, LevelEvent
@@ -20,9 +20,12 @@ actors = []
 
 #Background, sprites etc
 scenery = []
-background = [BackgroundImage(PRAM.IMAGE_PATH, PRAM.BACKGROUND_TEST, (1800,1100), size, True, True, False),
-			  BackgroundImage(PRAM.IMAGE_PATH, 'treeline.png', (3000,1100), size, True, True, True)]
+background = [BackgroundImage(PRAM.IMAGE_PATH, PRAM.BACKGROUND_TEST, (1800,950), size, True, True, False),
+			  BackgroundImage(PRAM.IMAGE_PATH, 'treeline.png', (3000,1200), size, True, True, True)]
+			  # BackgroundImage(PRAM.IMAGE_PATH, 'vine.png', (1800,1000), size, True, True, True)]
 
+foreground = [ForegroundImage(PRAM.IMAGE_PATH, 'vine.png', (1800,1000), 1.4, True, True, True)]
+			  
 #events triggered within the level
 levelEvents = [
 #     LevelTriggerTouch(EventLoadMenu(PRAM.MENU_TEST1),(53,53),(-5,-5))
