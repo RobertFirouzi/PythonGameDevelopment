@@ -69,8 +69,15 @@ class Game():
         
         layoutHack = self.gameScene.layoutWrapper.layout
         for x in range(0,150):
+            for y in range(0,150):
+                if layoutHack[y][x].mid == 'trunk':
+                    layoutHack[y][x].mid = ''
+                    layoutHack[y][x].lower = 'trunk'
+        
+        for x in range(0,150):
             for y in range(0,15):
-                layoutHack[y][x].lower = ''
+                if layoutHack[y][x].lower != 'trunk':
+                    layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True
@@ -82,7 +89,8 @@ class Game():
                         
         for y in range(0,150):
             for x in range(0,15):
-                layoutHack[y][x].lower = ''
+                if layoutHack[y][x].lower != 'trunk':
+                    layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True                
@@ -90,7 +98,8 @@ class Game():
                 
         for y in range(0,150):
             for x in range(135,150):
-                layoutHack[y][x].lower = ''
+                if layoutHack[y][x].lower != 'trunk':
+                    layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
                 layoutHack[y][x].background = True  
