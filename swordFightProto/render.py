@@ -2,6 +2,7 @@
 Created on Feb 25, 2017
 
 @author: Robert
+TEST RENDER BRANCH
 '''
 
 from actors import SimpleBox
@@ -31,7 +32,7 @@ class Renderer():
      4) render actors
      5) render upper tiles
     '''
-    def render(self, gameScene): #TODO - remove need for the brnach on gamescene type
+    def render(self, gameScene): #TODO - remove need for the branch on gamescene type
         if type(gameScene) is GameLevel:
             self.cameraTile = gameScene.gameCamera.getTile()
             self.cameraOffset = gameScene.gameCamera.getOffset()
@@ -138,13 +139,13 @@ class Renderer():
                 else:
                     if tile.upper != '':                    
                         self.screen.blit(layoutWrapper.tileDict[tile.upper], location)
-                    if tile.foreground == True:
-                        for fg in sceneryWrapper.foreground:
-                            foregroundLocation = fg.calcForegroundLocation(location, (x,y))
-                            foregroundCrop = fg.calcForegroundCrop((x,y), self.cameraTile, self.cameraOffset)
-                            self.screen.blit(sceneryWrapper.imageDict[fg.image],
-                                             foregroundLocation, 
-                                            (foregroundCrop[0], foregroundCrop[1], PRAM.TILESIZE, PRAM.TILESIZE))
+#                     if tile.foreground == True:
+                    for fg in sceneryWrapper.foreground:
+                        foregroundLocation = fg.calcForegroundLocation(location, (x,y))
+                        foregroundCrop = fg.calcForegroundCrop((x,y), self.cameraTile, self.cameraOffset)
+                        self.screen.blit(sceneryWrapper.imageDict[fg.image],
+                                         foregroundLocation, 
+                                        (foregroundCrop[0], foregroundCrop[1], PRAM.TILESIZE, PRAM.TILESIZE))
                
     '''
     Render all scenery
