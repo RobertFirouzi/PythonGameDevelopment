@@ -44,13 +44,12 @@ class Renderer():
                 self.renderAllUpperTile(gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                
                 self.renderAllForeground(gameScene.layoutWrapper,gameScene.sceneryWrapper, self.cameraTile, self.cameraOffset)                                
             else:
-#                 self.renderChangedBackground(gameScene.backgroundQueue, gameScene.sceneryWrapper)
+                self.renderChangedBackground(gameScene.renderQueue, gameScene.layoutWrapper, gameScene.sceneryWrapper, self.cameraTile, self.cameraOffset)
                 self.renderChangedLowerTile(gameScene.renderQueue, gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                
                 self.renderActors(gameScene.actorsWrapper)
                 self.renderChangedUpperTile(gameScene.renderQueue, gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                 
-#                 self.renderChangedForeground(gameScene.renderQueue, gameScene.sceneryWrapper)    
+                self.renderChangedForeground(gameScene.renderQueue, gameScene.layoutWrapper, gameScene.sceneryWrapper, self.cameraTile, self.cameraOffset)                   
             gameScene.renderQueue.clear()
-            gameScene.backgroundQueue.clear()
             gameScene.gameCamera.moveFlag = False       
         else:
             pass #work on menu rendering    
@@ -102,7 +101,7 @@ class Renderer():
                     xOffset = x* PRAM.TILESIZE - pixelOffset[0]
                     self.screen.blit(layoutWrapper.tileDict[tile.upper], (xOffset, yOffset))
 
-    #TODO: will change this to rendering full swatches at a time, based on bounding boxes
+    #TODO: will change this to rendering full swatches at a time?, based on bounding boxes
     def renderAllForeground(self, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
         for fg in sceneryWrapper.foreground:
             imageOffset = ((tileOffset[0] * PRAM.TILESIZE + pixelOffset[0]) * fg.scrollSpeed, 
@@ -119,8 +118,23 @@ class Renderer():
                                          (imageOffset[1] + yOffset) % fg.size[1], 
                                          PRAM.TILESIZE, PRAM.TILESIZE))
 
-#     def renderChangedBackground(self):
-#         pass
+    #TODO if tile.background = True
+    def renderChangedBackground(self, renderQueue, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
+        for bg in sceneryWrapper.background:
+            for box in renderQueue:
+                #TODO - WIP, tiling background is trickier, may need to blit in chunks
+#                 patches = [] #an array of patches to blit render
+#                 startx = (box[0])//bg.scrollFactorX
+#                 endx = startx + (box[1] - box[0])
+#                 if endx > bg.size[0]: #need to split here
+#                     startx2 = 
+                screenpos = (box[0] - (tileOffset[0] * PRAM.TILESIZE)  - pixelOffset[0], box[2] - (tileOffset[1] * PRAM.TILESIZE)  - pixelOffset[1])
+                self.screen.blit(sceneryWrapper.imageDict[bg.image], 
+                                 screenpos,
+                                ((tileOffset[0] * PRAM.TILESIZE + pixelOffset[0])//bg.scrollFactorX + screenpos[0],  #image x
+                                (tileOffset[1] * PRAM.TILESIZE + pixelOffset[1])//bg.scrollFactorY + screenpos[1], #image y                                 
+                                  box[1] - box[0], #image x width crop
+                                  box[3] - box[2])) #image y height crop               
 
     def renderChangedLowerTile(self, renderQueue, layoutWrapper, tileOffset, pixelOffset):
         for box in renderQueue:
@@ -136,7 +150,7 @@ class Renderer():
                                          (y - tileOffset[1]) * PRAM.TILESIZE  - pixelOffset[1]))
                     tile.changed = True
 
-    #TODO - check to see if on screen
+    #TODO - check to see if
     def renderChangedActors(self, actorsWrapper):
         for actor in actorsWrapper.actors:
             if actor.changed == True:
@@ -163,51 +177,28 @@ class Renderer():
                                          (y - tileOffset[1]) * PRAM.TILESIZE  - pixelOffset[1]))
                     tile.changed = False
 
-#     def renderChangedForeground(self):
-#         pass    
+    #TODO - tile.forground = True (how to do this with chunks?  
+    def renderChangedForeground(self, renderQueue, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
+        for fg in sceneryWrapper.foreground:
+            for box in renderQueue:
+                #TODO - WIP, tiling background is trickier, may need to blit in chunks
+#                 patches = [] #an array of patches to blit render
+#                 startx = (box[0])//bg.scrollFactorX
+#                 endx = startx + (box[1] - box[0])
+#                 if endx > bg.size[0]: #need to split here
+#                     startx2 = 
+                screenpos = (box[0] - (tileOffset[0] * PRAM.TILESIZE)  - pixelOffset[0], box[2] - (tileOffset[1] * PRAM.TILESIZE)  - pixelOffset[1])
+                imagecropx = (tileOffset[0] * PRAM.TILESIZE + pixelOffset[0])*fg.scrollSpeed + screenpos[0]
+                imagecropx = imagecropx % fg.size[0]
+                imagecropy = (tileOffset[1] * PRAM.TILESIZE + pixelOffset[1])*fg.scrollSpeed + screenpos[1]
+                imagecropy = imagecropy % fg.size[1]
+                self.screen.blit(sceneryWrapper.imageDict[fg.image], 
+                                 screenpos,
+                                (imagecropx,  #image x
+                                imagecropy, #image y                                 
+                                  box[1] - box[0], #image x width crop
+                                  box[3] - box[2])) #image y height crop      
 
-
-    def renderChangedBackground(self, tileQueue, sceneryWrapper = []):
-        for tile in tileQueue:
-            if tile[0].background == True:
-                for br in sceneryWrapper.background:
-                    location = UTIL.calcPixFromTile((tile[1][0] - self.cameraTile[0], 
-                                                     tile[1][1] - self.cameraTile[1]), 
-                                                    -self.cameraOffset[0], 
-                                                    -self.cameraOffset[1])
-                    backgroundLocation = br.calcBackgroundLocation(location, 
-                                                                   (tile[1][0] - self.cameraTile[0],
-                                                                    tile[1][1] - self.cameraTile[1]))
-                    
-                    backgroundCrop = br.calcBackgroundCrop((tile[1][0] - self.cameraTile[0],
-                                                            tile[1][1] - self.cameraTile[1]), 
-                                                            self.cameraTile, 
-                                                            self.cameraOffset)
-                    
-                    self.screen.blit(sceneryWrapper.imageDict[br.image],
-                                     backgroundLocation, 
-                                    (backgroundCrop[0], backgroundCrop[1], PRAM.TILESIZE, PRAM.TILESIZE))
-
-    def renderChangedForeground(self, backgroundQueue, sceneryWrapper = []):
-        for tile in backgroundQueue:
-            if tile[0].foreground == True:
-                for fg in sceneryWrapper.foreground:
-                    location = UTIL.calcPixFromTile((tile[1][0] - self.cameraTile[0], 
-                                                     tile[1][1] - self.cameraTile[1]), 
-                                                    -self.cameraOffset[0], 
-                                                    -self.cameraOffset[1])
-                    foregroundLocation = fg.calcForegroundLocation(location, 
-                                                                   (tile[1][0] - self.cameraTile[0],
-                                                                    tile[1][1] - self.cameraTile[1]))
-                    
-                    foregroundCrop = fg.calcForegroundCrop((tile[1][0] - self.cameraTile[0],
-                                                            tile[1][1] - self.cameraTile[1]), 
-                                                            self.cameraTile, 
-                                                            self.cameraOffset)
-                    
-                    self.screen.blit(sceneryWrapper.imageDict[fg.image],
-                                     foregroundLocation, 
-                                    (foregroundCrop[0], foregroundCrop[1], PRAM.TILESIZE, PRAM.TILESIZE))
                   
 #     '''
 #     Render all scenery
