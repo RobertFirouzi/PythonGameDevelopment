@@ -154,11 +154,13 @@ class EventHandler():
                 else:
                     char.adjustPosition(char.moveSpeed, 0)
                 
-        self.game.gameScene.calcRenderChanges(char.actor, origin, targetTile, event.direction)
+#         self.game.gameScene.calcRenderChanges(char.actor, origin, targetTile, event.direction)
         char.actor.changed = True #flag to re-render the character                
-        
         if char.actor.isFocus: #check if the camera needs to be adjusted
             self.game.gameCamera.panToChar(char.getPosition())
+        
+        if not self.game.gameCamera.moveFlag:
+            self.game.gameScene.addRenderBox(char.getSize(), origin, char.getPosition(), event.direction)            
         
         if targetTile !=charTileRelative:  #Check if the targetTile tile has an event that triggers on touch
             targetTileTile = layout[targetTile[1]][targetTile[0]]

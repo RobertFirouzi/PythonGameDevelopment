@@ -38,8 +38,56 @@ class GameLevel():
 
     
     '''
+    Based on start and end position, and actor size, add a bounding box to the 
+        renderQueue (in pixels) for a section of the gameLevel that needs to be
+        rendered on the render changes call 
+    '''
+    def addRenderBox(self, size, origin, destination, direction):
+        if direction == PRAM.UP:
+            minx = origin[0]
+            miny = destination[1]
+            maxx = destination[0] + size[0]
+            maxy = origin[1] + size[1]
+        elif direction == PRAM.DOWN:
+            minx = origin[0]
+            miny = origin[1]
+            maxx = destination[0] + size[0]
+            maxy = destination[1] + size[1]
+        elif direction == PRAM.LEFT:
+            minx = destination[0] 
+            miny = origin[1]
+            maxx = origin[0] + size[0]
+            maxy = destination[1] + size[1]
+        else: #right
+            minx = origin[0]
+            miny = origin[1]
+            maxx = destination[0] + size[0]
+            maxy = destination[1] + size[1]
+        
+        mapSizeX = len(self.layoutWrapper.layout[0]) * PRAM.TILESIZE
+        mapSizeY = len(self.layoutWrapper.layout) * PRAM.TILESIZE
+        
+        #get the entire tile
+        minx = minx - (minx % PRAM.TILESIZE)
+        miny = miny - (miny % PRAM.TILESIZE)
+        maxx = (maxx//PRAM.TILESIZE + 1)*PRAM.TILESIZE
+        maxy = (maxy//PRAM.TILESIZE + 1)*PRAM.TILESIZE        
+             
+        if minx<0:
+            minx = 0
+        if miny<0:
+            miny = 0
+        if maxx > mapSizeX:
+            maxx = mapSizeX 
+        if maxy > mapSizeY:
+            maxy = mapSizeY            
+                
+        self.renderQueue.append((minx, maxx, miny, maxy))
+    
+    '''
         Based on an actor and target, add tiles to the render queue that should
             be redrawn
+            TODO: might deprecate this in favor of returning a pixel box
     '''
     def calcRenderChanges(self, actor, origin, target, direction):
         actorTileAbsolute = UTIL.calcTileFromPix(origin)

@@ -63,4 +63,6 @@ class GameCamera():
             
         if origin != self.position: #if camera actually moved, set the flag so the screen re-renders
             self.moveFlag = True
+
+    
             

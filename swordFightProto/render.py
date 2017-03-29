@@ -44,11 +44,11 @@ class Renderer():
                 self.renderAllUpperTile(gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                
                 self.renderAllForeground(gameScene.layoutWrapper,gameScene.sceneryWrapper, self.cameraTile, self.cameraOffset)                                
             else:
-                self.renderChangedBackground(gameScene.backgroundQueue, gameScene.sceneryWrapper)                
-                self.renderChangedTiles(gameScene.renderQueue, gameScene.layoutWrapper)
-                self.renderActors(gameScene.actorsWrapper)                
-                self.renderChangedTiles(gameScene.renderQueue, gameScene.layoutWrapper, False)
-                self.renderChangedForeground(gameScene.renderQueue, gameScene.sceneryWrapper)    
+#                 self.renderChangedBackground(gameScene.backgroundQueue, gameScene.sceneryWrapper)
+                self.renderChangedLowerTile(gameScene.renderQueue, gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                
+                self.renderActors(gameScene.actorsWrapper)
+                self.renderChangedUpperTile(gameScene.renderQueue, gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                 
+#                 self.renderChangedForeground(gameScene.renderQueue, gameScene.sceneryWrapper)    
             gameScene.renderQueue.clear()
             gameScene.backgroundQueue.clear()
             gameScene.gameCamera.moveFlag = False       
@@ -102,6 +102,7 @@ class Renderer():
                     xOffset = x* PRAM.TILESIZE - pixelOffset[0]
                     self.screen.blit(layoutWrapper.tileDict[tile.upper], (xOffset, yOffset))
 
+    #TODO: will change this to rendering full swatches at a time, based on bounding boxes
     def renderAllForeground(self, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
         for fg in sceneryWrapper.foreground:
             imageOffset = ((tileOffset[0] * PRAM.TILESIZE + pixelOffset[0]) * fg.scrollSpeed, 
@@ -121,14 +122,46 @@ class Renderer():
 #     def renderChangedBackground(self):
 #         pass
 
-    def renderChangedLowerTile(self):
-        pass
+    def renderChangedLowerTile(self, renderQueue, layoutWrapper, tileOffset, pixelOffset):
+        for box in renderQueue:
+            xRange = (box[0]//PRAM.TILESIZE, box[1]//PRAM.TILESIZE)
+            yRange = (box[2]//PRAM.TILESIZE, box[3]//PRAM.TILESIZE)
+            
+            for x in range(xRange[0], xRange[1]):
+                for y in range(yRange[0], yRange[1]):
+                    tile = layoutWrapper.layout[y][x]
+                    if tile.changed == False and tile.lower !='':
+                        self.screen.blit(layoutWrapper.tileDict[tile.lower], 
+                                         ((x - tileOffset[0]) * PRAM.TILESIZE  - pixelOffset[0],
+                                         (y - tileOffset[1]) * PRAM.TILESIZE  - pixelOffset[1]))
+                    tile.changed = True
 
-    def renderChangedActors(self):
-        pass 
+    #TODO - check to see if on screen
+    def renderChangedActors(self, actorsWrapper):
+        for actor in actorsWrapper.actors:
+            if actor.changed == True:
+                if type(actor) is SimpleBox:
+                    pygame.draw.rect(self.screen, actor.color, 
+                                     pygame.Rect(actor.position[0]+PRAM.BOX_FUDGE - self.cameraPosition[0], 
+                                                 actor.position[1] - self.cameraPosition[1], 
+                                                 actor.size[0] - PRAM.BOX_FUDGE*2, 
+                                                 actor.size[1]))
+                actor.changed = False
+        return
     
-    def renderChangedUpperTile(self):
-        pass
+    def renderChangedUpperTile(self, renderQueue, layoutWrapper, tileOffset, pixelOffset):
+        for box in renderQueue:
+            xRange = (box[0]//PRAM.TILESIZE, box[1]//PRAM.TILESIZE)
+            yRange = (box[2]//PRAM.TILESIZE, box[3]//PRAM.TILESIZE)
+            
+            for x in range(xRange[0], xRange[1]):
+                for y in range(yRange[0], yRange[1]):
+                    tile = layoutWrapper.layout[y][x]
+                    if tile.changed == True and tile.upper !='':
+                        self.screen.blit(layoutWrapper.tileDict[tile.upper], 
+                                         ((x - tileOffset[0]) * PRAM.TILESIZE  - pixelOffset[0],
+                                         (y - tileOffset[1]) * PRAM.TILESIZE  - pixelOffset[1]))
+                    tile.changed = False
 
 #     def renderChangedForeground(self):
 #         pass    
@@ -175,26 +208,7 @@ class Renderer():
                     self.screen.blit(sceneryWrapper.imageDict[fg.image],
                                      foregroundLocation, 
                                     (foregroundCrop[0], foregroundCrop[1], PRAM.TILESIZE, PRAM.TILESIZE))
-   
-    def renderChangedTiles(self, renderQueue, layoutWrapper, lower = True):
-        for tile in renderQueue:
-            location = UTIL.calcPixFromTile((tile[1][0] - self.cameraTile[0], 
-                                             tile[1][1] - self.cameraTile[1]), 
-                                            -self.cameraOffset[0], 
-                                            -self.cameraOffset[1])
-            if lower:
-                if tile[0].changed == False: #prevents rendering tiles twice if in queue twice
-                    if tile[0].lower != '':
-                        self.screen.blit(layoutWrapper.tileDict[tile[0].lower], location)
-                    if tile[0].mid != '':
-                        self.screen.blit(layoutWrapper.tileDict[tile[0].mid], location)
-                tile[0].changed = True
-            else:
-                if tile[0].changed == True: #prevents rendering tiles twice if in queue twice                
-                    if tile[0].upper != '':                    
-                        self.screen.blit(layoutWrapper.tileDict[tile[0].upper], location)
-                tile[0].changed = False
-               
+                  
 #     '''
 #     Render all scenery
 #     @param sceneryWrapper
