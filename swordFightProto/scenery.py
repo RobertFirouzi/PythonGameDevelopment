@@ -31,15 +31,16 @@ class SolidBackground():
         return True 
 
 class BackgroundImage():
-    def __init__(self, path, image, size, levelSize = (0,0), scrollX = False, scrollY = False, alpha = False):
+    def __init__(self, path, image, size, levelSize = (0,0), visibleSections = [], scrollX = False, scrollY = False, alpha = False):
         self.path = path
         self.image = image
         self.size = size
+        self.visibleSections = visibleSections #(left edge, right edge, top edge, bottom edge)
         self.scrollX = scrollX
         self.scrollY = scrollY
         self.alpha = alpha
         
-        self.tileSize = (size[0]//PRAM.TILESIZE, size[1]//PRAM.TILESIZE)
+#         self.tileSize = (size[0]//PRAM.TILESIZE, size[1]//PRAM.TILESIZE)
         
         if scrollX:
             denominator = size[0] - PRAM.DISPLAY_WIDTH
@@ -65,32 +66,32 @@ class BackgroundImage():
 #         return (tileOffset[0] % self.tileSize[0], tileOffset[1] % self.tileSize[1])
 
 
-#TODO return offsets from these methods rather than the full location.  Use the offset to calculate the positions
-    def calcBackgroundCrop(self,tile, cameraTile, cameraOffset):
-        if self.scrollX:
-            x = (cameraTile[0] * PRAM.TILESIZE + cameraOffset[0])//self.scrollFactorX + tile[0]*PRAM.TILESIZE
-        else:
-            x = ((tile[0] + cameraTile[0]) % self.tileSize[0]) * PRAM.TILESIZE
-            
-        if self.scrollY:
-            y = (cameraTile[1] * PRAM.TILESIZE + cameraOffset[1])//self.scrollFactorY + tile[1]*PRAM.TILESIZE
-        else:
-            y = ((tile[1] + cameraTile[1]) % self.tileSize[1]) * PRAM.TILESIZE        
-    
-        return ((x,y))
-
-    def calcBackgroundLocation(self, location, tile):
-        if self.scrollX:
-            x = tile[0] * PRAM.TILESIZE
-        else: 
-            x = location[0]
-
-        if self.scrollY:
-            y = tile[1] * PRAM.TILESIZE
-        else:
-            y = location[1]
-        
-        return((x,y))
+# #TODO return offsets from these methods rather than the full location.  Use the offset to calculate the positions
+#     def calcBackgroundCrop(self,tile, cameraTile, cameraOffset):
+#         if self.scrollX:
+#             x = (cameraTile[0] * PRAM.TILESIZE + cameraOffset[0])//self.scrollFactorX + tile[0]*PRAM.TILESIZE
+#         else:
+#             x = ((tile[0] + cameraTile[0]) % self.tileSize[0]) * PRAM.TILESIZE
+#             
+#         if self.scrollY:
+#             y = (cameraTile[1] * PRAM.TILESIZE + cameraOffset[1])//self.scrollFactorY + tile[1]*PRAM.TILESIZE
+#         else:
+#             y = ((tile[1] + cameraTile[1]) % self.tileSize[1]) * PRAM.TILESIZE        
+#     
+#         return ((x,y))
+# 
+#     def calcBackgroundLocation(self, location, tile):
+#         if self.scrollX:
+#             x = tile[0] * PRAM.TILESIZE
+#         else: 
+#             x = location[0]
+# 
+#         if self.scrollY:
+#             y = tile[1] * PRAM.TILESIZE
+#         else:
+#             y = location[1]
+#         
+#         return((x,y))
     
 class ForegroundImage():
     def __init__(self, path, image, size, scrollSpeed = 1, scrollX = False, scrollY = False, alpha = False):

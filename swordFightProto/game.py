@@ -80,7 +80,7 @@ class Game():
                     layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
-                layoutHack[y][x].background = True
+#                 layoutHack[y][x].background = True
                 layoutHack[y][x].foreground = True
 
         for x in range(0,150):
@@ -93,7 +93,7 @@ class Game():
                     layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
-                layoutHack[y][x].background = True                
+#                 layoutHack[y][x].background = True                
                 layoutHack[y][x].foreground = True
                 
         for y in range(0,150):
@@ -102,7 +102,7 @@ class Game():
                     layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
-                layoutHack[y][x].background = True  
+#                 layoutHack[y][x].background = True  
                 layoutHack[y][x].foreground = True
                 
         for x in range(0,150):
@@ -110,7 +110,6 @@ class Game():
 #                 layoutHack[y][x].lower = ''
 #                 layoutHack[y][x].mid = ''
 #                 layoutHack[y][x].upper = ''            
-                layoutHack[y][x].foreground = True  
                 layoutHack[y][x].foreground = True
 
         for x in range(0,150):

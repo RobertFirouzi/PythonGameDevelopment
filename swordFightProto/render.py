@@ -31,7 +31,7 @@ class Renderer():
      4) render actors
      5) render upper tiles
     '''
-    def render(self, gameScene): #TODO - remove need for the branch on gamescene type?
+    def render(self, gameScene):
         if type(gameScene) is GameLevel:
             self.cameraTile = gameScene.gameCamera.getTile()
             self.cameraOffset = gameScene.gameCamera.getOffset()
@@ -57,18 +57,39 @@ class Renderer():
 
     #note: tileOffset = self.cameraTile, pizelOffset = selt.cameraOffset
     def renderAllBackground(self, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
+        screenOffset = (tileOffset[0]*PRAM.TILESIZE + pixelOffset[0], tileOffset[1]*PRAM.TILESIZE + pixelOffset[1])
         for bg in sceneryWrapper.background:
-            imageOffset = ((tileOffset[0] * PRAM.TILESIZE + pixelOffset[0]) // bg.scrollFactorX, 
-                       (tileOffset[1] * PRAM.TILESIZE + pixelOffset[1]) // bg.scrollFactorY)
-            for y in range(PRAM.DISPLAY_TILE_HEIGHT):
-                yOffset = y * PRAM.TILESIZE
-                for x in range(PRAM.DISPLAY_TILE_WIDTH):
-                    tile = layoutWrapper.layout[y+tileOffset[1]][x+tileOffset[0]]
-                    if tile.background == True:
-                        xOffset = x * PRAM.TILESIZE
-                        self.screen.blit(sceneryWrapper.imageDict[bg.image],
-                                         (xOffset, yOffset), 
-                                        (imageOffset[0] + xOffset, imageOffset[1] + yOffset, PRAM.TILESIZE, PRAM.TILESIZE))
+            imageOffset = (screenOffset[0]//bg.scrollFactorX, screenOffset[1]// bg.scrollFactorY)
+            for vs in bg.visibleSections: #vs = (left edge, right edge, top edge, bottom edge)
+                #check if visible portion of background is on screen
+                if (vs[0] < screenOffset[0] + PRAM.DISPLAY_WIDTH or vs[1]> screenOffset[0]) and (
+                    vs[2] < screenOffset[1] + PRAM.DISPLAY_HEIGHT or vs[3]> screenOffset[1] ):
+                    
+                    #find boundaries of image
+                    if vs[0] <= screenOffset[0]:
+                        xOffset = 0
+                    else:
+                        xOffset = vs[0] - screenOffset[0]
+                
+                    if vs[2] <= screenOffset[1]:
+                        yOffset = 0
+                    else:
+                        yOffset = vs[2]- screenOffset[1]
+                        
+                    if vs[1] - vs[0] + xOffset > PRAM.DISPLAY_WIDTH:
+                        xRange = PRAM.DISPLAY_WIDTH - xOffset
+                    else:
+                        xRange = vs[1] - vs[0]
+
+                    #calculate size of image square to blit
+                    if vs[3] - vs[2]+ yOffset > PRAM.DISPLAY_HEIGHT:
+                        yRange = PRAM.DISPLAY_HEIGHT - yOffset
+                    else:
+                        yRange = vs[3] - vs[2]
+                
+                    self.screen.blit(sceneryWrapper.imageDict[bg.image],
+                                     (xOffset, yOffset), 
+                                    (imageOffset[0] + xOffset, imageOffset[1] + yOffset, xRange, yRange))
 
     def renderAllLowerTile(self, layoutWrapper, tileOffset, pixelOffset):
         for y in range(PRAM.DISPLAY_TILE_HEIGHT):
@@ -118,23 +139,25 @@ class Renderer():
                                          (imageOffset[1] + yOffset) % fg.size[1], 
                                          PRAM.TILESIZE, PRAM.TILESIZE))
 
-    #TODO if tile.background = True
     def renderChangedBackground(self, renderQueue, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
+        screenOffset = (tileOffset[0]*PRAM.TILESIZE + pixelOffset[0], tileOffset[1]*PRAM.TILESIZE + pixelOffset[1])        
         for bg in sceneryWrapper.background:
             for box in renderQueue:
-                #TODO - WIP, tiling background is trickier, may need to blit in chunks
-#                 patches = [] #an array of patches to blit render
-#                 startx = (box[0])//bg.scrollFactorX
-#                 endx = startx + (box[1] - box[0])
-#                 if endx > bg.size[0]: #need to split here
-#                     startx2 = 
-                screenpos = (box[0] - (tileOffset[0] * PRAM.TILESIZE)  - pixelOffset[0], box[2] - (tileOffset[1] * PRAM.TILESIZE)  - pixelOffset[1])
-                self.screen.blit(sceneryWrapper.imageDict[bg.image], 
-                                 screenpos,
-                                ((tileOffset[0] * PRAM.TILESIZE + pixelOffset[0])//bg.scrollFactorX + screenpos[0],  #image x
-                                (tileOffset[1] * PRAM.TILESIZE + pixelOffset[1])//bg.scrollFactorY + screenpos[1], #image y                                 
-                                  box[1] - box[0], #image x width crop
-                                  box[3] - box[2])) #image y height crop               
+                #check if the section being rendered has any background image
+                isBackground = False
+                for vs in bg.visibleSections:
+                    if vs[0] <= box[1] and vs[1]>= box[0] and vs[2] <= box[3] and vs[3] >= box[2]:
+                        isBackground = True
+                        break
+                    
+                if isBackground:
+                    screenpos = (box[0] - (tileOffset[0] * PRAM.TILESIZE)  - pixelOffset[0], box[2] - (tileOffset[1] * PRAM.TILESIZE)  - pixelOffset[1])
+                    self.screen.blit(sceneryWrapper.imageDict[bg.image], 
+                                     screenpos, 
+                                     (screenOffset[0]//bg.scrollFactorX + screenpos[0], 
+                                      screenOffset[1]//bg.scrollFactorY + screenpos[1], 
+                                       box[1] - box[0], 
+                                       box[3] - box[2]))               
 
     def renderChangedLowerTile(self, renderQueue, layoutWrapper, tileOffset, pixelOffset):
         for box in renderQueue:
