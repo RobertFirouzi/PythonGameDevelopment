@@ -135,7 +135,7 @@ class Renderer():
                         xOffset = x * PRAM.TILESIZE
                         self.screen.blit(sceneryWrapper.imageDict[fg.image],
                                          (xOffset, yOffset), 
-                                        ((imageOffset[0] + xOffset) % fg.size[0], 
+                                        ((imageOffset[0] + xOffset) % fg.size[0], #TODO this causes a glitch at the boundries
                                          (imageOffset[1] + yOffset) % fg.size[1], 
                                          PRAM.TILESIZE, PRAM.TILESIZE))
 
@@ -200,57 +200,64 @@ class Renderer():
                                          (y - tileOffset[1]) * PRAM.TILESIZE  - pixelOffset[1]))
                     tile.changed = False
 
-    #TODO - only blit if within a section where foreground = True
+    #TODO - only blit if within a section where foreground = True, use algorithm in xhangedbg 
     def renderChangedForeground(self, renderQueue, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
         for fg in sceneryWrapper.foreground:
             for box in renderQueue:
-                startScreenPos = (box[0] - (tileOffset[0] * PRAM.TILESIZE)  - pixelOffset[0], box[2] - (tileOffset[1] * PRAM.TILESIZE)  - pixelOffset[1])
+                isForeground = False
+                for vs in fg.visibleSections:
+                    if vs[0] <= box[1] and vs[1]>= box[0] and vs[2] <= box[3] and vs[3] >= box[2]:
+                        isForeground = True
+                        break
                 
-                startCropX = (tileOffset[0] * PRAM.TILESIZE + pixelOffset[0])*fg.scrollSpeed + startScreenPos[0]
-                startCropX = startCropX % fg.size[0]
-                
-                startCropY = (tileOffset[1] * PRAM.TILESIZE + pixelOffset[1])*fg.scrollSpeed + startScreenPos[1]
-                startCropY = startCropY % fg.size[1]
-                                
-                currentScreenPos = startScreenPos
-                currentCropX =  startCropX
-                currentCropY = startCropY
-                imageSizeX = box[1] - box[0] 
-                imageSizeY = box[3] - box[2]
-                
-                keepGoing = True
-                shiftX = False
-                shiftY = False
-                while keepGoing:
-                    if currentCropX + imageSizeX > fg.size[0]:
-                        imageSizeX = fg.size[0] - currentCropX
-                        shiftX = True
-                    if currentCropY + imageSizeY > fg.size[1]:
-                        imageSizeY = fg.size[1] - currentCropY
-                        shiftY = True
-                                            
-                    self.screen.blit(sceneryWrapper.imageDict[fg.image], 
-                                     currentScreenPos,
-                                    (currentCropX,  #image x
-                                    currentCropY, #image y                                 
-                                      imageSizeX, #image x width crop
-                                      imageSizeY)) #image y height crop   
+                if isForeground:
+                    startScreenPos = (box[0] - (tileOffset[0] * PRAM.TILESIZE)  - pixelOffset[0], box[2] - (tileOffset[1] * PRAM.TILESIZE)  - pixelOffset[1])
                     
-                    #blit across the X direction first, then shift down the Y and reset the X  
-                    if shiftX:
-                        currentScreenPos = [currentScreenPos[0] + imageSizeX, currentScreenPos[1]]
-                        currentCropX = (currentCropX + imageSizeX) % fg.size[0]
-                        imageSizeX = box[1] - box[0] - imageSizeX
-                        shiftX = False
-                    elif shiftY:
-                        currentScreenPos = [startScreenPos[0], currentScreenPos[1] + imageSizeY]
-                        currentCropX = startCropX
-                        imageSizeX = box[1] - box[0]
-                        currentCropY = (currentCropY + imageSizeY) % imageSizeY
-                        imageSizeY = box[3] - box[2] - imageSizeY                                                
-                        shiftY = False    
-                    else:
-                        keepGoing = False
+                    startCropX = (tileOffset[0] * PRAM.TILESIZE + pixelOffset[0])*fg.scrollSpeed + startScreenPos[0]
+                    startCropX = int(startCropX % fg.size[0])
+                    
+                    startCropY = (tileOffset[1] * PRAM.TILESIZE + pixelOffset[1])*fg.scrollSpeed + startScreenPos[1]
+                    startCropY = int(startCropY % fg.size[1])
+                                    
+                    currentScreenPos = startScreenPos
+                    currentCropX =  startCropX
+                    currentCropY = startCropY
+                    imageSizeX = box[1] - box[0] 
+                    imageSizeY = box[3] - box[2]
+                    
+                    keepGoing = True
+                    shiftX = False
+                    shiftY = False
+                    while keepGoing:
+                        if currentCropX + imageSizeX > fg.size[0]:
+                            imageSizeX = fg.size[0] - currentCropX
+                            shiftX = True
+                        if currentCropY + imageSizeY > fg.size[1]:
+                            imageSizeY = fg.size[1] - currentCropY
+                            shiftY = True
+                                                
+                        self.screen.blit(sceneryWrapper.imageDict[fg.image], 
+                                         currentScreenPos,
+                                        (currentCropX,  #image x
+                                        currentCropY, #image y                                 
+                                          imageSizeX, #image x width crop
+                                          imageSizeY)) #image y height crop   
+                        
+                        #blit across the X direction first, then shift down the Y and reset the X  
+                        if shiftX:
+                            currentScreenPos = [currentScreenPos[0] + imageSizeX, currentScreenPos[1]]
+                            currentCropX = (currentCropX + imageSizeX) % fg.size[0]
+                            imageSizeX = box[1] - box[0] - imageSizeX
+                            shiftX = False
+                        elif shiftY:
+                            currentScreenPos = [startScreenPos[0], currentScreenPos[1] + imageSizeY]
+                            currentCropX = startCropX
+                            imageSizeX = box[1] - box[0]
+                            currentCropY = (currentCropY + imageSizeY) % imageSizeY
+                            imageSizeY = box[3] - box[2] - imageSizeY                                                
+                            shiftY = False    
+                        else:
+                            keepGoing = False
                   
 #     '''
 #     Render all scenery

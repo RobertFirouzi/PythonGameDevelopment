@@ -24,7 +24,7 @@ background = [BackgroundImage(PRAM.IMAGE_PATH, PRAM.BACKGROUND_TEST, (1800,950),
 			  BackgroundImage(PRAM.IMAGE_PATH, 'treeline.png', (3000,1200), size, [(0,7200, 0, 720),(720,6480, 6480, 7200),(0, 720, 720, 7200),(6480, 7200, 720, 7200)], True, True, True)]
 			  # BackgroundImage(PRAM.IMAGE_PATH, 'vine.png', (1800,1000), size, True, True, True)]
 
-foreground = [ForegroundImage(PRAM.IMAGE_PATH, 'vine.png', (1800,1000), 1.4, True, True, True)]
+foreground = [ForegroundImage(PRAM.IMAGE_PATH, 'vine.png', (1800,1000), 1.4, [(0,7200, 0, 1500),(720,6480, 6000, 7200),(0, 720, 720, 7200),(6480, 7200, 720, 7200)],True, True, True)]
 			  
 #events triggered within the level
 levelEvents = [
