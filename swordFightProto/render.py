@@ -124,7 +124,7 @@ class Renderer():
     def renderAllForeground(self, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
         screenOffset = (tileOffset[0]*PRAM.TILESIZE + pixelOffset[0], tileOffset[1]*PRAM.TILESIZE + pixelOffset[1])
         for fg in sceneryWrapper.foreground:
-            imageOffset = (screenOffset[0]*fg.scrollSpeed%fg.size[0], screenOffset[1]*fg.scrollSpeed%fg.size[1])
+            imageOffset = (int(screenOffset[0]*fg.scrollSpeed%fg.size[0]), int(screenOffset[1]*fg.scrollSpeed%fg.size[1]))
             for vs in fg.visibleSections: #vs = (left edge, right edge, top edge, bottom edge)
                 #check if visible portion of background is on screen
                 if (vs[0] < screenOffset[0] + PRAM.DISPLAY_WIDTH and vs[1]> screenOffset[0]) and (vs[2] < screenOffset[1] + PRAM.DISPLAY_HEIGHT and vs[3]> screenOffset[1] ):
@@ -247,17 +247,12 @@ class Renderer():
                                          (y - tileOffset[1]) * PRAM.TILESIZE  - pixelOffset[1]))
                     tile.changed = False
 
-    #TODO - only blit if within a section where foreground = True, use algorithm in xhangedbg 
     def renderChangedForeground(self, renderQueue, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
         for fg in sceneryWrapper.foreground:
             for box in renderQueue:
                 for vs in fg.visibleSections:
-                    isForeground = False
                     #Check to see if this renderBox is within a visible section of the foreground
                     if vs[0] <= box[1] and vs[1]>= box[0] and vs[2] <= box[3] and vs[3] >= box[2]:
-                        isForeground = True
-                
-                    if isForeground: #trim the render box to just the visible portion of the foreground
                         visibleBox = list(box)
                         if vs[0] > box[0]:
                             visibleBox[0] = vs[0]
