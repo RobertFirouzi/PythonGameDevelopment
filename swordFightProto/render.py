@@ -63,9 +63,8 @@ class Renderer():
             imageOffset = (screenOffset[0]//bg.scrollFactorX, screenOffset[1]// bg.scrollFactorY)
             for vs in bg.visibleSections: #vs = (left edge, right edge, top edge, bottom edge)
                 #check if visible portion of background is on screen
-                if (vs[0] < screenOffset[0] + PRAM.DISPLAY_WIDTH or vs[1]> screenOffset[0]) and (
-                    vs[2] < screenOffset[1] + PRAM.DISPLAY_HEIGHT or vs[3]> screenOffset[1] ):
-                    
+                if (vs[0] < screenOffset[0] + PRAM.DISPLAY_WIDTH and vs[1]> screenOffset[0]) and (vs[2] < screenOffset[1] + PRAM.DISPLAY_HEIGHT and vs[3]> screenOffset[1]):
+                                        
                     #find boundaries of image
                     if vs[0] <= screenOffset[0]:
                         xOffset = 0
@@ -76,17 +75,16 @@ class Renderer():
                         yOffset = 0
                     else:
                         yOffset = vs[2]- screenOffset[1]
-                        
-                    if vs[1] - vs[0] + xOffset > PRAM.DISPLAY_WIDTH:
-                        xRange = PRAM.DISPLAY_WIDTH - xOffset
-                    else:
-                        xRange = vs[1] - vs[0]
 
                     #calculate size of image square to blit
-                    if vs[3] - vs[2]+ yOffset > PRAM.DISPLAY_HEIGHT:
+                    xRange = vs[1] - screenOffset[0] - xOffset                      
+                    if xRange + xOffset > PRAM.DISPLAY_WIDTH:
+                        xRange = PRAM.DISPLAY_WIDTH - xOffset
+
+                    yRange = vs[3] - screenOffset[1] - yOffset
+                    if yRange + yOffset > PRAM.DISPLAY_HEIGHT:
                         yRange = PRAM.DISPLAY_HEIGHT - yOffset
-                    else:
-                        yRange = vs[3] - vs[2]
+                       
                 
                     self.screen.blit(sceneryWrapper.imageDict[bg.image],
                                      (xOffset, yOffset), 
@@ -123,29 +121,13 @@ class Renderer():
                     xOffset = x* PRAM.TILESIZE - pixelOffset[0]
                     self.screen.blit(layoutWrapper.tileDict[tile.upper], (xOffset, yOffset))
 
-    #TODO: will change this to rendering full swatches at a time?, based on bounding boxes
     def renderAllForeground(self, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
-#         for fg in sceneryWrapper.foreground:
-#             imageOffset = ((tileOffset[0] * PRAM.TILESIZE + pixelOffset[0]) * fg.scrollSpeed, 
-#                        (tileOffset[1] * PRAM.TILESIZE + pixelOffset[1]) * fg.scrollSpeed)
-#             for y in range(PRAM.DISPLAY_TILE_HEIGHT):
-#                 yOffset = y * PRAM.TILESIZE
-#                 for x in range(PRAM.DISPLAY_TILE_WIDTH):
-#                     tile = layoutWrapper.layout[y+tileOffset[1]][x+tileOffset[0]]
-#                     if tile.foreground == True:
-#                         xOffset = x * PRAM.TILESIZE
-#                         self.screen.blit(sceneryWrapper.imageDict[fg.image],
-#                                          (xOffset, yOffset), 
-#                                         ((imageOffset[0] + xOffset) % fg.size[0], #TODO this causes a glitch at the boundries
-#                                          (imageOffset[1] + yOffset) % fg.size[1], 
-#                                          PRAM.TILESIZE, PRAM.TILESIZE))
         screenOffset = (tileOffset[0]*PRAM.TILESIZE + pixelOffset[0], tileOffset[1]*PRAM.TILESIZE + pixelOffset[1])
         for fg in sceneryWrapper.foreground:
             imageOffset = (screenOffset[0]*fg.scrollSpeed%fg.size[0], screenOffset[1]*fg.scrollSpeed%fg.size[1])
             for vs in fg.visibleSections: #vs = (left edge, right edge, top edge, bottom edge)
                 #check if visible portion of background is on screen
                 if (vs[0] < screenOffset[0] + PRAM.DISPLAY_WIDTH and vs[1]> screenOffset[0]) and (vs[2] < screenOffset[1] + PRAM.DISPLAY_HEIGHT and vs[3]> screenOffset[1] ):
-                    
                     #find boundaries of image
                     if vs[0] <= screenOffset[0]:
                         xOffset = 0
@@ -157,17 +139,15 @@ class Renderer():
                     else:
                         yOffset = vs[2]- screenOffset[1]
 
-                    #calculate size of image square to blit                        
-                    if vs[1] - vs[0] + xOffset > PRAM.DISPLAY_WIDTH:
+                    #calculate size of image square to blit  
+                    xRange = vs[1] - screenOffset[0] - xOffset                      
+                    if xRange + xOffset > PRAM.DISPLAY_WIDTH:
                         xRange = PRAM.DISPLAY_WIDTH - xOffset
-                    else:
-                        xRange = vs[1] - vs[0]
 
-                    if vs[3] - vs[2]+ yOffset > PRAM.DISPLAY_HEIGHT:
+                    yRange = vs[3] - screenOffset[1] - yOffset
+                    if yRange + yOffset > PRAM.DISPLAY_HEIGHT:
                         yRange = PRAM.DISPLAY_HEIGHT - yOffset
-                    else:
-                        yRange = vs[3] - vs[2]
-
+                        
                     currentXrange = xRange #size of block of image to blit
                     currentYrange = yRange
                     currentScreenPos = [xOffset,yOffset] #absolute screen position to blit to
@@ -205,42 +185,6 @@ class Renderer():
                             shiftY = False    
                         else:
                             keepGoing = False #you have blitted the entire visible section
-                
-#                     self.screen.blit(sceneryWrapper.imageDict[fg.image],
-#                                      (xOffset, yOffset), 
-#                                     (imageOffset[0] + xOffset, imageOffset[1] + yOffset, xRange, yRange))
-
-                        #check to see if you are at the boundries of the image, and need to tile it
-#                         while keepGoing:
-#                             if currentCropX + imageSizeX > fg.size[0]:
-#                                 imageSizeX = fg.size[0] - currentCropX
-#                                 shiftX = True
-#                             if currentCropY + imageSizeY > fg.size[1]:
-#                                 imageSizeY = fg.size[1] - currentCropY
-#                                 shiftY = True
-#                                                     
-#                             self.screen.blit(sceneryWrapper.imageDict[fg.image], 
-#                                              currentScreenPos,
-#                                             (currentCropX,  #image x
-#                                             currentCropY, #image y                                 
-#                                               imageSizeX, #image x width crop
-#                                               imageSizeY)) #image y height crop   
-#                             
-#                             #blit across the X direction first, then shift down the Y and reset the X  
-#                             if shiftX:
-#                                 currentScreenPos = [currentScreenPos[0] + imageSizeX, currentScreenPos[1]]
-#                                 currentCropX = (currentCropX + imageSizeX) % fg.size[0]
-#                                 imageSizeX = visibleBox[1] - visibleBox[0] - imageSizeX
-#                                 shiftX = False
-#                             elif shiftY:
-#                                 currentScreenPos = [startScreenPos[0], currentScreenPos[1] + imageSizeY]
-#                                 currentCropX = startCropX
-#                                 imageSizeX = visibleBox[1] - visibleBox[0]
-#                                 currentCropY = (currentCropY + imageSizeY) % imageSizeY
-#                                 imageSizeY = visibleBox[3] - visibleBox[2] - imageSizeY                                                
-#                                 shiftY = False    
-#                             else:
-#                                 keepGoing = False #you have blitted the entire visible section
 
     def renderChangedBackground(self, renderQueue, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
         screenOffset = (tileOffset[0]*PRAM.TILESIZE + pixelOffset[0], tileOffset[1]*PRAM.TILESIZE + pixelOffset[1])        
