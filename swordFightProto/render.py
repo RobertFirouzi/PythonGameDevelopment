@@ -151,6 +151,7 @@ class Renderer():
                     currentXrange = xRange #size of block of image to blit
                     currentYrange = yRange
                     currentScreenPos = [xOffset,yOffset] #absolute screen position to blit to
+                    #TODO BUG this can overshoot the image, so perhaps imageoffset should be calculated WITH the xOffset (including the %)
                     currentCropX = imageOffset[0] + xOffset #position of image to blit from
                     currentCropY = imageOffset[1] + yOffset
                     keepGoing = True
@@ -158,10 +159,10 @@ class Renderer():
                     shiftY = False
                     
                     while keepGoing:
-                        if currentCropX + xRange > fg.size[0]:
-                            currentXrange = fg.size[0] - currentCropX
+                        if currentCropX + currentXrange > fg.size[0]:  #should be currentXrange or xRange?
+                            currentXrange = fg.size[0] - currentCropX  #TODO BUG this can be negative!
                             shiftX = True
-                        if currentCropY + yRange > fg.size[1]:
+                        if currentCropY + currentYrange > fg.size[1]:
                             currentYrange = fg.size[1] - currentCropY
                             shiftY = True
 
@@ -266,7 +267,7 @@ class Renderer():
                         
                         startCropX = (tileOffset[0] * PRAM.TILESIZE + pixelOffset[0])*fg.scrollSpeed + startScreenPos[0]
                         startCropX = int(startCropX % fg.size[0])
-                        
+                          
                         startCropY = (tileOffset[1] * PRAM.TILESIZE + pixelOffset[1])*fg.scrollSpeed + startScreenPos[1]
                         startCropY = int(startCropY % fg.size[1])
                                         
