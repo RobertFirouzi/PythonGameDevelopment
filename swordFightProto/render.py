@@ -151,16 +151,16 @@ class Renderer():
                     currentXrange = xRange #size of block of image to blit
                     currentYrange = yRange
                     currentScreenPos = [xOffset,yOffset] #absolute screen position to blit to
-                    #TODO BUG this can overshoot the image, so perhaps imageoffset should be calculated WITH the xOffset (including the %)
-                    currentCropX = imageOffset[0] + xOffset #position of image to blit from
-                    currentCropY = imageOffset[1] + yOffset
+                    
+                    currentCropX = (imageOffset[0] + xOffset)%fg.size[0] #position of image to blit from
+                    currentCropY = (imageOffset[1] + yOffset)%fg.size[1]
                     keepGoing = True
                     shiftX = False
                     shiftY = False
                     
                     while keepGoing:
-                        if currentCropX + currentXrange > fg.size[0]:  #should be currentXrange or xRange?
-                            currentXrange = fg.size[0] - currentCropX  #TODO BUG this can be negative!
+                        if currentCropX + currentXrange > fg.size[0]:
+                            currentXrange = fg.size[0] - currentCropX  
                             shiftX = True
                         if currentCropY + currentYrange > fg.size[1]:
                             currentYrange = fg.size[1] - currentCropY
@@ -169,8 +169,7 @@ class Renderer():
                         self.screen.blit(sceneryWrapper.imageDict[fg.image], 
                                          currentScreenPos,
                                         (currentCropX, currentCropY, currentXrange, currentYrange)) 
-                        
-                                         
+                                                                 
                         #blit across the X direction first, then shift down the Y and reset the X  
                         if shiftX:
                             currentScreenPos = [currentScreenPos[0] + currentXrange, currentScreenPos[1]]
@@ -179,7 +178,7 @@ class Renderer():
                             shiftX = False
                         elif shiftY:
                             currentScreenPos = [xOffset, currentScreenPos[1] + currentYrange]
-                            currentCropX = imageOffset[0] + xOffset
+                            currentCropX = (imageOffset[0] + xOffset)%fg.size[0]
                             currentXrange = xRange
                             currentCropY = (currentCropY + currentYrange) % fg.size[1]
                             currentYrange = yRange - currentYrange                                                
