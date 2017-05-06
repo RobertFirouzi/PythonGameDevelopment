@@ -124,7 +124,7 @@ class Renderer():
     def renderAllForeground(self, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
         screenOffset = (tileOffset[0]*PRAM.TILESIZE + pixelOffset[0], tileOffset[1]*PRAM.TILESIZE + pixelOffset[1])
         for fg in sceneryWrapper.foreground:
-            imageOffset = (int(screenOffset[0]*fg.scrollSpeed%fg.size[0]), int(screenOffset[1]*fg.scrollSpeed%fg.size[1]))
+            imageOffset = (int(screenOffset[0]*fg.scrolling[0][1]//fg.scrolling[0][2]%fg.imageSize[0]), int(screenOffset[1]*fg.scrolling[1][1]//fg.scrolling[1][2]%fg.imageSize[1]))
             for vs in fg.visibleSections: #vs = (left edge, right edge, top edge, bottom edge)
                 #check if visible portion of background is on screen
                 if (vs[0] < screenOffset[0] + PRAM.DISPLAY_WIDTH and vs[1]> screenOffset[0]) and (vs[2] < screenOffset[1] + PRAM.DISPLAY_HEIGHT and vs[3]> screenOffset[1] ):
@@ -152,18 +152,18 @@ class Renderer():
                     currentYrange = yRange
                     currentScreenPos = [xOffset,yOffset] #absolute screen position to blit to
                     
-                    currentCropX = (imageOffset[0] + xOffset)%fg.size[0] #position of image to blit from
-                    currentCropY = (imageOffset[1] + yOffset)%fg.size[1]
+                    currentCropX = (imageOffset[0] + xOffset)%fg.imageSize[0] #position of image to blit from
+                    currentCropY = (imageOffset[1] + yOffset)%fg.imageSize[1]
                     keepGoing = True
                     shiftX = False
                     shiftY = False
                     
                     while keepGoing:
-                        if currentCropX + currentXrange > fg.size[0]:
-                            currentXrange = fg.size[0] - currentCropX  
+                        if currentCropX + currentXrange > fg.imageSize[0]:
+                            currentXrange = fg.imageSize[0] - currentCropX  
                             shiftX = True
-                        if currentCropY + currentYrange > fg.size[1]:
-                            currentYrange = fg.size[1] - currentCropY
+                        if currentCropY + currentYrange > fg.imageSize[1]:
+                            currentYrange = fg.imageSize[1] - currentCropY
                             shiftY = True
 
                         self.screen.blit(sceneryWrapper.imageDict[fg.image], 
@@ -173,14 +173,14 @@ class Renderer():
                         #blit across the X direction first, then shift down the Y and reset the X  
                         if shiftX:
                             currentScreenPos = [currentScreenPos[0] + currentXrange, currentScreenPos[1]]
-                            currentCropX = (currentCropX + currentXrange) % fg.size[0]
+                            currentCropX = (currentCropX + currentXrange) % fg.imageSize[0]
                             currentXrange = xRange - currentXrange
                             shiftX = False
                         elif shiftY:
                             currentScreenPos = [xOffset, currentScreenPos[1] + currentYrange]
-                            currentCropX = (imageOffset[0] + xOffset)%fg.size[0]
+                            currentCropX = (imageOffset[0] + xOffset)%fg.imageSize[0]
                             currentXrange = xRange
-                            currentCropY = (currentCropY + currentYrange) % fg.size[1]
+                            currentCropY = (currentCropY + currentYrange) % fg.imageSize[1]
                             currentYrange = yRange - currentYrange                                                
                             shiftY = False    
                         else:
@@ -264,11 +264,11 @@ class Renderer():
                             visibleBox[3] = vs[3]                                                                                
                         startScreenPos = (visibleBox[0] - (tileOffset[0] * PRAM.TILESIZE)  - pixelOffset[0], visibleBox[2] - (tileOffset[1] * PRAM.TILESIZE)  - pixelOffset[1])
                         
-                        startCropX = (tileOffset[0] * PRAM.TILESIZE + pixelOffset[0])*fg.scrollSpeed + startScreenPos[0]
-                        startCropX = int(startCropX % fg.size[0])
+                        startCropX = (tileOffset[0] * PRAM.TILESIZE + pixelOffset[0])*fg.scrolling[0][1]//fg.scrolling[0][2] + startScreenPos[0]
+                        startCropX = int(startCropX % fg.imageSize[0])
                           
-                        startCropY = (tileOffset[1] * PRAM.TILESIZE + pixelOffset[1])*fg.scrollSpeed + startScreenPos[1]
-                        startCropY = int(startCropY % fg.size[1])
+                        startCropY = (tileOffset[1] * PRAM.TILESIZE + pixelOffset[1])*fg.scrolling[1][1]//fg.scrolling[1][2] + startScreenPos[1]
+                        startCropY = int(startCropY % fg.imageSize[1])
                                         
                         currentScreenPos = startScreenPos
                         currentCropX =  startCropX
@@ -282,11 +282,11 @@ class Renderer():
                         
                         #check to see if you are at the boundries of the image, and need to tile it
                         while keepGoing:
-                            if currentCropX + imageSizeX > fg.size[0]:
-                                imageSizeX = fg.size[0] - currentCropX
+                            if currentCropX + imageSizeX > fg.imageSize[0]:
+                                imageSizeX = fg.imageSize[0] - currentCropX
                                 shiftX = True
-                            if currentCropY + imageSizeY > fg.size[1]:
-                                imageSizeY = fg.size[1] - currentCropY
+                            if currentCropY + imageSizeY > fg.imageSize[1]:
+                                imageSizeY = fg.imageSize[1] - currentCropY
                                 shiftY = True
                                                     
                             self.screen.blit(sceneryWrapper.imageDict[fg.image], 
@@ -299,7 +299,7 @@ class Renderer():
                             #blit across the X direction first, then shift down the Y and reset the X  
                             if shiftX:
                                 currentScreenPos = [currentScreenPos[0] + imageSizeX, currentScreenPos[1]]
-                                currentCropX = (currentCropX + imageSizeX) % fg.size[0]
+                                currentCropX = (currentCropX + imageSizeX) % fg.imageSize[0]
                                 imageSizeX = visibleBox[1] - visibleBox[0] - imageSizeX
                                 shiftX = False
                             elif shiftY:

@@ -40,8 +40,8 @@ class BackgroundImage():
         self.scrollY = scrollY
         self.alpha = alpha
         
-#         self.tileSize = (size[0]//PRAM.TILESIZE, size[1]//PRAM.TILESIZE)
         
+        #NOTE: This is the algorithm used to find the scroll speed for an image to perfeclty scroll the entire level with no tiling
         if scrollX:
             denominator = size[0] - PRAM.DISPLAY_WIDTH
             if denominator <=0:
@@ -61,47 +61,32 @@ class BackgroundImage():
         if  self.scrollFactorY == 0:  self.scrollFactorY = 1
 
     
+    '''
+    @param path: directory of image
+    @param image: filename of image
+    @param imageSize: size in pixels of image [x,y]
+    @param visibleSections: 2d array: each array is a box [left edge, right edge, top edge, bottom edge]
+    @param scrolling: [[ScrollX?, multiplier, divisor], [scrollY?, multiplier, divisor]]    
+    @param: alpha: does the image contain alpha information (e.g. invisiible pixels)
+    
+    Scroll speed can be calculated to perfectly scroll the level in the level editor, or user chosen. Formula to scroll the level is
+    X direction:
+    numerator: levelSize - displaywidth
+    denomonator: imageSize - displaywidth
+    numerator/denomonator = scroll speed in X direction to scroll the image over the entire level
+    Y direction is same using Y params and displayheight
+    NOTE if imageSize=displayWidth than set scroll speed to 0
+    The above calculates the divisor.  Multiplier makes the image scroll faster then the level, so this must be user chosen.
+    If user desires a 1.4 scroll speed, choose a multiplier of 14 and divisor of 10.
+    '''
 class ForegroundImage():
-    def __init__(self, path, image, size, scrollSpeed = 1, visibleSections = [], scrollX = False, scrollY = False, alpha = False):
+    def __init__(self, path, image, imageSize, visibleSections, scrolling = [[False,1,1],[False,1,1]], alpha = False):
         self.path = path
         self.image = image
-        self.size = size
-        self.scrollSpeed = scrollSpeed
+        self.imageSize = imageSize
         self.visibleSections = visibleSections
-        self.scrollX = scrollX
-        self.scrollY = scrollY
+        self.scrolling = scrolling
         self.alpha = alpha
-        
-        self.tileSize = (size[0]//PRAM.TILESIZE, size[1]//PRAM.TILESIZE)
-        
-        
-    def calcForegroundCrop(self,tile, cameraTile, cameraOffset):
-        if self.scrollX:
-            x = (cameraTile[0] * PRAM.TILESIZE + cameraOffset[0])*self.scrollSpeed + tile[0]*PRAM.TILESIZE
-            x = x % self.size[0]
-        else:
-            x = ((tile[0] + cameraTile[0]) % self.tileSize[0]) * PRAM.TILESIZE
-            
-        if self.scrollY:
-            y = (cameraTile[1] * PRAM.TILESIZE + cameraOffset[1])*self.scrollSpeed + tile[1]*PRAM.TILESIZE
-            y = y % self.size[1]
-        else:
-            y = ((tile[1] + cameraTile[1]) % self.tileSize[1]) * PRAM.TILESIZE        
-    
-        return ((x,y))
-
-    def calcForegroundLocation(self, location, tile):
-        if self.scrollX:
-            x = tile[0] * PRAM.TILESIZE
-        else: 
-            x = location[0]
-
-        if self.scrollY:
-            y = tile[1] * PRAM.TILESIZE
-        else:
-            y = location[1]
-        
-        return((x,y))
 
             
 '''
