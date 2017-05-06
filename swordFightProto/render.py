@@ -47,7 +47,7 @@ class Renderer():
             else:
                 self.renderChangedPanorama(gameScene.renderQueue, gameScene.sceneryWrapper.background, gameScene.sceneryWrapper.imageDict, self.cameraTile, self.cameraOffset)
                 self.renderChangedLowerTile(gameScene.renderQueue, gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                
-                self.renderActors(gameScene.actorsWrapper)
+                self.renderChangedActors(gameScene.actorsWrapper)
                 self.renderChangedUpperTile(gameScene.renderQueue, gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                 
                 self.renderChangedPanorama(gameScene.renderQueue, gameScene.sceneryWrapper.foreground, gameScene.sceneryWrapper.imageDict, self.cameraTile, self.cameraOffset)                   
             gameScene.renderQueue.clear()
@@ -64,19 +64,6 @@ class Renderer():
                     xOffset = x* PRAM.TILESIZE - pixelOffset[0]
                     self.screen.blit(layoutWrapper.tileDict[tile.lower], (xOffset, yOffset))
 
-    
-    #TODO - calculate if the actor is onscreen
-    def renderAllActors(self, actorsWrapper):
-        for actor in actorsWrapper.actors:
-            if type(actor) is SimpleBox:
-                pygame.draw.rect(self.screen, actor.color, 
-                                 pygame.Rect(actor.position[0]+PRAM.BOX_FUDGE - self.cameraPosition[0], 
-                                             actor.position[1] - self.cameraPosition[1], 
-                                             actor.size[0] - PRAM.BOX_FUDGE*2, 
-                                             actor.size[1]))
-            actor.changed = False
-        return
-    
     def renderAllUpperTile(self, layoutWrapper, tileOffset, pixelOffset):
         for y in range(PRAM.DISPLAY_TILE_HEIGHT):
             yOffset = y * PRAM.TILESIZE - pixelOffset[1]
@@ -85,6 +72,35 @@ class Renderer():
                 if tile.upper != '':
                     xOffset = x* PRAM.TILESIZE - pixelOffset[0]
                     self.screen.blit(layoutWrapper.tileDict[tile.upper], (xOffset, yOffset))
+
+    def renderChangedLowerTile(self, renderQueue, layoutWrapper, tileOffset, pixelOffset):
+        for box in renderQueue:
+            xRange = (box[0]//PRAM.TILESIZE, box[1]//PRAM.TILESIZE)
+            yRange = (box[2]//PRAM.TILESIZE, box[3]//PRAM.TILESIZE)
+            
+            for x in range(xRange[0], xRange[1]):
+                for y in range(yRange[0], yRange[1]):
+                    tile = layoutWrapper.layout[y][x]
+                    if tile.changed == False and tile.lower !='':
+                        self.screen.blit(layoutWrapper.tileDict[tile.lower], 
+                                         ((x - tileOffset[0]) * PRAM.TILESIZE  - pixelOffset[0],
+                                         (y - tileOffset[1]) * PRAM.TILESIZE  - pixelOffset[1]))
+                    tile.changed = True
+
+    def renderChangedUpperTile(self, renderQueue, layoutWrapper, tileOffset, pixelOffset):
+        for box in renderQueue:
+            xRange = (box[0]//PRAM.TILESIZE, box[1]//PRAM.TILESIZE)
+            yRange = (box[2]//PRAM.TILESIZE, box[3]//PRAM.TILESIZE)
+            
+            for x in range(xRange[0], xRange[1]):
+                for y in range(yRange[0], yRange[1]):
+                    tile = layoutWrapper.layout[y][x]
+                    if tile.changed == True and tile.upper !='':
+                        self.screen.blit(layoutWrapper.tileDict[tile.upper], 
+                                         ((x - tileOffset[0]) * PRAM.TILESIZE  - pixelOffset[0],
+                                         (y - tileOffset[1]) * PRAM.TILESIZE  - pixelOffset[1]))
+                    tile.changed = False
+                        
 
     def renderAllPanorama(self, images, imageDict, tileOffset, pixelOffset):
         screenOffset = (tileOffset[0]*PRAM.TILESIZE + pixelOffset[0], tileOffset[1]*PRAM.TILESIZE + pixelOffset[1])
@@ -151,47 +167,6 @@ class Renderer():
                         else:
                             keepGoing = False #you have blitted the entire visible section
 
-    def renderChangedLowerTile(self, renderQueue, layoutWrapper, tileOffset, pixelOffset):
-        for box in renderQueue:
-            xRange = (box[0]//PRAM.TILESIZE, box[1]//PRAM.TILESIZE)
-            yRange = (box[2]//PRAM.TILESIZE, box[3]//PRAM.TILESIZE)
-            
-            for x in range(xRange[0], xRange[1]):
-                for y in range(yRange[0], yRange[1]):
-                    tile = layoutWrapper.layout[y][x]
-                    if tile.changed == False and tile.lower !='':
-                        self.screen.blit(layoutWrapper.tileDict[tile.lower], 
-                                         ((x - tileOffset[0]) * PRAM.TILESIZE  - pixelOffset[0],
-                                         (y - tileOffset[1]) * PRAM.TILESIZE  - pixelOffset[1]))
-                    tile.changed = True
-
-    #TODO - check to see if
-    def renderChangedActors(self, actorsWrapper):
-        for actor in actorsWrapper.actors:
-            if actor.changed == True:
-                if type(actor) is SimpleBox:
-                    pygame.draw.rect(self.screen, actor.color, 
-                                     pygame.Rect(actor.position[0]+PRAM.BOX_FUDGE - self.cameraPosition[0], 
-                                                 actor.position[1] - self.cameraPosition[1], 
-                                                 actor.size[0] - PRAM.BOX_FUDGE*2, 
-                                                 actor.size[1]))
-                actor.changed = False
-        return
-    
-    def renderChangedUpperTile(self, renderQueue, layoutWrapper, tileOffset, pixelOffset):
-        for box in renderQueue:
-            xRange = (box[0]//PRAM.TILESIZE, box[1]//PRAM.TILESIZE)
-            yRange = (box[2]//PRAM.TILESIZE, box[3]//PRAM.TILESIZE)
-            
-            for x in range(xRange[0], xRange[1]):
-                for y in range(yRange[0], yRange[1]):
-                    tile = layoutWrapper.layout[y][x]
-                    if tile.changed == True and tile.upper !='':
-                        self.screen.blit(layoutWrapper.tileDict[tile.upper], 
-                                         ((x - tileOffset[0]) * PRAM.TILESIZE  - pixelOffset[0],
-                                         (y - tileOffset[1]) * PRAM.TILESIZE  - pixelOffset[1]))
-                    tile.changed = False
-
     def renderChangedPanorama(self, renderQueue, images, imageDict, tileOffset, pixelOffset):
         for fg in images:
             for box in renderQueue:
@@ -256,7 +231,35 @@ class Renderer():
                                 shiftY = False    
                             else:
                                 keepGoing = False #you have blitted the entire visible section
-                  
+
+
+    #TODO - calculate if the actor is onscreen
+    def renderAllActors(self, actorsWrapper):
+        for actor in actorsWrapper.actors:
+            if type(actor) is SimpleBox:
+                pygame.draw.rect(self.screen, actor.color, 
+                                 pygame.Rect(actor.position[0]+PRAM.BOX_FUDGE - self.cameraPosition[0], 
+                                             actor.position[1] - self.cameraPosition[1], 
+                                             actor.size[0] - PRAM.BOX_FUDGE*2, 
+                                             actor.size[1]))
+            actor.changed = False
+        return
+    
+    #TODO - check to see if
+    def renderChangedActors(self, actorsWrapper):
+        for actor in actorsWrapper.actors:
+            if actor.changed == True:
+                if type(actor) is SimpleBox:
+                    pygame.draw.rect(self.screen, actor.color, 
+                                     pygame.Rect(actor.position[0]+PRAM.BOX_FUDGE - self.cameraPosition[0], 
+                                                 actor.position[1] - self.cameraPosition[1], 
+                                                 actor.size[0] - PRAM.BOX_FUDGE*2, 
+                                                 actor.size[1]))
+                actor.changed = False
+        return
+    
+
+#TODO - scenery should be part of actors                  
 #     '''
 #     Render all scenery
 #     @param sceneryWrapper
@@ -274,22 +277,6 @@ class Renderer():
 #                                  pygame.Rect(feature.position[0], feature.position[1], 
 #                                              feature.size[0], feature.size[1]))                
 #         return
-    
-    '''
-    Render all actors
-    @param actors
-    '''
-    def renderActors(self, actorsWrapper):
-        for actor in actorsWrapper.actors:
-            if actor.changed == True:
-                if type(actor) is SimpleBox:
-                    pygame.draw.rect(self.screen, actor.color, 
-                                     pygame.Rect(actor.position[0]+PRAM.BOX_FUDGE - self.cameraPosition[0], 
-                                                 actor.position[1] - self.cameraPosition[1], 
-                                                 actor.size[0] - PRAM.BOX_FUDGE*2, 
-                                                 actor.size[1]))
-                actor.changed = False
-        return
     
     
     
