@@ -8,7 +8,7 @@ Created on Mar 4, 2017
 #create objects that would be better!
 
 import parameters as PRAM
-from scenery import SolidBackground, StaticSprite, BackgroundImage, ForegroundImage
+from scenery import SolidBackground, StaticSprite, PanoramicImage
 from actors import SimpleBox
 from event import EventSong, EventSound, EventSetInput, EventLoadLevel
 from game_level import LevelTile, LevelEvent
@@ -20,13 +20,18 @@ actors = []
 
 #Background, sprites etc
 scenery = []
-background = [BackgroundImage(PRAM.IMAGE_PATH, PRAM.BACKGROUND_TEST, (1800,950), size, [(0,7200, 0, 720),(720,6480, 6480, 7200),(0, 720, 720, 7200),(6480, 7200, 720, 7200)], True, True, False),
-			  BackgroundImage(PRAM.IMAGE_PATH, 'treeline.png', (3000,1200), size, [(0,7200, 0, 720),(720,6480, 6480, 7200),(0, 720, 720, 7200),(6480, 7200, 720, 7200)], True, True, True)]
-			  # BackgroundImage(PRAM.IMAGE_PATH, 'vine.png', (1800,1000), size, True, True, True)]
 
-fgScrolling = [[True,14,10],[True, 14, 10]]			  
+bgScrolling1= [[True,1,28],[True,1,126]]
+bgScrolling2= [[True,1,4],[True,1,21]]
+bgVisible1= [(0,7200, 0, 720),(720,6480, 6480, 7200),(0, 720, 720, 7200),(6480, 7200, 720, 7200)]
+bgVisible2= [(0,7200, 0, 720),(720,6480, 6480, 7200),(0, 720, 720, 7200),(6480, 7200, 720, 7200)]
+
+background = [PanoramicImage(PRAM.IMAGE_PATH, PRAM.BACKGROUND_TEST, (1800,950), bgVisible1, bgScrolling1, False),
+			  PanoramicImage(PRAM.IMAGE_PATH, 'treeline.png', (3000,1200), bgVisible2, bgScrolling2, True)]
+
+fgScrolling = [[True,14,10],[True, 1, 16]]			  
 fgVisible = [[0,7200, 0, 1100],[720,6480, 6100, 7200],[0, 720, 1101, 7200],[6481, 7200, 1101, 7200]] 			  
-foreground = [ForegroundImage(PRAM.IMAGE_PATH, 'vine.png', (1800,1000),fgVisible, fgScrolling,True)]
+foreground = [PanoramicImage(PRAM.IMAGE_PATH, 'vine.png', (1800,1000),fgVisible, fgScrolling,True)]
 			  
 #events triggered within the level
 levelEvents = [

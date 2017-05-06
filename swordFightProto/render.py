@@ -39,56 +39,21 @@ class Renderer():
             self.cameraPosition = gameScene.gameCamera.getPosition()
             moveFlag = gameScene.gameCamera.moveFlag
             if moveFlag == True:
-                self.renderAllBackground(gameScene.layoutWrapper,gameScene.sceneryWrapper, self.cameraTile, self.cameraOffset)
+                self.renderAllPanorama(gameScene.sceneryWrapper.background, gameScene.sceneryWrapper.imageDict, self.cameraTile, self.cameraOffset)
                 self.renderAllLowerTile(gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)
                 self.renderAllActors(gameScene.actorsWrapper)
                 self.renderAllUpperTile(gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                
-                self.renderAllForeground(gameScene.layoutWrapper,gameScene.sceneryWrapper, self.cameraTile, self.cameraOffset)                                
+                self.renderAllPanorama(gameScene.sceneryWrapper.foreground, gameScene.sceneryWrapper.imageDict, self.cameraTile, self.cameraOffset)                                
             else:
-                self.renderChangedBackground(gameScene.renderQueue, gameScene.layoutWrapper, gameScene.sceneryWrapper, self.cameraTile, self.cameraOffset)
+                self.renderChangedPanorama(gameScene.renderQueue, gameScene.sceneryWrapper.background, gameScene.sceneryWrapper.imageDict, self.cameraTile, self.cameraOffset)
                 self.renderChangedLowerTile(gameScene.renderQueue, gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                
                 self.renderActors(gameScene.actorsWrapper)
                 self.renderChangedUpperTile(gameScene.renderQueue, gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                 
-                self.renderChangedForeground(gameScene.renderQueue, gameScene.layoutWrapper, gameScene.sceneryWrapper, self.cameraTile, self.cameraOffset)                   
+                self.renderChangedPanorama(gameScene.renderQueue, gameScene.sceneryWrapper.foreground, gameScene.sceneryWrapper.imageDict, self.cameraTile, self.cameraOffset)                   
             gameScene.renderQueue.clear()
             gameScene.gameCamera.moveFlag = False       
         else:
             pass #work on menu rendering    
-
-
-    #note: tileOffset = self.cameraTile, pizelOffset = selt.cameraOffset
-    def renderAllBackground(self, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
-        screenOffset = (tileOffset[0]*PRAM.TILESIZE + pixelOffset[0], tileOffset[1]*PRAM.TILESIZE + pixelOffset[1])
-        for bg in sceneryWrapper.background:
-            imageOffset = (screenOffset[0]//bg.scrollFactorX, screenOffset[1]// bg.scrollFactorY)
-            for vs in bg.visibleSections: #vs = (left edge, right edge, top edge, bottom edge)
-                #check if visible portion of background is on screen
-                if (vs[0] < screenOffset[0] + PRAM.DISPLAY_WIDTH and vs[1]> screenOffset[0]) and (vs[2] < screenOffset[1] + PRAM.DISPLAY_HEIGHT and vs[3]> screenOffset[1]):
-                                        
-                    #find boundaries of image
-                    if vs[0] <= screenOffset[0]:
-                        xOffset = 0
-                    else:
-                        xOffset = vs[0] - screenOffset[0]
-                
-                    if vs[2] <= screenOffset[1]:
-                        yOffset = 0
-                    else:
-                        yOffset = vs[2]- screenOffset[1]
-
-                    #calculate size of image square to blit
-                    xRange = vs[1] - screenOffset[0] - xOffset                      
-                    if xRange + xOffset > PRAM.DISPLAY_WIDTH:
-                        xRange = PRAM.DISPLAY_WIDTH - xOffset
-
-                    yRange = vs[3] - screenOffset[1] - yOffset
-                    if yRange + yOffset > PRAM.DISPLAY_HEIGHT:
-                        yRange = PRAM.DISPLAY_HEIGHT - yOffset
-                       
-                
-                    self.screen.blit(sceneryWrapper.imageDict[bg.image],
-                                     (xOffset, yOffset), 
-                                    (imageOffset[0] + xOffset, imageOffset[1] + yOffset, xRange, yRange))
 
     def renderAllLowerTile(self, layoutWrapper, tileOffset, pixelOffset):
         for y in range(PRAM.DISPLAY_TILE_HEIGHT):
@@ -121,9 +86,9 @@ class Renderer():
                     xOffset = x* PRAM.TILESIZE - pixelOffset[0]
                     self.screen.blit(layoutWrapper.tileDict[tile.upper], (xOffset, yOffset))
 
-    def renderAllForeground(self, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
+    def renderAllPanorama(self, images, imageDict, tileOffset, pixelOffset):
         screenOffset = (tileOffset[0]*PRAM.TILESIZE + pixelOffset[0], tileOffset[1]*PRAM.TILESIZE + pixelOffset[1])
-        for fg in sceneryWrapper.foreground:
+        for fg in images:
             imageOffset = (int(screenOffset[0]*fg.scrolling[0][1]//fg.scrolling[0][2]%fg.imageSize[0]), int(screenOffset[1]*fg.scrolling[1][1]//fg.scrolling[1][2]%fg.imageSize[1]))
             for vs in fg.visibleSections: #vs = (left edge, right edge, top edge, bottom edge)
                 #check if visible portion of background is on screen
@@ -166,7 +131,7 @@ class Renderer():
                             currentYrange = fg.imageSize[1] - currentCropY
                             shiftY = True
 
-                        self.screen.blit(sceneryWrapper.imageDict[fg.image], 
+                        self.screen.blit(imageDict[fg.image], 
                                          currentScreenPos,
                                         (currentCropX, currentCropY, currentXrange, currentYrange)) 
                                                                  
@@ -185,26 +150,6 @@ class Renderer():
                             shiftY = False    
                         else:
                             keepGoing = False #you have blitted the entire visible section
-
-    def renderChangedBackground(self, renderQueue, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
-        screenOffset = (tileOffset[0]*PRAM.TILESIZE + pixelOffset[0], tileOffset[1]*PRAM.TILESIZE + pixelOffset[1])        
-        for bg in sceneryWrapper.background:
-            for box in renderQueue:
-                #check if the section being rendered has any background image
-                isBackground = False
-                for vs in bg.visibleSections:
-                    if vs[0] <= box[1] and vs[1]>= box[0] and vs[2] <= box[3] and vs[3] >= box[2]:
-                        isBackground = True
-                        break
-                    
-                if isBackground:
-                    screenpos = (box[0] - (tileOffset[0] * PRAM.TILESIZE)  - pixelOffset[0], box[2] - (tileOffset[1] * PRAM.TILESIZE)  - pixelOffset[1])
-                    self.screen.blit(sceneryWrapper.imageDict[bg.image], 
-                                     screenpos, 
-                                     (screenOffset[0]//bg.scrollFactorX + screenpos[0], 
-                                      screenOffset[1]//bg.scrollFactorY + screenpos[1], 
-                                       box[1] - box[0], 
-                                       box[3] - box[2]))               
 
     def renderChangedLowerTile(self, renderQueue, layoutWrapper, tileOffset, pixelOffset):
         for box in renderQueue:
@@ -247,8 +192,8 @@ class Renderer():
                                          (y - tileOffset[1]) * PRAM.TILESIZE  - pixelOffset[1]))
                     tile.changed = False
 
-    def renderChangedForeground(self, renderQueue, layoutWrapper, sceneryWrapper, tileOffset, pixelOffset):
-        for fg in sceneryWrapper.foreground:
+    def renderChangedPanorama(self, renderQueue, images, imageDict, tileOffset, pixelOffset):
+        for fg in images:
             for box in renderQueue:
                 for vs in fg.visibleSections:
                     #Check to see if this renderBox is within a visible section of the foreground
@@ -289,7 +234,7 @@ class Renderer():
                                 imageSizeY = fg.imageSize[1] - currentCropY
                                 shiftY = True
                                                     
-                            self.screen.blit(sceneryWrapper.imageDict[fg.image], 
+                            self.screen.blit(imageDict[fg.image], 
                                              currentScreenPos,
                                             (currentCropX,  #image x
                                             currentCropY, #image y                                 

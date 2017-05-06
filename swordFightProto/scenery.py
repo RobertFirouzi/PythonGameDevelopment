@@ -30,38 +30,10 @@ class SolidBackground():
         self.color=color
         return True 
 
-class BackgroundImage():
-    def __init__(self, path, image, size, levelSize = (0,0), visibleSections = [], scrollX = False, scrollY = False, alpha = False):
-        self.path = path
-        self.image = image
-        self.size = size
-        self.visibleSections = visibleSections #(left edge, right edge, top edge, bottom edge)
-        self.scrollX = scrollX
-        self.scrollY = scrollY
-        self.alpha = alpha
-        
-        
-        #NOTE: This is the algorithm used to find the scroll speed for an image to perfeclty scroll the entire level with no tiling
-        if scrollX:
-            denominator = size[0] - PRAM.DISPLAY_WIDTH
-            if denominator <=0:
-                denominator = 1
-            self.scrollFactorX = (levelSize[0] * PRAM.TILESIZE - PRAM.DISPLAY_WIDTH) // denominator
-        else:
-            self.scrollFactorX = 1
-        if  self.scrollFactorX == 0:  self.scrollFactorX = 1
-        
-        if scrollY:
-            denominator = size[1] - PRAM.DISPLAY_HEIGHT
-            if denominator <=0:
-                denominator = 1            
-            self.scrollFactorY = (levelSize[1] * PRAM.TILESIZE - PRAM.DISPLAY_HEIGHT) // denominator
-        else:
-            self.scrollFactorY = 1
-        if  self.scrollFactorY == 0:  self.scrollFactorY = 1
-
-    
     '''
+    Image that can be used as layer of background or foreground.  Can be set to tile or scroll, and
+    sections that are visible relative to the game level can be chosen
+    
     @param path: directory of image
     @param image: filename of image
     @param imageSize: size in pixels of image [x,y]
@@ -70,16 +42,20 @@ class BackgroundImage():
     @param: alpha: does the image contain alpha information (e.g. invisiible pixels)
     
     Scroll speed can be calculated to perfectly scroll the level in the level editor, or user chosen. Formula to scroll the level is
+    
     X direction:
     numerator: levelSize - displaywidth
     denomonator: imageSize - displaywidth
     numerator/denomonator = scroll speed in X direction to scroll the image over the entire level
+    
     Y direction is same using Y params and displayheight
+    
     NOTE if imageSize=displayWidth than set scroll speed to 0
+    
     The above calculates the divisor.  Multiplier makes the image scroll faster then the level, so this must be user chosen.
     If user desires a 1.4 scroll speed, choose a multiplier of 14 and divisor of 10.
     '''
-class ForegroundImage():
+class PanoramicImage():
     def __init__(self, path, image, imageSize, visibleSections, scrolling = [[False,1,1],[False,1,1]], alpha = False):
         self.path = path
         self.image = image
