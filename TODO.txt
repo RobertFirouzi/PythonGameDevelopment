@@ -1,0 +1,65 @@
+SOFTWARE DESIGN
+Write down algorithm for rendering scenery somewhere!
+In Panorama render: Var Names - need better names for each variable.  Can some of the calculations be optimized?  
+UPDATE UML diagram, make approrpiate changes to class structure
+Should the camera tile and offset be class fields for Renderer? 
+sound logging/error checking is overboard, proably don't need now that things are working well.  
+  (Assume the API is correctly used by the programmer, and trust to the unit tests?) 
+
+
+TILES
+Store as seperate arrays:  Lower, Upper, Event, Border
+	Can make it easier to combine the tile render method.  
+
+After refactoring of render, merger branch back to master
+Create a new branch to refactor the class structure
+
+TESTING:
+Render changed may have bugs not uncovered (like the overshoot/negative bug).  investigate
+Put print statements in loops to ensure not rendering more than necessary panoramas or tiles
+Experiment with smaller screen size, number of layers, etc. for speed/performance. 
+Need to eventually figure out better unit testing
+
+OPTIMIZATION
+instead of using a dictionary, use a tuple or array for quicker lookup. Maybe a numpy array.
+can create an array of Surfaces, then convert to a a tuple. 
+new branch: look into numpy for optimizing the forloops
+can have pygame only get() relevant (chosen) events from the queue
+Double Buffering?
+
+ACTORS
+Render an actor if onscreen only
+Render all actors should include the actors and the scenery images to render.  These must be sorted on Y position to get proper layering when rendering
+	will need to think of a good way to sort these optimally, or will impact performance
+
+
+TOOLS
+GIMP - learn mainly for transparency effect, then try to put in with transparency to pygame
+
+ANIMATION
+Panoramas
+Tiles
+Actors
+
+HUD
+Need a hud
+Menus
+Text Boxes (pygame tutorial has something on this)
+
+FEATURES
+need a debug window that can edit game params.  This may require a restructering of game objects 
+	(game class needs to contain everything to allow references from outside to see changes) 
+
+EVENTS
+on a load level event, need to flush the event queue to prefent incorrect events from running
+create an event type EventList which adds a list of events to the queue
+create an event type flush queue which removes any remaining events from the queue (fix the menu bug when transitioning)
+how to change tiles based on events (e.g. pull a switch to open a door)
+how to have events spaced out over frames, or timed?
+-NPC's and objects which can be interacted with
+-how to repeate an ambiant track?
+
+
+PANORAMA
+
+

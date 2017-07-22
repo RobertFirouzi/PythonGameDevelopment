@@ -38,7 +38,7 @@ class SolidBackground():
     @param image: filename of image
     @param imageSize: size in pixels of image [x,y]
     @param visibleSections: 2d array: each array is a box [left edge, right edge, top edge, bottom edge]
-    @param scrolling: [[ScrollX?, multiplier, divisor], [scrollY?, multiplier, divisor]]    
+    @param scrolling: [[Xmultiplier, Xdivisor], [Xmultiplier, Xdivisor]]    
     @param: alpha: does the image contain alpha information (e.g. invisiible pixels)
     
     Scroll speed can be calculated to perfectly scroll the level in the level editor, or user chosen. Formula to scroll the level is
@@ -56,7 +56,7 @@ class SolidBackground():
     If user desires a 1.4 scroll speed, choose a multiplier of 14 and divisor of 10.
     '''
 class PanoramicImage():
-    def __init__(self, path, image, imageSize, visibleSections, scrolling = [[False,1,1],[False,1,1]], alpha = False):
+    def __init__(self, path, image, imageSize, visibleSections, scrolling = [[1,1],[1,1]], alpha = False):
         self.path = path
         self.image = image
         self.imageSize = imageSize

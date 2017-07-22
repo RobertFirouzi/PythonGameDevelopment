@@ -34,7 +34,7 @@ class Game():
         self.gameCamera = gameCamera
         
         #explicitly name Class fields
-        self.gameEvents = []
+        self.gameEvents = [] 
         self.keydownEvents = []
         self.gameScene = None
         self.inputHandler = None
@@ -166,10 +166,10 @@ class Game():
                     
         return ActorsWrapper(actorDict, actors)
 
-    '''
-    Creates a dictionary with the reference being an image name, and the item being a
-        loaded image file.  Each unique image only needs to be loaded once
-    '''
+    
+    #Creates a dictionary with the reference being an image name, and the item being a
+    #   loaded image file.  Each unique image only needs to be loaded once
+    
     def loadImages(self, scenery, background, foreground):
         imageDict = {}
         for sprite in scenery:
@@ -208,9 +208,9 @@ class Game():
     def render(self):
         self.renderer.render(self.gameScene)  
     
-    '''
-    Halt any running events, unload any assets, etc
-    ''' 
+    
+    # Halt any running events, unload any assets, etc
+     
     def unloadScene(self):
         #TODO - empty game event queue
         self.soundPlayer.stopSound()

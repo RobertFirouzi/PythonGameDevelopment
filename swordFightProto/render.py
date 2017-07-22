@@ -24,14 +24,7 @@ class Renderer():
         self.cameraTile= (0,0)
         self.cameraOffset = (0,0)
         self.cameraPosition = (0,0)
-    
-    '''
-     1) render background.
-     2) render lower tiles 
-     3) render mid tiles
-     4) render actors
-     5) render upper tiles
-    '''
+
     def render(self, gameScene):
         if type(gameScene) is GameLevel:
             self.cameraTile = gameScene.gameCamera.getTile()
@@ -103,12 +96,19 @@ class Renderer():
                         
 
     def renderAllPanorama(self, images, imageDict, tileOffset, pixelOffset):
-        screenOffset = (tileOffset[0]*PRAM.TILESIZE + pixelOffset[0], tileOffset[1]*PRAM.TILESIZE + pixelOffset[1])
+        screenOffset = (tileOffset[0]*PRAM.TILESIZE + pixelOffset[0], 
+                        tileOffset[1]*PRAM.TILESIZE + pixelOffset[1])
         for fg in images:
-            imageOffset = (int(screenOffset[0]*fg.scrolling[0][1]//fg.scrolling[0][2]%fg.imageSize[0]), int(screenOffset[1]*fg.scrolling[1][1]//fg.scrolling[1][2]%fg.imageSize[1]))
+            imageOffset = (screenOffset[0]*fg.scrolling[0][0]//fg.scrolling[0][1]%fg.imageSize[0], 
+                           screenOffset[1]*fg.scrolling[1][0]//fg.scrolling[1][1]%fg.imageSize[1])
             for vs in fg.visibleSections: #vs = (left edge, right edge, top edge, bottom edge)
+                
                 #check if visible portion of background is on screen
-                if (vs[0] < screenOffset[0] + PRAM.DISPLAY_WIDTH and vs[1]> screenOffset[0]) and (vs[2] < screenOffset[1] + PRAM.DISPLAY_HEIGHT and vs[3]> screenOffset[1] ):
+                if (vs[0] < screenOffset[0] + PRAM.DISPLAY_WIDTH 
+                    and vs[1]> screenOffset[0] 
+                    and vs[2] < screenOffset[1] + PRAM.DISPLAY_HEIGHT 
+                    and vs[3]> screenOffset[1]):
+                    
                     #find boundaries of image
                     if vs[0] <= screenOffset[0]:
                         xOffset = 0
@@ -171,6 +171,7 @@ class Renderer():
         for fg in images:
             for box in renderQueue:
                 for vs in fg.visibleSections:
+                    
                     #Check to see if this renderBox is within a visible section of the foreground
                     if vs[0] <= box[1] and vs[1]>= box[0] and vs[2] <= box[3] and vs[3] >= box[2]:
                         visibleBox = list(box)
@@ -181,14 +182,22 @@ class Renderer():
                         if vs[2] > box[2]:
                             visibleBox[2] = vs[2]
                         if vs[3] < box[3]:
-                            visibleBox[3] = vs[3]                                                                                
-                        startScreenPos = (visibleBox[0] - (tileOffset[0] * PRAM.TILESIZE)  - pixelOffset[0], visibleBox[2] - (tileOffset[1] * PRAM.TILESIZE)  - pixelOffset[1])
+                            visibleBox[3] = vs[3]        
+                                                                                                    
+                        startScreenPos = (visibleBox[0] - (tileOffset[0]*PRAM.TILESIZE)  - pixelOffset[0], 
+                                          visibleBox[2] - (tileOffset[1]*PRAM.TILESIZE)  - pixelOffset[1])
                         
-                        startCropX = (tileOffset[0] * PRAM.TILESIZE + pixelOffset[0])*fg.scrolling[0][1]//fg.scrolling[0][2] + startScreenPos[0]
-                        startCropX = int(startCropX % fg.imageSize[0])
+                        startCropX = ((tileOffset[0]*PRAM.TILESIZE + pixelOffset[0])
+                                      * fg.scrolling[0][0]
+                                      // fg.scrolling[0][1] 
+                                      + startScreenPos[0])
+                        startCropX = startCropX % fg.imageSize[0]
                           
-                        startCropY = (tileOffset[1] * PRAM.TILESIZE + pixelOffset[1])*fg.scrolling[1][1]//fg.scrolling[1][2] + startScreenPos[1]
-                        startCropY = int(startCropY % fg.imageSize[1])
+                        startCropY = ((tileOffset[1]*PRAM.TILESIZE + pixelOffset[1])
+                                      * fg.scrolling[1][0]
+                                      // fg.scrolling[1][1] 
+                                      + startScreenPos[1])
+                        startCropY = startCropY % fg.imageSize[1]
                                         
                         currentScreenPos = startScreenPos
                         currentCropX =  startCropX
