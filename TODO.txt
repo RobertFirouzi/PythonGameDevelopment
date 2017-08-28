@@ -1,7 +1,9 @@
+GIT
+Eventually should merge the branch back to master (no other changes were maded in masterm and no other branches, so there should be no conflicts)
+
 SOFTWARE DESIGN
 Write down algorithm for rendering scenery somewhere!
 In Panorama render: Var Names - need better names for each variable.  Can some of the calculations be optimized?  
-UPDATE UML diagram, make approrpiate changes to class structure
 Should the camera tile and offset be class fields for Renderer? 
 sound logging/error checking is overboard, proably don't need now that things are working well.  
   (Assume the API is correctly used by the programmer, and trust to the unit tests?) 
