@@ -1,5 +1,8 @@
+LEVEL EDITOR
+Time to whip up a new test level with the correct formatting, remove the debugging ugliness from game to mod the level
+
 GIT
-Eventually should merge the branch back to master (no other changes were maded in masterm and no other branches, so there should be no conflicts)
+8/27 Merged Refactor/Render to Master - Github.com claims render is ahead of Master, but this seems false (still don't delete for now)
 
 SOFTWARE DESIGN
 Write down algorithm for rendering scenery somewhere!
@@ -8,13 +11,11 @@ Should the camera tile and offset be class fields for Renderer?
 sound logging/error checking is overboard, proably don't need now that things are working well.  
   (Assume the API is correctly used by the programmer, and trust to the unit tests?) 
 
-
 TILES
-Store as seperate arrays:  Lower, Upper, Event, Border
+Store as seperate arrays:  Lower, Upper, Event(make this a list to allow multiple events), Border
 	Can make it easier to combine the tile render method.  
-
-After refactoring of render, merger branch back to master
-Create a new branch to refactor the class structure
+Store the images in a tuple for lookup, rather than a dictionary.  Use an index into the tuple (quicker than hashing a dictionary)
+Each level should have a key to load the images {index: tile path}.  Do not need to iterate through all tiles, just load the tiles from the key
 
 TESTING:
 Render changed may have bugs not uncovered (like the overshoot/negative bug).  investigate
@@ -23,9 +24,10 @@ Experiment with smaller screen size, number of layers, etc. for speed/performanc
 Need to eventually figure out better unit testing
 
 OPTIMIZATION
-instead of using a dictionary, use a tuple or array for quicker lookup. Maybe a numpy array.
+from time time() method can be used to test certain modules for speed
+instead of using a dictionary, use a tuple or array for quicker lookup.
+	NUMPY does not appear faster in basic list iteration
 can create an array of Surfaces, then convert to a a tuple. 
-new branch: look into numpy for optimizing the forloops
 can have pygame only get() relevant (chosen) events from the queue
 Double Buffering?
 
@@ -33,7 +35,6 @@ ACTORS
 Render an actor if onscreen only
 Render all actors should include the actors and the scenery images to render.  These must be sorted on Y position to get proper layering when rendering
 	will need to think of a good way to sort these optimally, or will impact performance
-
 
 TOOLS
 GIMP - learn mainly for transparency effect, then try to put in with transparency to pygame
@@ -63,5 +64,3 @@ how to have events spaced out over frames, or timed?
 
 
 PANORAMA
-
-
