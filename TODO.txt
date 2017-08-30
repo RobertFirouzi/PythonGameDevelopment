@@ -16,7 +16,7 @@ Store as seperate arrays:  Lower, Upper, Event(make this a list to allow multipl
 	Can make it easier to combine the tile render method.  
 Store the images in a tuple for lookup, rather than a dictionary.  Use an index into the tuple (quicker than hashing a dictionary)
 Each level should have a key to load the images {index: tile path}.  Do not need to iterate through all tiles, just load the tiles from the key
-
+	eventually modify to make a pallete which slices are taken from rather than individual squares?
 TESTING:
 Render changed may have bugs not uncovered (like the overshoot/negative bug).  investigate
 Put print statements in loops to ensure not rendering more than necessary panoramas or tiles
@@ -30,7 +30,7 @@ instead of using a dictionary, use a tuple or array for quicker lookup.
 can create an array of Surfaces, then convert to a a tuple. 
 can have pygame only get() relevant (chosen) events from the queue
 Double Buffering?
-
+Get rid of tyiple quotes ''' as these are strings not comments
 ACTORS
 Render an actor if onscreen only
 Render all actors should include the actors and the scenery images to render.  These must be sorted on Y position to get proper layering when rendering
