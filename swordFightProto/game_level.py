@@ -16,6 +16,33 @@ Data container class for a game level, contained within the game object
 import utility as UTIL
 import parameters as PRAM
 
+class LevelData():
+    def __init__(self,
+                 size = (10,10), 
+                 tileMap = '', #filename of a jpg of all tiles
+                 lowerTiles = [], #displayed below all actors
+                 upperTiles = [], #displayed above all actors
+                 borders = [], #4 bits, one to represent each direction
+                 eventTiles = {}, #Events are indexed based on coordiante pairs                 
+                 actors = [], #static or dynamic, displayed in order of Y coords
+                 backgrounds = [], #list of background objects
+                 foregrounds = [], #list of foreground objects
+                 gameEvents = [] #added to event queue on level load
+                 ):
+        self.size = size
+        self.tileMap = tileMap
+        self.lowerTiles = lowerTiles
+        self.upperTiles = upperTiles
+        self.borders = borders
+        self.eventTiles = eventTiles
+        self.actors = actors
+        self.backgrounds = backgrounds
+        self.foregrounds = foregrounds
+        self.gameEvents = gameEvents
+        
+        
+        pass
+    
 class GameLevel():
     def __init__(self,
                  size = (10,10), 
