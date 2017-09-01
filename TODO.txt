@@ -1,3 +1,12 @@
+TILEMAP CALCULATIONS:
+DON't WANT to do a multiply or divide to find the map coordiantes evertime
+calculate them after creating the tile map for the level
+eg
+if the tile map # is 3, then the cooridnates are (48*2=96, 0*48=0) = (96,0)
+then would blit from lower (96,0) square of (48,48) to calculated position
+
+MAKE THE INNER ARRAYS A TUPLE AS WELL
+
 LEVEL EDITOR
 Time to whip up a new test level with the correct formatting, remove the debugging ugliness from game to mod the level
 
@@ -10,6 +19,12 @@ In Panorama render: Var Names - need better names for each variable.  Can some o
 Should the camera tile and offset be class fields for Renderer? 
 sound logging/error checking is overboard, proably don't need now that things are working well.  
   (Assume the API is correctly used by the programmer, and trust to the unit tests?) 
+
+RENDER
+	store layout and tile maps as class fields in Renderer (updated on a load level)
+
+GAMELEVEL
+	maye not need actors wrapper, but will need a sprite dictionary
 
 TILES
 Store as seperate arrays:  Lower, Upper, Event(make this a list to allow multiple events), Border

@@ -1,11 +1,40 @@
 from game_level import LevelData #@UndefinedVariable
 
-FILENAME = 'Level_'
-WIDTH = 15
+'''
+This will create a simple practice level
+blank border, with trees intersperced
+
+'''
+
+FILENAME = 'Level_test_3'
+WIDTH = 20
 HEIGHT = 15
-BORDER = 2
-TREESPACING = 9
-TILEMAP = ''
+BORDER = 3
+TREESPACING = 5
+LOWER_TILEMAP = 'lower.bmp'
+UPPER_TILEMAP = 'upper.bmp'
+
+BLANK_TILE = 0
+GROUND_TILE = 1
+BARRIER_TILE = 2
+OVERHEAD_TILE = 1
+
+'''
+Barriers
+  0
+1   2
+  3
+represents bit position in 4 bit string
+1 for barrier in that direction
+EG
+if a tile cannot be entered from the left =0b0010
+if i tile cannot be entered from left or bottom = 0b1010  
+'''
+CLEAR =  0b0000 #0
+TOP =    0b0001 #1
+LEFT =   0b0010 #2
+RIGHT =  0b0100 #4
+BOTTOM = 0b1000 #8
 
 backgrounds = []
 foregrounds = []
@@ -14,74 +43,80 @@ actors = []
 
 #Lower tiles are an array of ints, the ints are a key to the correct tile in the tilemap
 def createLower():
-    row = []
-    zerosRow = []
-    matrix = []
-        
-    for i in range(WIDTH):
-        if i > BORDER and i < WIDTH - BORDER - 1:
-            row.append(1)
-        else:
-            row.append(0) #create a blank border 15 wide each side
-        zerosRow.append(0)
+    matrix = [ [GROUND_TILE] * WIDTH for _ in range(HEIGHT)]
         
     for i in range(HEIGHT):
-        if i > BORDER and i < HEIGHT - BORDER - 1:
-            matrix.append(row)
-        else:
-            matrix.append(zerosRow)#create a blank border 15 wide each side
+        for j in range(WIDTH):
+            if i < BORDER or i >= HEIGHT - BORDER or j < BORDER or j >= WIDTH-BORDER:
+                matrix[i][j] = BLANK_TILE
     
     #add trees
     for i in range(HEIGHT):
-        if i % TREESPACING == 0 and i > BORDER and i < WIDTH - BORDER:
+        if i % TREESPACING == 0 and i > BORDER and i < HEIGHT - BORDER:
             for j in range(WIDTH):
-                if j % TREESPACING == 0 and j > BORDER and j < HEIGHT - BORDER:
-                    if j < HEIGHT - 4:
-                        matrix[i+2][j] = 2 #2 will be the tree trunk 
-                        matrix[i+3][j+3] = 2
+                if j % TREESPACING == 0 and j > BORDER and j < WIDTH - BORDER:
+                    if i < HEIGHT - 4:
+                        matrix[i+2][j] = BARRIER_TILE 
+                        matrix[i+3][j] = BARRIER_TILE
                                
     return tuple(matrix)
 
 #Upper tiles are an array of ints, the ints are a key to the correct tile in the tilemap    
 def createUpper():
-    row = []
-    matrix = []
-    for i in range(WIDTH):
-        row.append(0) #upper is mostly blank      
-    for i in range(HEIGHT):
-            matrix.append(row)
-    
+    matrix = [ [BLANK_TILE] * WIDTH for _ in range(HEIGHT)]
+            
     #add trees
     for i in range(HEIGHT):
-        if i % TREESPACING == 0 and i > BORDER and i < WIDTH - BORDER:
+        if i % TREESPACING == 0 and i > BORDER and i < HEIGHT - BORDER:
             for j in range(WIDTH):
-                if j % TREESPACING == 0 and j > BORDER and j < HEIGHT - BORDER:
-                    if j < HEIGHT - 2:
-                        matrix[i][j] = 1 #1 will be the tree leaves
-                        matrix[i+1][j] = 1
-    
+                if j % TREESPACING == 0 and j > BORDER and j < WIDTH - BORDER:
+                    if i < HEIGHT - 4:
+                        matrix[i][j] = OVERHEAD_TILE 
+                        matrix[i+1][j] = OVERHEAD_TILE
+                               
     return tuple(matrix)
 
 #border tiles are an array of 4bit sequences, if the bit is 1, that direction is not traversable on this tile
-def createBorders():
-    pass
+def createBorders(lowerTiles):
+    matrix = [ [CLEAR] * WIDTH for _ in range(HEIGHT)]
+        
+    for i in range(HEIGHT):
+        for j in range(WIDTH):
+            if i == 0:
+                matrix[i][j] |= BOTTOM
+            if i == HEIGHT-1:
+                matrix[i][j] |= TOP      
+            if j == 0:
+                matrix[i][j] |= RIGHT          
+            if j == WIDTH - 1:
+                matrix[i][j] |= LEFT   
+            if lowerTiles[i][j] == BARRIER_TILE:
+                matrix[i][j] |= LEFT | RIGHT | TOP | BOTTOM   
+                       
+    return tuple(matrix)
 
 def saveAsJson(filename = 'level'):
     pass
 
-levelData = LevelData((WIDTH,HEIGHT), TILEMAP)
-levelData.lowerTiles = createLower()
-levelData.upperTiles = createUpper()
-levelData.borders = createBorders()
-levelData.backgrounds = backgrounds
-levelData.foregrounds = foregrounds
-levelData.gameEvents = gameEvents
 
 #this will only run if the module is run as the main module, not if imported.
 if __name__ == '__main__':
+    levelData = LevelData((WIDTH,HEIGHT), TILEMAP)
+    levelData.lowerTiles = createLower()
+    levelData.upperTiles = createUpper()
+    levelData.borders = createBorders(levelData.lowerTiles)
+    levelData.backgrounds = backgrounds
+    levelData.foregrounds = foregrounds
+    levelData.gameEvents = gameEvents
     saveAsJson(FILENAME)
-    print(levelData.lowerTiles)
-    print(levelData.upperTiles)
+    for i in range(len(levelData.lowerTiles)):
+        print(levelData.lowerTiles[i])
+    print('')
+    for i in range(len(levelData.lowerTiles)):
+        print(levelData.upperTiles[i])    
+    print('')
+    for i in range(len(levelData.lowerTiles)):
+        print(levelData.borders[i])   
     
     
     

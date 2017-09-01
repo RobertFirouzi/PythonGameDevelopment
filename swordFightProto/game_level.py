@@ -19,7 +19,8 @@ import parameters as PRAM
 class LevelData():
     def __init__(self,
                  size = (10,10), 
-                 tileMap = '', #filename of a jpg of all tiles
+                 lowerTileMap = '', #filename of a jpg of all lower tiles
+                 uppderTileMap = '', #filename of a jpg of all lower tiles
                  lowerTiles = [], #displayed below all actors
                  upperTiles = [], #displayed above all actors
                  borders = [], #4 bits, one to represent each direction
@@ -30,7 +31,8 @@ class LevelData():
                  gameEvents = [] #added to event queue on level load
                  ):
         self.size = size
-        self.tileMap = tileMap
+        self.lowerTileMap = lowerTileMap
+        self.uppderTileMap = uppderTileMap
         self.lowerTiles = lowerTiles
         self.upperTiles = upperTiles
         self.borders = borders

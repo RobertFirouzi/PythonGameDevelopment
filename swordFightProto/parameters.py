@@ -28,6 +28,8 @@ of scrolling
 DISPLAY_WIDTH = 1600 
 DISPLAY_HEIGHT = 900 
 TILESIZE = 48
+TILEMAP_MAX_WIDTH = 8 #tiles
+TILEMAP_MAX_HEIGHT = 20 # tiles 8*20 = 160 lower tiles and 160 upper tiles per map
 DISPLAY_TILE_WIDTH = DISPLAY_WIDTH // TILESIZE + 2 #make sure to render tiles on the edge
 DISPLAY_TILE_HEIGHT = DISPLAY_HEIGHT // TILESIZE + 2
 #determine when to pan the camera with the char
