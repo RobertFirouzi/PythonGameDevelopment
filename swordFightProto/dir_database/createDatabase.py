@@ -1,0 +1,133 @@
+import sqlite3 as SQ3
+
+DB = 'C:\\Users\\Robert\\repositories\\gameDev\\swordFightProto\\dir_database\\db_CharmQuark.sqlite'
+
+TYPE_INT = 'INTEGER'
+TYPE_TEXT = 'TEXT'
+TYPE_BLOB = 'BLOB'
+
+### LEVEL TABLE ###
+table_LevelData = 'LevelData'
+col_levelIndex = 'level_index' #primary key
+col_name = 'name' 
+col_height = 'height' #int
+col_width = 'width' #int
+col_lower_tiles = 'lower_tiles' #list of integers which will be converted to coordinates in pygame
+col_upper_tiles = 'upper_tiles' #list of integers which will be converted to coordinates in pygame
+col_borders = 'borders' #list
+
+### TILEMAP TABLE ###
+table_TileMaps = 'TileMaps' 
+col_tileIndex = 'tilemap_index' #primary key
+col_levelKey = 'level_key'
+col_filepath = 'file_path'
+col_tileSize = 'tile_size'
+#col height, in tiles
+#col width, in tiles
+col_type = 'type' #eg lower, upper...
+
+### LEVELEVENTS TABLE ###
+table_LevelEvents = 'LevelEvents'
+# col_levelKey = 'level_key'
+
+### GAMEEVENTS TABLE ###
+table_GameEvents = 'GameEvents'
+# col_levelKey = 'level_key'
+
+### ACTORS TABLE ###
+table_Actors = 'Actors'
+# col_levelKey = 'level_key'
+
+### BACKGROUNDS TABLE ###
+table_Backgrounds = 'Backgrounds'
+col_backgroundsIndex = 'background_index' #primary key
+# col_levelKey = 'level_key'
+# col_filepath = 'file_path'
+# col_height = 'height' - pixels
+# col_width = 'width'  - pixels
+col_layer = 'layer' #int to determine layer, 0 is bottom layer
+
+### FOREGROUNDS TABLE ###
+table_Foregrounds = 'Forerounds'
+col_foregroundsIndex = 'foreground_index' #primary key
+# col_levelKey = 'level_key'
+# col_filepath = 'file_path'
+# col_height = 'height' - pixels
+# col_width = 'width'  - pixels
+# col_layer = 'layer' #int to determine layer, 0 is bottom layer
+
+def addColumn(db, table, col, type):
+	query = "ALTER TABLE {} ADD COLUMN '{}' {}".format(table, col, type)
+	
+	conn = SQ3.connect(db)
+	conn.execute(query)
+	conn.commit()
+	conn.close()
+
+#creates a table with 1 column (as the primary key if true)
+def createTable(db, table, col, type, primaryKey = True):
+	if primaryKey:
+		query = 'CREATE TABLE {} ({} {} PRIMARY KEY)'.format(table, col, type)
+	else:
+		query = 'CREATE TABLE {} ({} {})'.format(table, col, type)		
+	conn = SQ3.connect(db)
+	conn.execute(query)
+	conn.commit()
+	conn.close()
+
+#Builds all tables for CharmQuark database
+def createDatabase():
+	setupLevelDataTable()
+	setupTilemapTable()
+	setupBackgroundsTable()
+	setupForegroundsTable()	
+	setupLevelEventsTable()
+	setupGameEventsTable()	
+	setupActorsTable()	
+
+def setupActorsTable():
+	createTable(DB, table_Actors, col_levelKey, TYPE_INT, False)	
+
+def setupForegroundsTable():
+	createTable(DB, table_Foregrounds, col_foregroundsIndex, TYPE_INT)
+	addColumn(DB, table_Foregrounds, col_levelKey, TYPE_INT)	
+	addColumn(DB, table_Foregrounds, col_filepath, TYPE_TEXT)	
+	addColumn(DB, table_Foregrounds, col_height, TYPE_INT)	
+	addColumn(DB, table_Foregrounds, col_width, TYPE_INT)	
+	addColumn(DB, table_Foregrounds, col_layer, TYPE_INT)	
+	#TODO - what columns needed for foregrounds?
+	
+def setupBackgroundsTable():
+	createTable(DB, table_Backgrounds, col_backgroundsIndex, TYPE_INT)
+	addColumn(DB, table_Backgrounds, col_levelKey, TYPE_INT)	
+	addColumn(DB, table_Backgrounds, col_filepath, TYPE_TEXT)	
+	addColumn(DB, table_Backgrounds, col_height, TYPE_INT)	
+	addColumn(DB, table_Backgrounds, col_width, TYPE_INT)	
+	addColumn(DB, table_Backgrounds, col_layer, TYPE_INT)		
+
+def setupGameEventsTable():
+	createTable(DB, table_GameEvents, col_levelKey, TYPE_INT, False)
+	
+def setupLevelEventsTable():
+	createTable(DB, table_LevelEvents, col_levelKey, TYPE_INT, False)	
+	
+def setupTilemapTable():
+	createTable(DB, table_TileMaps, col_tileIndex, TYPE_INT)
+	addColumn(DB, table_TileMaps, col_levelKey, TYPE_INT)		
+	addColumn(DB, table_TileMaps, col_filepath, TYPE_TEXT)
+	addColumn(DB, table_TileMaps, col_tileSize, TYPE_INT)
+	addColumn(DB, table_TileMaps, col_height, TYPE_INT)
+	addColumn(DB, table_TileMaps, col_width, TYPE_INT)
+	addColumn(DB, table_TileMaps, col_filepath, TYPE_TEXT)
+	
+def setupLevelDataTable():
+	createTable(DB, table_LevelData, col_levelIndex, TYPE_INT)
+	addColumn(DB, table_LevelData, col_name, TYPE_TEXT)	
+	addColumn(DB, table_LevelData, col_height, TYPE_INT)	
+	addColumn(DB, table_LevelData, col_width, TYPE_INT)	
+	addColumn(DB, table_LevelData, col_lower_tiles, TYPE_BLOB)	
+	addColumn(DB, table_LevelData, col_upper_tiles, TYPE_BLOB)	
+	addColumn(DB, table_LevelData, col_borders, TYPE_BLOB)		
+	
+	
+# createDatabase()
