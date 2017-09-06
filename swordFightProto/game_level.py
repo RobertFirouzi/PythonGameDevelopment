@@ -15,6 +15,7 @@ Data container class for a game level, contained within the game object
 
 import utility as UTIL
 import parameters as PRAM
+import database
 
 class LevelData():
     def __init__(self,
@@ -25,7 +26,7 @@ class LevelData():
                  upperTiles = [], #displayed above all actors
                  borders = [], #4 bits, one to represent each direction
                  eventTiles = {}, #Events are indexed based on coordiante pairs                 
-                 actors = [], #static or dynamic, displayed in order of Y coords
+                 actorsWrapper = None, #static or dynamic, displayed in order of Y coords
                  backgrounds = [], #list of background objects
                  foregrounds = [], #list of foreground objects
                  gameEvents = [] #added to event queue on level load
@@ -37,14 +38,46 @@ class LevelData():
         self.upperTiles = upperTiles
         self.borders = borders
         self.eventTiles = eventTiles
-        self.actors = actors
-        self.backgrounds = backgrounds
+        self.actorsWrapper = actorsWrapper #contains the array of sprites, and list of actors
+        self.backgrounds = backgrounds #list of background objects
         self.foregrounds = foregrounds
         self.gameEvents = gameEvents
-        
-        
+    
+    
+    def loadLevel(self):
+        self.loadLevelData()
+        self.loadTileMaps()
+        self.loadLevelEvents()
+        self.loadGameEvents()
+        self.loadActors()
+        self.loadBackgrounds()
+        self.loadForegrounds()
+    
+    def loadLevelData(self):
+        data = database.getLevelData(0)
+    
+    def loadTileMaps(self):
         pass
     
+    def loadLevelEvents(self):
+        pass
+
+    def loadGameEvents(self):
+        pass
+    
+    def loadActors(self):
+        pass
+    
+    def loadBackgrounds(self):
+        pass
+    
+    def loadForegrounds(self):
+        pass
+    
+    
+        
+
+#Deprecated 9/5/2017    
 class GameLevel():
     def __init__(self,
                  size = (10,10), 

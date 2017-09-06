@@ -56,6 +56,20 @@ col_foregroundsIndex = 'foreground_index' #primary key
 # col_width = 'width'  - pixels
 # col_layer = 'layer' #int to determine layer, 0 is bottom layer
 
+#columNames should be a string of comma seperated column names 
+#data should be a string of comma seperated values
+def addRow(db, table, columNames, data):
+	query = "INSERT INTO {} ({}) VALUES ({})".format(table, columNames, data)
+	
+	conn = SQ3.connect(db)
+	try:
+		conn.execute(query)
+	except Exception as e:
+		print('Exception caught: ' +str(e))
+		
+	conn.commit()
+	conn.close()
+
 def addColumn(db, table, col, type):
 	query = "ALTER TABLE {} ADD COLUMN '{}' {}".format(table, col, type)
 	
@@ -75,6 +89,11 @@ def createTable(db, table, col, type, primaryKey = True):
 	conn.commit()
 	conn.close()
 
+def addLevelDataRow(name='level_', height=10, width=10, lower_tiles = [], upper_tiles=[], borders=[]):
+    colNames = 'name, height, width, lower_tiles, upper_tiles, borders'
+    data = "'"+str(name)+"',"+str(height)+","+str(width)+",'"+str(lower_tiles)+"','"+str(upper_tiles)+"','"+str(borders)+"'"
+    addRow(DB, table_LevelData, colNames, data)
+	
 #Builds all tables for CharmQuark database
 def createDatabase():
 	setupLevelDataTable()
@@ -131,3 +150,5 @@ def setupLevelDataTable():
 	
 	
 # createDatabase()
+# addLevelDataRow('addTest3', 20,24,[1,0,1,5,1],[0,2,3,0,0],[3,56,7,7,12])
+#TODO, query the DB

@@ -1,4 +1,7 @@
 from game_level import LevelData #@UndefinedVariable
+import sys
+sys.path.append("C:\\Users\\Robert\\repositories\\gameDev\\swordFightProto\\dir_database\\")
+import createDatabase as DB #@UndefinedVariable
 
 '''
 This will create a simple practice level
@@ -7,10 +10,10 @@ blank border, with trees intersperced
 '''
 
 FILENAME = 'Level_test_3'
-WIDTH = 20
-HEIGHT = 15
-BORDER = 3
-TREESPACING = 5
+WIDTH = 150
+HEIGHT = 150
+BORDER = 20
+TREESPACING = 11
 LOWER_TILEMAP = 'lower.bmp'
 UPPER_TILEMAP = 'upper.bmp'
 
@@ -95,28 +98,30 @@ def createBorders(lowerTiles):
                        
     return tuple(matrix)
 
-def saveAsJson(filename = 'level'):
-    pass
+def saveLevelData(levelData):
+    DB.addLevelDataRow(FILENAME, levelData.size[0], levelData.size[1], levelData.lowerTiles, levelData.upperTiles,levelData.borders)
 
 
 #this will only run if the module is run as the main module, not if imported.
 if __name__ == '__main__':
-    levelData = LevelData((WIDTH,HEIGHT), TILEMAP)
+    levelData = LevelData((WIDTH,HEIGHT), '','')
     levelData.lowerTiles = createLower()
     levelData.upperTiles = createUpper()
     levelData.borders = createBorders(levelData.lowerTiles)
-    levelData.backgrounds = backgrounds
-    levelData.foregrounds = foregrounds
-    levelData.gameEvents = gameEvents
-    saveAsJson(FILENAME)
-    for i in range(len(levelData.lowerTiles)):
-        print(levelData.lowerTiles[i])
-    print('')
-    for i in range(len(levelData.lowerTiles)):
-        print(levelData.upperTiles[i])    
-    print('')
-    for i in range(len(levelData.lowerTiles)):
-        print(levelData.borders[i])   
+#     levelData.backgrounds = backgrounds
+#     levelData.foregrounds = foregrounds
+#     levelData.gameEvents = gameEvents
+
+#     for i in range(len(levelData.lowerTiles)):
+#         print(levelData.lowerTiles[i])
+#     print('')
+#     for i in range(len(levelData.lowerTiles)):
+#         print(levelData.upperTiles[i])    
+#     print('')
+#     for i in range(len(levelData.lowerTiles)):
+#         print(levelData.borders[i])   
+    saveLevelData(levelData)
+    print('complete')
     
     
     

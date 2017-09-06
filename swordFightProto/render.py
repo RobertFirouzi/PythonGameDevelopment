@@ -254,7 +254,7 @@ class Renderer():
             actor.changed = False
         return
     
-    #TODO - check to see if
+    #TODO 
     def renderChangedActors(self, actorsWrapper):
         for actor in actorsWrapper.actors:
             if actor.changed == True:

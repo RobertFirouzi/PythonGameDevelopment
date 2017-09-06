@@ -1,3 +1,9 @@
+PROJECT CharmQuark 
+
+Move GameLevel() addRenderBox() to Render class
+Render Class contains the LevelData
+
+
 TILEMAP CALCULATIONS:
 DON't WANT to do a multiply or divide to find the map coordiantes evertime
 calculate them after creating the tile map for the level
@@ -10,9 +16,6 @@ MAKE THE INNER ARRAYS A TUPLE AS WELL
 LEVEL EDITOR
 Time to whip up a new test level with the correct formatting, remove the debugging ugliness from game to mod the level
 
-GIT
-8/27 Merged Refactor/Render to Master - Github.com claims render is ahead of Master, but this seems false (still don't delete for now)
-
 SOFTWARE DESIGN
 Write down algorithm for rendering scenery somewhere!
 In Panorama render: Var Names - need better names for each variable.  Can some of the calculations be optimized?  
@@ -23,12 +26,7 @@ sound logging/error checking is overboard, proably don't need now that things ar
 RENDER
 	store layout and tile maps as class fields in Renderer (updated on a load level)
 
-GAMELEVEL
-	maye not need actors wrapper, but will need a sprite dictionary
-
 TILES
-Store as seperate arrays:  Lower, Upper, Event(make this a list to allow multiple events), Border
-	Can make it easier to combine the tile render method.  
 Store the images in a tuple for lookup, rather than a dictionary.  Use an index into the tuple (quicker than hashing a dictionary)
 Each level should have a key to load the images {index: tile path}.  Do not need to iterate through all tiles, just load the tiles from the key
 	eventually modify to make a pallete which slices are taken from rather than individual squares?
