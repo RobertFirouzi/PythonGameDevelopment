@@ -1,5 +1,9 @@
 PROJECT CharmQuark 
 
+9/9/17 Left off at load tilemaps
+Create a larger tilemap to test the algorithms, most of the tiles can be the same and 
+can adjust the level creator to select a random number to correspond to same tile
+
 Move GameLevel() addRenderBox() to Render class
 Render Class contains the LevelData
 
@@ -36,7 +40,11 @@ Put print statements in loops to ensure not rendering more than necessary panora
 Experiment with smaller screen size, number of layers, etc. for speed/performance. 
 Need to eventually figure out better unit testing
 
+DATABASE:
+store blobs instead of strings
+
 OPTIMIZATION
+PRAMS all integers not strings
 from time time() method can be used to test certain modules for speed
 instead of using a dictionary, use a tuple or array for quicker lookup.
 	NUMPY does not appear faster in basic list iteration

@@ -2,6 +2,7 @@ from game_level import LevelData #@UndefinedVariable
 import sys
 sys.path.append("C:\\Users\\Robert\\repositories\\gameDev\\swordFightProto\\dir_database\\")
 import createDatabase as DB #@UndefinedVariable
+import pickle
 
 '''
 This will create a simple practice level
@@ -62,7 +63,7 @@ def createLower():
                         matrix[i+2][j] = BARRIER_TILE 
                         matrix[i+3][j] = BARRIER_TILE
                                
-    return tuple(matrix)
+    return matrix
 
 #Upper tiles are an array of ints, the ints are a key to the correct tile in the tilemap    
 def createUpper():
@@ -77,7 +78,7 @@ def createUpper():
                         matrix[i][j] = OVERHEAD_TILE 
                         matrix[i+1][j] = OVERHEAD_TILE
                                
-    return tuple(matrix)
+    return matrix
 
 #border tiles are an array of 4bit sequences, if the bit is 1, that direction is not traversable on this tile
 def createBorders(lowerTiles):
@@ -96,7 +97,7 @@ def createBorders(lowerTiles):
             if lowerTiles[i][j] == BARRIER_TILE:
                 matrix[i][j] |= LEFT | RIGHT | TOP | BOTTOM   
                        
-    return tuple(matrix)
+    return matrix
 
 def saveLevelData(levelData):
     DB.addLevelDataRow(FILENAME, levelData.size[0], levelData.size[1], levelData.lowerTiles, levelData.upperTiles,levelData.borders)

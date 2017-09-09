@@ -1,4 +1,6 @@
 import sqlite3 as SQ3
+import pickle
+import json
 
 DB = 'C:\\Users\\Robert\\repositories\\gameDev\\swordFightProto\\dir_database\\db_CharmQuark.sqlite'
 
@@ -7,7 +9,7 @@ TYPE_TEXT = 'TEXT'
 TYPE_BLOB = 'BLOB'
 
 ### LEVEL TABLE ###
-table_LevelData = 'LevelData'
+table_LevelData = 'Levels'
 col_levelIndex = 'level_index' #primary key
 col_name = 'name' 
 col_height = 'height' #int
@@ -60,7 +62,7 @@ col_foregroundsIndex = 'foreground_index' #primary key
 #data should be a string of comma seperated values
 def addRow(db, table, columNames, data):
 	query = "INSERT INTO {} ({}) VALUES ({})".format(table, columNames, data)
-	
+	print(query)
 	conn = SQ3.connect(db)
 	try:
 		conn.execute(query)
@@ -91,7 +93,7 @@ def createTable(db, table, col, type, primaryKey = True):
 
 def addLevelDataRow(name='level_', height=10, width=10, lower_tiles = [], upper_tiles=[], borders=[]):
     colNames = 'name, height, width, lower_tiles, upper_tiles, borders'
-    data = "'"+str(name)+"',"+str(height)+","+str(width)+",'"+str(lower_tiles)+"','"+str(upper_tiles)+"','"+str(borders)+"'"
+    data = '"'+str(name)+'",'+str(height)+',"'+str(width)+'","'+str(lower_tiles)+'","'+str(upper_tiles)+'","'+str(borders)+'"'
     addRow(DB, table_LevelData, colNames, data)
 	
 #Builds all tables for CharmQuark database
@@ -148,7 +150,39 @@ def setupLevelDataTable():
 	addColumn(DB, table_LevelData, col_upper_tiles, TYPE_BLOB)	
 	addColumn(DB, table_LevelData, col_borders, TYPE_BLOB)		
 	
+def getLevel(index):
+	query = "SELECT * FROM Levels WHERE level_index = {}".format(index)
+	
+	conn = SQ3.connect(DB)
+	try:
+		table = conn.execute(query)
+	except Exception as e:
+		print('Exception caught: ' +str(e))
+		
+	for row in table:
+		tiles = json.loads(row[4])
+	print(tiles)
+	print()
+	print(tiles[0])
+	print()
+	print(tiles[0][0])
+		
+		
+	conn.close()	
 	
 # createDatabase()
-# addLevelDataRow('addTest3', 20,24,[1,0,1,5,1],[0,2,3,0,0],[3,56,7,7,12])
+# addLevelDataRow('addTest3', 20,24,pickle.dumps([1,0,1,5,1]),pickle.dumps([0,2,3,0,0]),pickle.dumps([3,56,7,7,12]))
 #TODO, query the DB
+# getLevel(1)
+
+# lowt = list(pickle.dumps([[1,2,3],[4,5,6],[7,8,9]]))
+# hit = pickle.dumps([[1,2,3],[4,5,6],[7,8,9]])
+# bar = pickle.dumps([[1,2,3],[4,5,6],[7,8,9]])
+
+# query = "INSERT INTO Levels (name, height, width, lower_tiles, upper_tiles, borders) VALUES ('blobtest', 10, 10, {}, {}, {})"\
+# .format(SQ3.Binary(lowt), SQ3.Binary(hit), SQ3.Binary(bar))
+# print(query)
+# conn = SQ3.connect(DB)
+# conn.execute(query)
+# conn.commit()
+# conn.close()

@@ -1,27 +1,21 @@
-'''
-Created on Mar 1, 2017
-
-@author: Robert
-'''
-
-'''
-Data container class for a game level, contained within the game object
-@param actors
-@param scenery
-@param levelEvents
-@param gameEvents
-@param layout
-'''
-
 import utility as UTIL
 import parameters as PRAM
 import database
+import json #to parse the BLOBs in the DB
+
+class Tilemap():
+    def __init__(self, filePath = 'tilemap.bmp', tileSize = 48, size = (20,8), type='lower' ):
+        self.tilePath = filePath
+        self.tileSize = tileSize
+        self.size = size
+        self.type=type
 
 class LevelData():
     def __init__(self,
+                 name = '',
                  size = (10,10), 
-                 lowerTileMap = '', #filename of a jpg of all lower tiles
-                 uppderTileMap = '', #filename of a jpg of all lower tiles
+                 lowerTileMap = None, #filename of a jpg of all lower tiles
+                 uppderTileMap = None, #filename of a jpg of all lower tiles
                  lowerTiles = [], #displayed below all actors
                  upperTiles = [], #displayed above all actors
                  borders = [], #4 bits, one to represent each direction
@@ -31,6 +25,7 @@ class LevelData():
                  foregrounds = [], #list of foreground objects
                  gameEvents = [] #added to event queue on level load
                  ):
+        self.name = name
         self.size = size
         self.lowerTileMap = lowerTileMap
         self.uppderTileMap = uppderTileMap
@@ -44,37 +39,83 @@ class LevelData():
         self.gameEvents = gameEvents
     
     
-    def loadLevel(self):
-        self.loadLevelData()
-        self.loadTileMaps()
-        self.loadLevelEvents()
-        self.loadGameEvents()
-        self.loadActors()
-        self.loadBackgrounds()
-        self.loadForegrounds()
+    def loadLevel(self, index):
+        self.loadTileMaps(index)
+        self.loadLevelData(index)
+        self.loadLevelEvents(index)
+        self.loadGameEvents(index)
+        self.loadActors(index)
+        self.loadBackgrounds(index)
+        self.loadForegrounds(index)
     
-    def loadLevelData(self):
-        data = database.getLevelData(0)
+    def loadLevelData(self, index):
+        row = database.getLevelData(index)
+        if row == None:
+            return False
+            
+        lowerTiles = json.loads(row[4]) #unpack the strings into 2d lists
+        upperTiles = json.loads(row[5])
+        borders = json.loads(row[6])
+        
+        lowerTiles = self.tilemapIndexToCoord(lowerTiles) #lower tiles
+        upperTiles = self.tilemapIndexToCoord(upperTiles) #upper tiles
+                        
+        for i in range(len(lowerTiles)):
+            lowerTiles[i] = tuple(lowerTiles[i])  
+        lowerTiles = tuple(lowerTiles)
+        
+        for i in range(len(upperTiles)):
+            upperTiles[i] = tuple(upperTiles[i])  
+        upperTiles = tuple(upperTiles)
+        
+        for i in range(len(borders)):
+            borders[i] = tuple(borders[i])  
+        borders = tuple(borders)                
+        
+        self.name = row[1]
+        self.size = (row[2],row[3])
+        self.lowerTiles = lowerTiles
+        self.upperTiles = upperTiles
+        self.borders = borders
+        
+    #takes a tile list of integers, corresponding to a tilemap position
+    #returns the list as a tuple of pixel coordinate pairs
+    def tilemapIndexToCoord(self, data):
+        for i in range(len(data)):
+            for j in range(len(data[i])):
+                index = data[i][j]
+                y_tile = index//PRAM.TILEMAP_MAX_WIDTH 
+                x_tile = index - (y_tile * PRAM.TILEMAP_MAX_WIDTH)
+                data[i][j] = (x_tile*PRAM.TILESIZE, y_tile*PRAM.TILESIZE)
+        return data
     
-    def loadTileMaps(self):
-        pass
     
-    def loadLevelEvents(self):
+    def loadTileMaps(self, index):
+        tileMaps = database.getTileMaps(index) #expect lower, and upper
+        if tileMaps == None or len(tileMaps) != 2:
+            return False
+        
+        #TODO 
+    
+    def loadLevelEvents(self, index):
         pass
 
-    def loadGameEvents(self):
+    def loadGameEvents(self, index):
         pass
     
-    def loadActors(self):
+    def loadActors(self, index):
         pass
     
-    def loadBackgrounds(self):
+    def loadBackgrounds(self, index):
         pass
     
-    def loadForegrounds(self):
+    def loadForegrounds(self, index):
         pass
-    
-    
+
+    #Tiles are each stored as an integer, need to calculate their top-left corner
+    #pixel position based on integer, restore the data as a tuple    
+    def calculateTileOffsets(self):
+        pass
         
 
 #Deprecated 9/5/2017    
@@ -312,7 +353,9 @@ class LevelTriggerTouch():
         return None
 
 
-
+if __name__ == '__main__':
+    levelData = LevelData()
+    levelData.loadLevel(1)
 
     
     
