@@ -1,5 +1,7 @@
 PROJECT CharmQuark 
 
+NEED TO ADJUST TILE INDEX BY -1 BECAUSE 0 IS NOT ON THE TILEMAP (ASSUMED TO BE BLANK)
+
 9/9/17 Left off at load tilemaps
 Create a larger tilemap to test the algorithms, most of the tiles can be the same and 
 can adjust the level creator to select a random number to correspond to same tile

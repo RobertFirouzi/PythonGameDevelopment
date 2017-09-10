@@ -1,8 +1,9 @@
 from game_level import LevelData #@UndefinedVariable
 import sys
 sys.path.append("C:\\Users\\Robert\\repositories\\gameDev\\swordFightProto\\dir_database\\")
-import createDatabase as DB #@UndefinedVariable
+import createDatabase as DB # @UndefinedVariable
 import pickle
+import random
 
 '''
 This will create a simple practice level
@@ -10,13 +11,16 @@ blank border, with trees intersperced
 
 '''
 
-FILENAME = 'Level_test_3'
+FILENAME = 'Level_test_4'
 WIDTH = 150
 HEIGHT = 150
 BORDER = 20
 TREESPACING = 11
 LOWER_TILEMAP = 'lower.bmp'
 UPPER_TILEMAP = 'upper.bmp'
+
+TILE_VARIANCE = 100 #out of how many tiles do we have different than the normal
+MAX_TILE_INDEX = 8*20
 
 BLANK_TILE = 0
 GROUND_TILE = 1
@@ -49,10 +53,16 @@ actors = []
 def createLower():
     matrix = [ [GROUND_TILE] * WIDTH for _ in range(HEIGHT)]
         
-    for i in range(HEIGHT):
+    for i in range(HEIGHT): #create blank borders and some variety in the ground tiles 
         for j in range(WIDTH):
             if i < BORDER or i >= HEIGHT - BORDER or j < BORDER or j >= WIDTH-BORDER:
                 matrix[i][j] = BLANK_TILE
+            elif random.randint(0,TILE_VARIANCE) == TILE_VARIANCE//2: #add some randomness to the tiles
+                matrix[i][j] = (random.randint(1,MAX_TILE_INDEX)//2)*2 + 1 #odd numbers are ground tiles
+                if matrix[i][j] > MAX_TILE_INDEX:
+                    matrix[i][j] = MAX_TILE_INDEX - 1
+                    
+                
     
     #add trees
     for i in range(HEIGHT):
@@ -60,8 +70,8 @@ def createLower():
             for j in range(WIDTH):
                 if j % TREESPACING == 0 and j > BORDER and j < WIDTH - BORDER:
                     if i < HEIGHT - 4:
-                        matrix[i+2][j] = BARRIER_TILE 
-                        matrix[i+3][j] = BARRIER_TILE
+                        matrix[i+2][j] = (random.randint(2,MAX_TILE_INDEX)//2) * 2 #even numbers are barriers
+                        matrix[i+3][j] = (random.randint(2,MAX_TILE_INDEX)//2) * 2 #adding some variance to tiles
                                
     return matrix
 
@@ -75,8 +85,8 @@ def createUpper():
             for j in range(WIDTH):
                 if j % TREESPACING == 0 and j > BORDER and j < WIDTH - BORDER:
                     if i < HEIGHT - 4:
-                        matrix[i][j] = OVERHEAD_TILE 
-                        matrix[i+1][j] = OVERHEAD_TILE
+                        matrix[i][j] = random.randint(1,MAX_TILE_INDEX) #adding some variance to treetops
+                        matrix[i+1][j] = random.randint(1,MAX_TILE_INDEX)
                                
     return matrix
 
@@ -94,12 +104,12 @@ def createBorders(lowerTiles):
                 matrix[i][j] |= RIGHT          
             if j == WIDTH - 1:
                 matrix[i][j] |= LEFT   
-            if lowerTiles[i][j] == BARRIER_TILE:
+            if lowerTiles[i][j]%2 == 0: #even numbers are barriers
                 matrix[i][j] |= LEFT | RIGHT | TOP | BOTTOM   
                        
     return matrix
 
-def saveLevelData(levelData):
+def saveLevelData(levelData): #TODO update this to match the Class
     DB.addLevelDataRow(FILENAME, levelData.size[0], levelData.size[1], levelData.lowerTiles, levelData.upperTiles,levelData.borders)
 
 

@@ -43,6 +43,19 @@ def getTileMaps(key):
     closeDB(conn)
     return tilemaps
 
+#col[0] = background_index, col[1] = level_key, col[2] = file_path
+#col[3] = pxHeight, col[4] = pxWidth, col[5] = visibleSections,
+#col[6] = scrolling, col[7] = alpha, col[8] = layer   
+def getBackgrounds(key):
+    query = "SELECT * FROM Backgrounds WHERE level_key = {}".format(key)
+    conn = openDB(DB_LOCATION)
+    cursor = queryDB(conn, query)
+    backgrounds = []
+    for row in cursor:
+        backgrounds.append(row)
+    closeDB(conn)
+    return backgrounds
+
 ### INSERT DATA ###
 
 def putLevelData(levelData):

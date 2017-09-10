@@ -2,13 +2,14 @@ import utility as UTIL
 import parameters as PRAM
 import database
 import json #to parse the BLOBs in the DB
+from scenery import PanoramicImage
 
 class Tilemap():
-    def __init__(self, filePath = 'tilemap.bmp', tileSize = 48, size = (20,8), type='lower' ):
-        self.tilePath = filePath
+    def __init__(self, filePath = 'tilemap.bmp', tileSize = 48, size = (20,8), tileType ='lower'):
+        self.filePath = filePath
         self.tileSize = tileSize
         self.size = size
-        self.type=type
+        self.tileType=tileType
 
 class LevelData():
     def __init__(self,
@@ -83,10 +84,13 @@ class LevelData():
     def tilemapIndexToCoord(self, data):
         for i in range(len(data)):
             for j in range(len(data[i])):
-                index = data[i][j]
-                y_tile = index//PRAM.TILEMAP_MAX_WIDTH 
-                x_tile = index - (y_tile * PRAM.TILEMAP_MAX_WIDTH)
-                data[i][j] = (x_tile*PRAM.TILESIZE, y_tile*PRAM.TILESIZE)
+                index = data[i][j]-1 #offset to start tilemap at 0 (first square is 1)
+                if index < 0: #blank tile:
+                    data[i][j] = (-1,-1) #-1 is code for blank
+                else:
+                    y_tile = index//PRAM.TILEMAP_MAX_WIDTH 
+                    x_tile = index - (y_tile * PRAM.TILEMAP_MAX_WIDTH)
+                    data[i][j] = (x_tile*PRAM.TILESIZE, y_tile*PRAM.TILESIZE)
         return data
     
     
@@ -95,7 +99,26 @@ class LevelData():
         if tileMaps == None or len(tileMaps) != 2:
             return False
         
-        #TODO 
+        if tileMaps[0][6] == 'lower':
+            lower = 0
+            upper = 1
+        else:
+            lower = 1
+            upper = 0
+        
+        tileMapLower = Tilemap(tileMaps[lower][2], 
+                               tileMaps[lower][3], 
+                               (tileMaps[lower][4],tileMaps[0][5]),
+                               tileMaps[lower][6])
+
+        tileMapUpper = Tilemap(tileMaps[upper][2], 
+                               tileMaps[upper][3], 
+                               (tileMaps[upper][4],tileMaps[0][5]),
+                               tileMaps[upper][6])
+        
+        self.lowerTileMap = tileMapLower
+        self.upperTileMap = tileMapUpper        
+        
     
     def loadLevelEvents(self, index):
         pass
@@ -107,16 +130,32 @@ class LevelData():
         pass
     
     def loadBackgrounds(self, index):
-        pass
+        backgrounds = database.getBackgrounds(index)
+        
+        for background in backgrounds:
+            visibleSections = json.loads(background[5]) #unpack the strings into 2d lists
+            for i in range(len(visibleSections)): #change to tuple for speed
+                visibleSections[i] = tuple(visibleSections[i])
+            visibleSections = tuple(visibleSections)
+            
+            scrolling = json.loads(background[6])
+            for i in range(len(scrolling)): #change to tuple for speed
+                scrolling[i] = tuple(scrolling[i])
+            scrolling = tuple(scrolling)
+                        
+            panoramicImage = PanoramicImage(background[2], #filepath
+                                            (background[3], background[4]), #size
+                                             visibleSections,
+                                             scrolling,
+                                             background[7], #alpha
+                                             background[8]) #layer
+            
+            self.backgrounds.append(panoramicImage)
+    
+        return True
     
     def loadForegrounds(self, index):
-        pass
-
-    #Tiles are each stored as an integer, need to calculate their top-left corner
-    #pixel position based on integer, restore the data as a tuple    
-    def calculateTileOffsets(self):
-        pass
-        
+        pass        
 
 #Deprecated 9/5/2017    
 class GameLevel():

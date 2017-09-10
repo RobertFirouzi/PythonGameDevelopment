@@ -56,13 +56,19 @@ class SolidBackground():
     If user desires a 1.4 scroll speed, choose a multiplier of 14 and divisor of 10.
     '''
 class PanoramicImage():
-    def __init__(self, path, image, imageSize, visibleSections, scrolling = [[1,1],[1,1]], alpha = False):
-        self.path = path
-        self.image = image
-        self.imageSize = imageSize
+    def __init__(self, 
+                 filePath = '', 
+                 pxSize = [10,10],  
+                 visibleSections = [[0,200,0,200],[200,500,200,500]], 
+                 scrolling = [[1,1],[1,1]], 
+                 alpha = False,
+                 layer= 0):
+        self.filePath = filePath
+        self.pxSize = pxSize
         self.visibleSections = visibleSections
         self.scrolling = scrolling
         self.alpha = alpha
+        self.layer = layer        
 
             
 '''

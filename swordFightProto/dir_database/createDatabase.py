@@ -26,7 +26,7 @@ col_filepath = 'file_path'
 col_tileSize = 'tile_size'
 #col height, in tiles
 #col width, in tiles
-col_type = 'type' #eg lower, upper...
+col_tileType = 'tileType' #eg lower, upper...
 
 ### LEVELEVENTS TABLE ###
 table_LevelEvents = 'LevelEvents'
@@ -45,8 +45,11 @@ table_Backgrounds = 'Backgrounds'
 col_backgroundsIndex = 'background_index' #primary key
 # col_levelKey = 'level_key'
 # col_filepath = 'file_path'
-# col_height = 'height' - pixels
-# col_width = 'width'  - pixels
+col_px_height = 'pxHeight' 
+col_px_width = 'pxWidth'  
+col_visibile_sections = 'visibleSections'
+col_scrolling = 'scrolling'
+col_alpha = 'alpha'
 col_layer = 'layer' #int to determine layer, 0 is bottom layer
 
 ### FOREGROUNDS TABLE ###
@@ -122,10 +125,14 @@ def setupBackgroundsTable():
 	createTable(DB, table_Backgrounds, col_backgroundsIndex, TYPE_INT)
 	addColumn(DB, table_Backgrounds, col_levelKey, TYPE_INT)	
 	addColumn(DB, table_Backgrounds, col_filepath, TYPE_TEXT)	
-	addColumn(DB, table_Backgrounds, col_height, TYPE_INT)	
-	addColumn(DB, table_Backgrounds, col_width, TYPE_INT)	
+	addColumn(DB, table_Backgrounds, col_px_height, TYPE_INT)	
+	addColumn(DB, table_Backgrounds, col_px_width, TYPE_INT)	
+	addColumn(DB, table_Backgrounds, col_visibile_sections, TYPE_BLOB)
+	addColumn(DB, table_Backgrounds, col_scrolling, TYPE_BLOB)
+	addColumn(DB, table_Backgrounds, col_alpha, TYPE_INT)
 	addColumn(DB, table_Backgrounds, col_layer, TYPE_INT)		
 
+	
 def setupGameEventsTable():
 	createTable(DB, table_GameEvents, col_levelKey, TYPE_INT, False)
 	
@@ -139,7 +146,7 @@ def setupTilemapTable():
 	addColumn(DB, table_TileMaps, col_tileSize, TYPE_INT)
 	addColumn(DB, table_TileMaps, col_height, TYPE_INT)
 	addColumn(DB, table_TileMaps, col_width, TYPE_INT)
-	addColumn(DB, table_TileMaps, col_filepath, TYPE_TEXT)
+	addColumn(DB, table_TileMaps, col_tileType, TYPE_TEXT)
 	
 def setupLevelDataTable():
 	createTable(DB, table_LevelData, col_levelIndex, TYPE_INT)
