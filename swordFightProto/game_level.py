@@ -152,10 +152,28 @@ class LevelData():
             
             self.backgrounds.append(panoramicImage)
     
-        return True
-    
     def loadForegrounds(self, index):
-        pass        
+        foregrounds = database.getForegrounds(index)
+        
+        for foreground in foregrounds:
+            visibleSections = json.loads(foreground[5]) #unpack the strings into 2d lists
+            for i in range(len(visibleSections)): #change to tuple for speed
+                visibleSections[i] = tuple(visibleSections[i])
+            visibleSections = tuple(visibleSections)
+            
+            scrolling = json.loads(foreground[6])
+            for i in range(len(scrolling)): #change to tuple for speed
+                scrolling[i] = tuple(scrolling[i])
+            scrolling = tuple(scrolling)
+                        
+            panoramicImage = PanoramicImage(foreground[2], #filepath
+                                            (foreground[3], foreground[4]), #size
+                                             visibleSections,
+                                             scrolling,
+                                             foreground[7], #alpha
+                                             foreground[8]) #layer
+            
+            self.foregrounds.append(panoramicImage)
 
 #Deprecated 9/5/2017    
 class GameLevel():

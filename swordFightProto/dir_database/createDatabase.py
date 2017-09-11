@@ -53,12 +53,18 @@ col_alpha = 'alpha'
 col_layer = 'layer' #int to determine layer, 0 is bottom layer
 
 ### FOREGROUNDS TABLE ###
-table_Foregrounds = 'Forerounds'
+table_Foregrounds = 'Foregrounds'
 col_foregroundsIndex = 'foreground_index' #primary key
 # col_levelKey = 'level_key'
 # col_filepath = 'file_path'
 # col_height = 'height' - pixels
 # col_width = 'width'  - pixels
+# col_layer = 'layer' #int to determine layer, 0 is bottom layer
+# col_px_height = 'pxHeight' 
+# col_px_width = 'pxWidth'  
+# col_visibile_sections = 'visibleSections'
+# col_scrolling = 'scrolling'
+# col_alpha = 'alpha'
 # col_layer = 'layer' #int to determine layer, 0 is bottom layer
 
 #columNames should be a string of comma seperated column names 
@@ -112,14 +118,16 @@ def createDatabase():
 def setupActorsTable():
 	createTable(DB, table_Actors, col_levelKey, TYPE_INT, False)	
 
-def setupForegroundsTable():
+def setupBackgroundsTable():
 	createTable(DB, table_Foregrounds, col_foregroundsIndex, TYPE_INT)
 	addColumn(DB, table_Foregrounds, col_levelKey, TYPE_INT)	
 	addColumn(DB, table_Foregrounds, col_filepath, TYPE_TEXT)	
-	addColumn(DB, table_Foregrounds, col_height, TYPE_INT)	
-	addColumn(DB, table_Foregrounds, col_width, TYPE_INT)	
-	addColumn(DB, table_Foregrounds, col_layer, TYPE_INT)	
-	#TODO - what columns needed for foregrounds?
+	addColumn(DB, table_Foregrounds, col_px_height, TYPE_INT)	
+	addColumn(DB, table_Foregrounds, col_px_width, TYPE_INT)	
+	addColumn(DB, table_Foregrounds, col_visibile_sections, TYPE_BLOB)
+	addColumn(DB, table_Foregrounds, col_scrolling, TYPE_BLOB)
+	addColumn(DB, table_Foregrounds, col_alpha, TYPE_INT)
+	addColumn(DB, table_Foregrounds, col_layer, TYPE_INT)
 	
 def setupBackgroundsTable():
 	createTable(DB, table_Backgrounds, col_backgroundsIndex, TYPE_INT)

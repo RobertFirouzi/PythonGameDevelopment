@@ -1,26 +1,14 @@
 PROJECT CharmQuark 
 
-NEED TO ADJUST TILE INDEX BY -1 BECAUSE 0 IS NOT ON THE TILEMAP (ASSUMED TO BE BLANK)
+Next need to try and load the level, modify the game class and render class 
+to account for changes in level structure 
 
-9/9/17 Left off at load tilemaps
-Create a larger tilemap to test the algorithms, most of the tiles can be the same and 
-can adjust the level creator to select a random number to correspond to same tile
+Need to decide if (height, width) or (width, height)
+probably should do (height, width) since that is === to (rows, columns), but be consitent
 
 Move GameLevel() addRenderBox() to Render class
 Render Class contains the LevelData
 
-
-TILEMAP CALCULATIONS:
-DON't WANT to do a multiply or divide to find the map coordiantes evertime
-calculate them after creating the tile map for the level
-eg
-if the tile map # is 3, then the cooridnates are (48*2=96, 0*48=0) = (96,0)
-then would blit from lower (96,0) square of (48,48) to calculated position
-
-MAKE THE INNER ARRAYS A TUPLE AS WELL
-
-LEVEL EDITOR
-Time to whip up a new test level with the correct formatting, remove the debugging ugliness from game to mod the level
 
 SOFTWARE DESIGN
 Write down algorithm for rendering scenery somewhere!
@@ -32,25 +20,16 @@ sound logging/error checking is overboard, proably don't need now that things ar
 RENDER
 	store layout and tile maps as class fields in Renderer (updated on a load level)
 
-TILES
-Store the images in a tuple for lookup, rather than a dictionary.  Use an index into the tuple (quicker than hashing a dictionary)
-Each level should have a key to load the images {index: tile path}.  Do not need to iterate through all tiles, just load the tiles from the key
-	eventually modify to make a pallete which slices are taken from rather than individual squares?
 TESTING:
 Render changed may have bugs not uncovered (like the overshoot/negative bug).  investigate
 Put print statements in loops to ensure not rendering more than necessary panoramas or tiles
 Experiment with smaller screen size, number of layers, etc. for speed/performance. 
 Need to eventually figure out better unit testing
 
-DATABASE:
-store blobs instead of strings
-
 OPTIMIZATION
 PRAMS all integers not strings
 from time time() method can be used to test certain modules for speed
-instead of using a dictionary, use a tuple or array for quicker lookup.
-	NUMPY does not appear faster in basic list iteration
-can create an array of Surfaces, then convert to a a tuple. 
+	(NUMPY does not appear faster in basic list iteration)
 can have pygame only get() relevant (chosen) events from the queue
 Double Buffering?
 Get rid of tyiple quotes ''' as these are strings not comments
