@@ -64,10 +64,16 @@ class EventSetInput(EventGeneratedBase):
 Loads a new level into game
 @param levelFile
 '''
+# class EventLoadLevel(EventGeneratedBase):
+#     def __init__(self, levelFile, startingPosition = [0,0], eventType = 'LOADLEVEL', params = ()):
+#         super(EventLoadLevel, self).__init__(eventType, params)
+#         self.levelFile = levelFile
+#         self.startingPosition = startingPosition
+
 class EventLoadLevel(EventGeneratedBase):
-    def __init__(self, levelFile, startingPosition = [0,0], eventType = 'LOADLEVEL', params = ()):
+    def __init__(self, levelIndex, startingPosition = [0,0], eventType = 'LOADLEVEL', params = ()):
         super(EventLoadLevel, self).__init__(eventType, params)
-        self.levelFile = levelFile
+        self.levelIndex = levelIndex
         self.startingPosition = startingPosition
 
 class EventLoadMenu(EventGeneratedBase):

@@ -68,7 +68,10 @@ class PanoramicImage():
         self.visibleSections = visibleSections
         self.scrolling = scrolling
         self.alpha = alpha
-        self.layer = layer        
+        self.layer = layer
+        
+        #explicit declaration of class fields
+        self.image = None # the image date        
 
             
 '''

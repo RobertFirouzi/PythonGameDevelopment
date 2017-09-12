@@ -21,42 +21,117 @@ class Renderer():
         self.screen = screen
         
         #explicit declaration of class fields
+        self.camera = None
         self.cameraTile= (0,0)
         self.cameraOffset = (0,0)
         self.cameraPosition = (0,0)
+        
+        self.levelData = None
+        self.lowerTiles = []
+        self.upperTiles = []
+        self.backgrounds = []
+        self.foregrounds = []
+        self.actors = []
+        
+        self.actorsDict #reference to image files
+        self.lowerTileMap #image file
+        self.upperTileMap #image file
 
-    def render(self, gameScene):
-        if type(gameScene) is GameLevel:
-            self.cameraTile = gameScene.gameCamera.getTile()
-            self.cameraOffset = gameScene.gameCamera.getOffset()
-            self.cameraPosition = gameScene.gameCamera.getPosition()
-            moveFlag = gameScene.gameCamera.moveFlag
-            if moveFlag == True:
-                self.renderAllPanorama(gameScene.sceneryWrapper.background, gameScene.sceneryWrapper.imageDict, self.cameraTile, self.cameraOffset)
-                self.renderAllLowerTile(gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)
-                self.renderAllActors(gameScene.actorsWrapper)
-                self.renderAllUpperTile(gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                
-                self.renderAllPanorama(gameScene.sceneryWrapper.foreground, gameScene.sceneryWrapper.imageDict, self.cameraTile, self.cameraOffset)                                
+        self.renderQueue = []
+
+    def loadAssets(self, levelData):
+        self.levelData = levelData #TODO may not need this reference
+        self.lowerTiles = levelData.lowerTiles
+        self.upperTiles = levelData.upperTiles
+        self.backgrounds = levelData.backgrounds
+        self.foregrounds = levelData.foregrounds
+        self.actors = levelData.actors
+        
+        self.actorDict = {} #Load actor images
+        for actor in self.actors:
+            if type(actor) is StaticSprite: #TODO this will be type Sprite or similar
+                if self.actorDict.get(actor.image) == None:
+                    self.actorDict[actor.image] = pygame.image.load(actor.path+actor.image).convert_alpha()
+        
+#         for sprite in scenery: #MAY NOT USE SCENERY
+#             if type(sprite) is StaticSprite:
+#                 if imageDict.get(sprite.image) == None:
+#                     imageDict[sprite.image] = pygame.image.load(sprite.path+sprite.image).convert()
+
+        for background in self.backgrounds:
+            if background.alpha == True:
+                background.image = pygame.image.load(background.filePath).convert_alpha()
             else:
-                self.renderChangedPanorama(gameScene.renderQueue, gameScene.sceneryWrapper.background, gameScene.sceneryWrapper.imageDict, self.cameraTile, self.cameraOffset)
-                self.renderChangedLowerTile(gameScene.renderQueue, gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                
-                self.renderChangedActors(gameScene.actorsWrapper)
-                self.renderChangedUpperTile(gameScene.renderQueue, gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                 
-                self.renderChangedPanorama(gameScene.renderQueue, gameScene.sceneryWrapper.foreground, gameScene.sceneryWrapper.imageDict, self.cameraTile, self.cameraOffset)                   
-            gameScene.renderQueue.clear()
-            gameScene.gameCamera.moveFlag = False       
+                background.image = pygame.image.load(background.filePath).convert()
+
+        for foreground in self.foregrounds:
+            if foreground.alpha == True:
+                foreground.image = pygame.image.load(foreground.filePath).convert_alpha()
+            else:
+                foreground.image = pygame.image.load(foreground.filePath).convert()     
+                
+        self.lowerTileMap = pygame.image.load(levelData.lowerTileMap.filePath).covert()
+        self.upperTileMap = pygame.image.load(levelData.upperTileMap.filePath).covert()
+                    
+#     def render(self, gameScene):
+#         if type(gameScene) is GameLevel:
+#             self.cameraTile = gameScene.gameCamera.getTile()
+#             self.cameraOffset = gameScene.gameCamera.getOffset()
+#             self.cameraPosition = gameScene.gameCamera.getPosition()
+#             moveFlag = gameScene.gameCamera.moveFlag
+#             if moveFlag == True:
+#                 self.renderAllPanorama(gameScene.sceneryWrapper.background, gameScene.sceneryWrapper.imageDict, self.cameraTile, self.cameraOffset)
+#                 self.renderAllLowerTile(gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)
+#                 self.renderAllActors(gameScene.actorsWrapper)
+#                 self.renderAllUpperTile(gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                
+#                 self.renderAllPanorama(gameScene.sceneryWrapper.foreground, gameScene.sceneryWrapper.imageDict, self.cameraTile, self.cameraOffset)                                
+#             else:
+#                 self.renderChangedPanorama(gameScene.renderQueue, gameScene.sceneryWrapper.background, gameScene.sceneryWrapper.imageDict, self.cameraTile, self.cameraOffset)
+#                 self.renderChangedLowerTile(gameScene.renderQueue, gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                
+#                 self.renderChangedActors(gameScene.actorsWrapper)
+#                 self.renderChangedUpperTile(gameScene.renderQueue, gameScene.layoutWrapper, self.cameraTile, self.cameraOffset)                 
+#                 self.renderChangedPanorama(gameScene.renderQueue, gameScene.sceneryWrapper.foreground, gameScene.sceneryWrapper.imageDict, self.cameraTile, self.cameraOffset)                   
+#             gameScene.renderQueue.clear()
+#             gameScene.gameCamera.moveFlag = False       
+#         else:
+#             pass #work on menu rendering    
+
+    #this will just render game levels - create a seperate method for menus, and perhaps cutscenes
+    def render(self):
+#         self.cameraTile = gameScene.gameCamera.getTile()
+#         self.cameraOffset = gameScene.gameCamera.getOffset()
+#         self.cameraPosition = gameScene.gameCamera.getPosition()
+#         moveFlag = gameScene.gameCamera.moveFlag
+        if self.camera.moveFlag == True:
+            self.renderAllPanorama(BG = True)
+            self.renderAllLowerTile()
+            self.renderAllActors()
+            self.renderAllUpperTile()                
+            self.renderAllPanorama(BG = False)                                
         else:
-            pass #work on menu rendering    
+            self.renderChangedPanorama(BG = True)
+            self.renderChangedLowerTile()                
+            self.renderChangedActors()
+            self.renderChangedUpperTile()                 
+            self.renderChangedPanorama(BG = False)                   
+        self.renderQueue.clear()
+        self.camera.moveFlag = False       
 
-    def renderAllLowerTile(self, layoutWrapper, tileOffset, pixelOffset):
+#     def renderAllLowerTile(self, layoutWrapper, tileOffset, pixelOffset):
+    def renderAllLowerTile(self):
         for y in range(PRAM.DISPLAY_TILE_HEIGHT):
-            yOffset = y * PRAM.TILESIZE - pixelOffset[1]
+            yOffset = y * PRAM.TILESIZE - self.cameraOffset[1]
             for x in range(PRAM.DISPLAY_TILE_WIDTH):
-                tile = layoutWrapper.layout[y + tileOffset[1]][x + tileOffset[0]]
-                if tile.lower != '':
-                    xOffset = x* PRAM.TILESIZE - pixelOffset[0]
-                    self.screen.blit(layoutWrapper.tileDict[tile.lower], (xOffset, yOffset))
+                tile = self.lowerTiles[y + self.cameraTile[1]][x + self.cameraTile[0]]
+                if tile[0] != -1: #-1 is blank
+                    xOffset = x* PRAM.TILESIZE - self.cameraOffset[0]
+                    self.screen.blit(self.lowerTileMap, 
+                                     (xOffset, yOffset), #screen position
+                                     tile[0], tile[1], #tileMap crop position
+                                     PRAM.TILESIZE, PRAM.TILESIZE) #blit one tile
 
+#TODO
+                    
     def renderAllUpperTile(self, layoutWrapper, tileOffset, pixelOffset):
         for y in range(PRAM.DISPLAY_TILE_HEIGHT):
             yOffset = y * PRAM.TILESIZE - pixelOffset[1]
@@ -65,6 +140,17 @@ class Renderer():
                 if tile.upper != '':
                     xOffset = x* PRAM.TILESIZE - pixelOffset[0]
                     self.screen.blit(layoutWrapper.tileDict[tile.upper], (xOffset, yOffset))
+ 
+ 
+
+#     def renderAllUpperTile(self, layoutWrapper, tileOffset, pixelOffset):
+#         for y in range(PRAM.DISPLAY_TILE_HEIGHT):
+#             yOffset = y * PRAM.TILESIZE - pixelOffset[1]
+#             for x in range(PRAM.DISPLAY_TILE_WIDTH):
+#                 tile = layoutWrapper.layout[y + tileOffset[1]][x + tileOffset[0]]
+#                 if tile.upper != '':
+#                     xOffset = x* PRAM.TILESIZE - pixelOffset[0]
+#                     self.screen.blit(layoutWrapper.tileDict[tile.upper], (xOffset, yOffset))
 
     def renderChangedLowerTile(self, renderQueue, layoutWrapper, tileOffset, pixelOffset):
         for box in renderQueue:

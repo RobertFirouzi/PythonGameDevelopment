@@ -36,8 +36,10 @@ Draws a box
 @param width, height, startx, starty
 '''
 class SimpleBox(ActorBase):
-    def __init__(self, color = PRAM.COLOR_BLUE, size = [PRAM.SIMPLE_BOX_WIDTH, # @UndefinedVariable
-                 PRAM.SIMPLE_BOX_HEIGHT], position =[100,100]): # @UndefinedVariable
+    def __init__(self, 
+                 color = PRAM.COLOR_BLUE, 
+                 size = [PRAM.SIMPLE_BOX_WIDTH, PRAM.SIMPLE_BOX_HEIGHT], 
+                 position =[100,100]): # @UndefinedVariable
         super(SimpleBox, self).__init__(size, position)
         self.color=color
 

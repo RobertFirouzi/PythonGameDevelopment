@@ -33,7 +33,7 @@ while not DONE:
                 DONE = True #TODO make this an input that creates a quit event?
             if event.type == pygame.KEYDOWN: # @UndefinedVariable 
                 game.keydownEvents.append(event)
-            #TODO can tell pygame to only check fro specific events
+            #TODO can tell pygame to only check for specific events
         game.keysPressed = pygame.key.get_pressed()
         
         inputHandler.handleInputs() #iterates through the keydown and keypressed events

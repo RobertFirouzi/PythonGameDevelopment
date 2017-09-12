@@ -6,7 +6,7 @@ Created on Mar 4, 2017
 
 import parameters as PRAM
 import sys, importlib
-from game_level import GameLevel, GameCutscene, GameMenu, LevelTriggerTouch, LayoutWrapper
+from game_level import GameLevel, GameCutscene, GameMenu, LevelTriggerTouch, LayoutWrapper, LevelData
 from event import EventLoadMenu
 from scenery import StaticSprite, SceneryWrapper
 from actors import ActorsWrapper
@@ -36,7 +36,8 @@ class Game():
         #explicitly name Class fields
         self.gameEvents = [] 
         self.keydownEvents = []
-        self.gameScene = None
+#         self.gameScene = None
+        self.levelData = None
         self.inputHandler = None
 
 
@@ -54,71 +55,31 @@ class Game():
     '''
     def loadLevel(self, eventLoadLevel):
         self.unloadScene() 
-        sys.path.append(PRAM.LEVEL_PATH)
-        level = importlib.import_module(eventLoadLevel.levelFile)                       
-        sys.path.pop()
-        
-        self.gameScene = GameLevel(
-            level.size,
-            self.loadActors(level.actors), #returns an actorsWrapper object
-            self.loadImages(level.scenery, level.background, level.foreground), #returns a sceneryWrapper object
-            level.levelEvents,
-            level.gameEvents,
-            self.loadLayout(level.tileDict, level.layout, level.size), #returns a layoutWrapper object
-            self.gameCamera) 
-        
-        layoutHack = self.gameScene.layoutWrapper.layout
-        for x in range(0,150):
-            for y in range(0,150):
-                if layoutHack[y][x].mid == 'trunk':
-                    layoutHack[y][x].mid = ''
-                    layoutHack[y][x].lower = 'trunk'
-        
-        for x in range(0,150):
-            for y in range(0,15):
-                if layoutHack[y][x].lower != 'trunk':
-                    layoutHack[y][x].lower = ''
-#                 layoutHack[y][x].mid = ''
-#                 layoutHack[y][x].upper = ''            
-#                 layoutHack[y][x].background = True
-                layoutHack[y][x].foreground = True
+#         sys.path.append(PRAM.LEVEL_PATH)
+#         level = importlib.import_module(eventLoadLevel.levelFile)                       
 
-        for x in range(0,150):
-            for y in range(15,25):
-                layoutHack[y][x].foreground = True
-                        
-        for y in range(0,150):
-            for x in range(0,15):
-                if layoutHack[y][x].lower != 'trunk':
-                    layoutHack[y][x].lower = ''
-#                 layoutHack[y][x].mid = ''
-#                 layoutHack[y][x].upper = ''            
-#                 layoutHack[y][x].background = True                
-                layoutHack[y][x].foreground = True
-                
-        for y in range(0,150):
-            for x in range(135,150):
-                if layoutHack[y][x].lower != 'trunk':
-                    layoutHack[y][x].lower = ''
-#                 layoutHack[y][x].mid = ''
-#                 layoutHack[y][x].upper = ''            
-#                 layoutHack[y][x].background = True  
-                layoutHack[y][x].foreground = True
-                
-        for x in range(0,150):
-            for y in range(135,150):
-#                 layoutHack[y][x].lower = ''
-#                 layoutHack[y][x].mid = ''
-#                 layoutHack[y][x].upper = ''            
-                layoutHack[y][x].foreground = True
-
-        for x in range(0,150):
-            for y in range(125,135):
-                layoutHack[y][x].foreground = True
-                                                    
-        for event in self.gameScene.gameEvents: #add to eventQueue, e.g. song to play
-            self.addEvent(event)
+        self.levelData = LevelData()
+        self.levelData.loadLevel(eventLoadLevel.levelIndex)
+        self.levelData.addActor(self.player.actor) #add the player character to the level actors list
         
+        self.player.setPosition(eventLoadLevel.startingPosition)
+        
+        self.gameCamera.maxPosition = [  #TODO - may need to modify this to create a bounding box
+            (self.levelData.size[0] - PRAM.DISPLAY_TILE_WIDTH)*PRAM.TILESIZE,
+            (self.levelData.size[1] - PRAM.DISPLAY_TILE_HEIGHT)*PRAM.TILESIZE]
+        
+        self.renderer.loadAssets(self.levelData)
+        
+#         self.gameScene = GameLevel(
+#             level.size,
+#             self.loadActors(level.actors), #returns an actorsWrapper object
+#             self.loadImages(level.scenery, level.background, level.foreground), #returns a sceneryWrapper object
+#             level.levelEvents,
+#             level.gameEvents,
+#             self.loadLayout(level.tileDict, level.layout, level.size), #returns a layoutWrapper object
+#             self.gameCamera) 
+        
+       
         #currently triggered on the tile
 #         for event in self.gameScene.levelEvents: #the triggers need to be initialized for level events
 #             if type(event) is LevelTriggerTouch:
@@ -126,11 +87,7 @@ class Game():
 #                     self.player.addListener(PRAM.LISTENER_MOVE, event)
 #                     event.subject = self.player
 
-        self.gameScene.addActor(self.player.actor) #add the player character to the level actors list
-        self.player.setPosition(eventLoadLevel.startingPosition)
-        self.gameCamera.maxPosition = [  #TODO - may need to modify this to create a bounding box
-            (level.size[0] - PRAM.DISPLAY_TILE_WIDTH)*PRAM.TILESIZE,
-            (level.size[1] - PRAM.DISPLAY_TILE_HEIGHT)*PRAM.TILESIZE]
+#         self.gameScene.addActor(self.player.actor) #add the player character to the level actors list
 
 
     def loadMenu(self, menuFile):

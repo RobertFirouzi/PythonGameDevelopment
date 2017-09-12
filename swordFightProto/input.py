@@ -132,7 +132,7 @@ class InputHandler():
         pass
 
     def menuAction(self):
-        self.game.addEvent(EventLoadLevel(PRAM.LEV_TEST2, [250,350])) #TODO temp code to test menu/level load
+        self.game.addEvent(EventLoadLevel(PRAM.LEV_INDEX1, [250,350])) #TODO temp code to test menu/level load
     
     def menuCancel(self):
         pass

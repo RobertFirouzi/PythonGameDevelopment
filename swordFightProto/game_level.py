@@ -15,13 +15,13 @@ class LevelData():
     def __init__(self,
                  name = '',
                  size = (10,10), 
-                 lowerTileMap = None, #filename of a jpg of all lower tiles
-                 uppderTileMap = None, #filename of a jpg of all lower tiles
+                 lowerTileMap = None, #Tilemap oject
+                 uppderTileMap = None, 
                  lowerTiles = [], #displayed below all actors
                  upperTiles = [], #displayed above all actors
                  borders = [], #4 bits, one to represent each direction
                  eventTiles = {}, #Events are indexed based on coordiante pairs                 
-                 actorsWrapper = None, #static or dynamic, displayed in order of Y coords
+                 actors = [], #static or dynamic, displayed in order of Y coords
                  backgrounds = [], #list of background objects
                  foregrounds = [], #list of foreground objects
                  gameEvents = [] #added to event queue on level load
@@ -34,7 +34,7 @@ class LevelData():
         self.upperTiles = upperTiles
         self.borders = borders
         self.eventTiles = eventTiles
-        self.actorsWrapper = actorsWrapper #contains the array of sprites, and list of actors
+        self.actors = actors 
         self.backgrounds = backgrounds #list of background objects
         self.foregrounds = foregrounds
         self.gameEvents = gameEvents
@@ -78,6 +78,9 @@ class LevelData():
         self.lowerTiles = lowerTiles
         self.upperTiles = upperTiles
         self.borders = borders
+        
+    def addActor(self, actor):
+        self.actors.append(actor)
         
     #takes a tile list of integers, corresponding to a tilemap position
     #returns the list as a tuple of pixel coordinate pairs
@@ -370,6 +373,7 @@ Defines the look and behavior of a single level tile.  Lower is the graphic that
     levelEvent defines an event that is triggered on this tile.  Can be set to trigger
     on touch or on action or 
 '''
+#deprecated
 class LevelTile():
     def __init__(self, 
                  lower = '', 
