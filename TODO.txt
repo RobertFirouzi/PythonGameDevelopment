@@ -1,7 +1,6 @@
 PROJECT CharmQuark 
 
-Next need to try and load the level, modify the game class and render class 
-to account for changes in level structure 
+continue refacotring render class
 
 Need to decide if (height, width) or (width, height)
 probably should do (height, width) since that is === to (rows, columns), but be consitent

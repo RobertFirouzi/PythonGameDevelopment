@@ -166,7 +166,7 @@ class EventHandler():
             self.game.gameCamera.panToChar(char.getPosition())
         
         if not self.game.gameCamera.moveFlag:
-            self.game.gameScene.addRenderBox(char.getSize(), origin, char.getPosition(), event.direction)            
+            self.game.renderer.addRenderBox(char.getSize(), origin, char.getPosition(), event.direction)            
         
         if targetTile !=charTileRelative:  #Check if the targetTile tile has an event that triggers on touch
             targetTileTile = layout[targetTile[1]][targetTile[0]]

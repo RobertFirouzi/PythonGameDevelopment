@@ -7,7 +7,7 @@ Created on Mar 4, 2017
 import parameters as PRAM
 import sys, importlib
 from game_level import GameLevel, GameCutscene, GameMenu, LevelTriggerTouch, LayoutWrapper, LevelData
-from event import EventLoadMenu
+from event import EventLoadMenu, EventSetInput
 from scenery import StaticSprite, SceneryWrapper
 from actors import ActorsWrapper
 import pygame
@@ -57,7 +57,7 @@ class Game():
         self.unloadScene() 
 #         sys.path.append(PRAM.LEVEL_PATH)
 #         level = importlib.import_module(eventLoadLevel.levelFile)                       
-
+        self.addEvent(EventSetInput(PRAM.INPTYPE_NORMAL))
         self.levelData = LevelData()
         self.levelData.loadLevel(eventLoadLevel.levelIndex)
         self.levelData.addActor(self.player.actor) #add the player character to the level actors list
@@ -69,7 +69,7 @@ class Game():
             (self.levelData.size[1] - PRAM.DISPLAY_TILE_HEIGHT)*PRAM.TILESIZE]
         
         self.renderer.loadAssets(self.levelData)
-        
+        self.renderer.camera = self.gameCamera
 #         self.gameScene = GameLevel(
 #             level.size,
 #             self.loadActors(level.actors), #returns an actorsWrapper object
@@ -163,7 +163,7 @@ class Game():
         return LayoutWrapper(layoutDict, layout, size)
        
     def render(self):
-        self.renderer.render(self.gameScene)  
+        self.renderer.render()  
     
     
     # Halt any running events, unload any assets, etc
