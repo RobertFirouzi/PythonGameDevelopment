@@ -107,6 +107,10 @@ class Renderer():
 #         self.cameraOffset = gameScene.gameCamera.getOffset()
 #         self.cameraPosition = gameScene.gameCamera.getPosition()
 #         moveFlag = gameScene.gameCamera.moveFlag
+        self.cameraTile= self.camera.tile
+        self.cameraOffset = self.camera.offset
+        self.cameraPosition = self.camera.position
+
         if len(self.lowerTiles)>0: #quick hack to make sure a level is loaded
             if self.camera.moveFlag == True:
                 self.renderAllPanorama(BG = True)
@@ -622,8 +626,8 @@ class Renderer():
             maxx = destination[0] + size[0]
             maxy = destination[1] + size[1]
         
-        mapSizeX = len(self.layoutWrapper.layout[0]) * PRAM.TILESIZE
-        mapSizeY = len(self.layoutWrapper.layout) * PRAM.TILESIZE
+        mapSizeX = self.levelData.size[1] * PRAM.TILESIZE
+        mapSizeY = self.levelData.size[0] * PRAM.TILESIZE
         
         #get the entire tile
         minx = minx - (minx % PRAM.TILESIZE)

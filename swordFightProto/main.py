@@ -24,7 +24,11 @@ player = playerFactory()
 game = Game(player, musicPlayer, soundPlayer, renderer, gameCamera)
 inputHandler = InputHandler(game, player, ButtonMap())
 eventHandler = eventHandlerFactory(game)
+eventHandler.renderer = renderer 
 game.inputHandler = inputHandler
+game.eventHandler = eventHandler
+renderer.camera = gameCamera
+
 
 game.gameStartup()
 while not DONE:

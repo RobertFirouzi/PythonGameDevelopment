@@ -1,9 +1,16 @@
 PROJECT CharmQuark 
 
+level generator or background/foreground need to be matched to each other visibility is causing
+glitchy rendering)
 continue refacotring render class
+borders is checking beyond array (how solved before?)
+
 
 Need to decide if (height, width) or (width, height)
 probably should do (height, width) since that is === to (rows, columns), but be consitent
+
+should gameCamera just be in renderer?
+	cleanup camera references
 
 Move GameLevel() addRenderBox() to Render class
 Render Class contains the LevelData

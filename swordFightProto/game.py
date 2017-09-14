@@ -7,7 +7,7 @@ Created on Mar 4, 2017
 import parameters as PRAM
 import sys, importlib
 from game_level import GameLevel, GameCutscene, GameMenu, LevelTriggerTouch, LayoutWrapper, LevelData
-from event import EventLoadMenu, EventSetInput
+from event import EventLoadMenu, EventSetInput, EventHandler
 from scenery import StaticSprite, SceneryWrapper
 from actors import ActorsWrapper
 import pygame
@@ -26,11 +26,14 @@ class Game():
                  musicPlayer = None, 
                  soundPlayer = None, 
                  renderer = None,
-                 gameCamera = None):
+                 gameCamera = None,
+                 eventHandler = None):
         self.player = player
         self.musicPlayer = musicPlayer
         self.soundPlayer = soundPlayer
         self.renderer = renderer
+        self.eventHandler = eventHandler
+        
         self.gameCamera = gameCamera
         
         #explicitly name Class fields
@@ -69,7 +72,8 @@ class Game():
             (self.levelData.size[1] - PRAM.DISPLAY_TILE_HEIGHT)*PRAM.TILESIZE]
         
         self.renderer.loadAssets(self.levelData)
-        self.renderer.camera = self.gameCamera
+        self.eventHandler.borders = self.levelData.borders
+        self.eventHandler.eventTiles = self.levelData.eventTiles
 #         self.gameScene = GameLevel(
 #             level.size,
 #             self.loadActors(level.actors), #returns an actorsWrapper object

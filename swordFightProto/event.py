@@ -98,6 +98,11 @@ class EventHandler():
         self.game = game
         self.eventDict = eventDict
         
+        #explicit declaration of class fields
+        self.renderer = None
+        self.borders = [] 
+        self.eventTiles = {}
+        
     '''
     Runs all the events in the game event queue.  Events can return new events
         which are pushed on to the stack and immediately run (be careful of infinite loops!)
@@ -114,7 +119,8 @@ class EventHandler():
         origin = char.getPosition()
         charPixRelative = UTIL.calcCharPix(char.getPosition(), char.getSize())
         charTileRelative = UTIL.calcTileFromPix(charPixRelative) #relative tile that char appears to stand on
-        layout = self.game.gameScene.layoutWrapper.layout
+#         layout = self.game.gameScene.layoutWrapper.layout
+        
                       
         if event.direction == PRAM.UP:
             char.setDirection(PRAM.UP)
@@ -122,7 +128,7 @@ class EventHandler():
             if targetTile == charTileRelative:
                 char.adjustPosition(0,-char.moveSpeed)
             else:
-                if layout[targetTile[1]][targetTile[0]].barrier & 0b0001: #barrier in the way
+                if self.borders[targetTile[1]][targetTile[0]] & 0b0001: #barrier in the way
                     char.adjustPosition(0, (targetTile[1]+1) * PRAM.TILESIZE - charPixRelative[1]) #move next to barrier
                 else:
                     char.adjustPosition(0,-char.moveSpeed)            
@@ -133,7 +139,7 @@ class EventHandler():
             if targetTile == charTileRelative:
                 char.adjustPosition(0, char.moveSpeed)
             else:
-                if layout[targetTile[1]][targetTile[0]].barrier & 0b1000: #barrier in the way
+                if self.borders[targetTile[1]][targetTile[0]] & 0b1000: #barrier in the way
                     char.adjustPosition(0, targetTile[1] * PRAM.TILESIZE - charPixRelative[1]-1) #move next to barrier
                 else:
                     char.adjustPosition(0, char.moveSpeed)
@@ -144,7 +150,7 @@ class EventHandler():
             if targetTile == charTileRelative:
                 char.adjustPosition(-char.moveSpeed, 0) 
             else:
-                if layout[targetTile[1]][targetTile[0]].barrier & 0b0010: #barrier in the way
+                if self.borders[targetTile[1]][targetTile[0]] & 0b0010: #barrier in the way
                     char.adjustPosition((targetTile[0]+1) * PRAM.TILESIZE - charPixRelative[0], 0) #move next to barrier
                 else:
                     char.adjustPosition(-char.moveSpeed, 0)
@@ -155,7 +161,7 @@ class EventHandler():
             if targetTile == charTileRelative:
                 char.adjustPosition(char.moveSpeed, 0) 
             else:
-                if layout[targetTile[1]][targetTile[0]].barrier & 0b0100: #barrier in the way
+                if self.borders[targetTile[1]][targetTile[0]] & 0b0100: #barrier in the way
                     char.adjustPosition(targetTile[0] * PRAM.TILESIZE - charPixRelative[0]-1, 0) #move next to barrier
                 else:
                     char.adjustPosition(char.moveSpeed, 0)
@@ -169,8 +175,8 @@ class EventHandler():
             self.game.renderer.addRenderBox(char.getSize(), origin, char.getPosition(), event.direction)            
         
         if targetTile !=charTileRelative:  #Check if the targetTile tile has an event that triggers on touch
-            targetTileTile = layout[targetTile[1]][targetTile[0]]
-            if targetTileTile.levelEvent != None:
+            targetTileTile = self.eventTiles.get((targetTile[1],targetTile[0]))
+            if targetTileTile != None:
                 if targetTileTile.levelEvent.trigger == PRAM.TRIG_TOUCH:
                     self.game.addEvent(targetTileTile.levelEvent.gameEvent)
 
