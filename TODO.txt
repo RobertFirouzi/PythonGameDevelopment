@@ -19,6 +19,8 @@ DATA AND PARAMS:
 Load the Params as a Game object from DB
 
 SOFTWARE DESIGN
+switch to pyCharm IDE
+use packages to organize modules?
 Write down algorithm for rendering scenery somewhere!
 In Panorama render: Var Names - need better names for each variable.  Can some of the calculations be optimized?  
 Should the camera tile and offset be class fields for Renderer? 

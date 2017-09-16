@@ -11,15 +11,15 @@ blank border, with trees intersperced
 
 '''
 
-FILENAME = 'Level_test_4'
+FILENAME = 'Level_test_5'
 WIDTH = 150
 HEIGHT = 150
-BORDER = 20
-TREESPACING = 11
+BORDER = 15
+TREESPACING = 9
 LOWER_TILEMAP = 'lower.bmp'
 UPPER_TILEMAP = 'upper.bmp'
 
-TILE_VARIANCE = 100 #out of how many tiles do we have different than the normal
+TILE_VARIANCE = 50 #out of how many tiles do we have different than the normal
 MAX_TILE_INDEX = 8*20
 
 BLANK_TILE = 0
@@ -104,7 +104,7 @@ def createBorders(lowerTiles):
                 matrix[i][j] |= RIGHT          
             if j == WIDTH - 1:
                 matrix[i][j] |= LEFT   
-            if lowerTiles[i][j]%2 == 0: #even numbers are barriers
+            if lowerTiles[i][j] != 0 and lowerTiles[i][j]%2 == 0: #even numbers are barriers
                 matrix[i][j] |= LEFT | RIGHT | TOP | BOTTOM   
                        
     return matrix
@@ -115,7 +115,7 @@ def saveLevelData(levelData): #TODO update this to match the Class
 
 #this will only run if the module is run as the main module, not if imported.
 if __name__ == '__main__':
-    levelData = LevelData((WIDTH,HEIGHT), '','')
+    levelData = LevelData(FILENAME, (WIDTH,HEIGHT))
     levelData.lowerTiles = createLower()
     levelData.upperTiles = createUpper()
     levelData.borders = createBorders(levelData.lowerTiles)
@@ -123,13 +123,13 @@ if __name__ == '__main__':
 #     levelData.foregrounds = foregrounds
 #     levelData.gameEvents = gameEvents
 
-#     for i in range(len(levelData.lowerTiles)):
+#     for i in range(0,30):
 #         print(levelData.lowerTiles[i])
 #     print('')
 #     for i in range(len(levelData.lowerTiles)):
 #         print(levelData.upperTiles[i])    
 #     print('')
-#     for i in range(len(levelData.lowerTiles)):
+#     for i in range(0,30):
 #         print(levelData.borders[i])   
     saveLevelData(levelData)
     print('complete')
