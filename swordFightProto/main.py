@@ -37,6 +37,8 @@ while not DONE:
                 DONE = True #TODO make this an input that creates a quit event?
             if event.type == pygame.KEYDOWN: # @UndefinedVariable 
                 game.keydownEvents.append(event)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                game.keydownEvents.append(event)
             #TODO can tell pygame to only check for specific events
         game.keysPressed = pygame.key.get_pressed()
         
@@ -46,9 +48,9 @@ while not DONE:
         game.render()
         
         #debug helper, draw the tile gridlines
-#         for i in range(35):
-#             pygame.draw.line(screen, PRAM.COLOR_BLACK,(0, 48*i), (1600, 48*i))
-#             pygame.draw.line(screen, PRAM.COLOR_BLACK,(48*i, 0), (48*i, 900))
+        for i in range(35):
+            pygame.draw.line(screen, PRAM.COLOR_BLACK,(0, 48*i), (1600, 48*i))
+            pygame.draw.line(screen, PRAM.COLOR_BLACK,(48*i, 0), (48*i, 900))
          
         pygame.display.flip()
         CLOCK.tick(55) #55 FPS

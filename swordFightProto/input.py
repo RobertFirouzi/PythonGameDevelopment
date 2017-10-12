@@ -53,12 +53,16 @@ class InputHandler():
       
     def handleInputs(self):
         while len(self.game.keydownEvents) > 0:
-            event = self.game.keydownEvents.pop() 
-            if event.key == self.buttonMap.action:
-                self.inputActionBehavior()
-            elif event.key == self.buttonMap.status:
-                self.inputStatusBehavior()
-            #TODO - add more key events here
+            event = self.game.keydownEvents.pop()
+            if event.type == PRAM.KEYDOWN:
+                if event.key == self.buttonMap.action:
+                    self.inputActionBehavior()
+                elif event.key == self.buttonMap.status:
+                    self.inputStatusBehavior()
+            elif event.type == PRAM.CLICKDOWN:
+                if event.button == PRAM.INPUT_LEFTCLICK:
+                    self.leftClickBehavior(event.pos)
+            #Add more key events here
         
         #check which keys are currently pressed down        
         if self.game.keysPressed[self.buttonMap.up]:
@@ -81,7 +85,8 @@ class InputHandler():
             self.inputActionBehavior = self.doNothing
             self.inputCancelBehavior = self.doNothing
             self.inputStatusBehavior = self.doNothing
-                        
+            self.leftClickBehavior = self.printPixelPosition
+
         elif inputType == PRAM.INPTYPE_MENU:
             self.inputUpBehavior = self.menuUp
             self.inputDownBehavior = self.menuDown
@@ -90,7 +95,8 @@ class InputHandler():
             self.inputActionBehavior = self.menuAction 
             self.inputCancelBehavior = self.menuCancel
             self.inputStatusBehavior = self.doNothing
-                        
+            self.leftClickBehavior = self.printPixelPosition
+
         elif inputType == PRAM.INPTYPE_NORMAL:        
             self.inputUpBehavior = self.movementUp
             self.inputDownBehavior = self.movementDown
@@ -99,44 +105,49 @@ class InputHandler():
             self.inputActionBehavior = self.defaultAction 
             self.inputCancelBehavior = self.doNothing
             self.inputStatusBehavior = self.statusAction
+            self.leftClickBehavior = self.printPixelPosition
                         
 #TODO - should dirrectional events return an event for the queue?    
-    def movementUp(self):
+    def movementUp(self, args=''):
         self.game.addEvent(self.player.actionMove(PRAM.UP))
         
-    def movementDown(self):
+    def movementDown(self, args=''):
         self.game.addEvent(self.player.actionMove(PRAM.DOWN))
     
-    def movementLeft(self):
+    def movementLeft(self, args=''):
         self.game.addEvent(self.player.actionMove(PRAM.LEFT))
     
-    def movementRight(self):
+    def movementRight(self, args=''):
         self.game.addEvent(self.player.actionMove(PRAM.RIGHT))
     
-    def defaultAction(self):
+    def defaultAction(self, args=''):
         self.game.addEvent(EventDefaultAction(self.player)) #'default behavior'
     
-    def statusAction(self):
+    def statusAction(self, args=''):
         self.game.addEvent(EventLoadMenu(PRAM.MENU_TEST1)) #TODO temp code to test menu/level load       
     
-    def menuUp(self):
+    def menuUp(self, args=''):
         pass
 
-    def menuDown(self):
+    def menuDown(self, args=''):
         pass
 
-    def menuLeft(self):
+    def menuLeft(self, args=''):
         pass
     
-    def menuRight(self):
+    def menuRight(self, args=''):
         pass
 
-    def menuAction(self):
+    def menuAction(self, args=''):
         self.game.addEvent(EventLoadLevel(2, [250,350])) #TODO temp code to test menu/level load
     
-    def menuCancel(self):
+    def menuCancel(self, args=''):
         pass
    
-    def doNothing(self):
+    def doNothing(self, args=''):
         pass
+
+    def printPixelPosition(self, args=''): #TODO Debug code for printing coordinates
+        print('('+str(args[0])+','+str(args[1])+')') #prints the coordinates of the mouse click
+
     
