@@ -201,7 +201,7 @@ class Renderer():
                                           tile[1], 
                                          PRAM.TILESIZE, 
                                          PRAM.TILESIZE)) #blit one tile
-                        self.renderedLowerTiles[(x,y)] = True
+                        self.renderedLowerTiles[(y,x)] = True
 
 #     def renderChangedUpperTile(self, renderQueue, layoutWrapper, tileOffset, pixelOffset):
     def renderChangedUpperTile(self):
@@ -219,7 +219,7 @@ class Renderer():
                                           tile[1],
                                           PRAM.TILESIZE,
                                           PRAM.TILESIZE))
-                        self.renderedUpperTiles[(x,y)] = True
+                        self.renderedUpperTiles[(y,x)] = True
                         
 
 #     def renderAllPanorama(self, images, imageDict, tileOffset, pixelOffset):
