@@ -1,8 +1,9 @@
 PROJECT CharmQuark 
 
-level generator or background/foreground need to be matched to each other visibility is causing
-glitchy rendering)
-continue refacotring render class
+borders seemed to be either generated backwards or checking backwards
+on left side checking (8,-1) in python -1 is the final spot in array which is matching up with opposite border
+need to have barrier tile on edge all around to prevent overrun of array, and solve the border numbering
+(regenrate the level with the side and top border numbers swapped?)
 borders is checking beyond array (how solved before?)
 
 
