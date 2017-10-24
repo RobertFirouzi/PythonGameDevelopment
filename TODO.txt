@@ -1,11 +1,26 @@
 PROJECT CharmQuark 
 
-borders seemed to be either generated backwards or checking backwards
-on left side checking (8,-1) in python -1 is the final spot in array which is matching up with opposite border
-need to have barrier tile on edge all around to prevent overrun of array, and solve the border numbering
-(regenrate the level with the side and top border numbers swapped?)
-borders is checking beyond array (how solved before?)
+general todo
+Documentation Documentation Documentation
+remove deprecated code
+all size variables named including pixel or tile ("<var>_px" or "<var>_tile")
+more organization: want debug params to be accessable to the game object to be modified during game
+	debug console?
+		may have to create a button which opens creates a loop which queries for input
+		as to param to change and value to change to which then calls a function...
+	eg: char speed
+	background scrolling
+	...
+cleanup all warnings in PyCharm
+metrics: timeit to measure speed of render all vs render changed
+	other metrics?
 
+
+buttomap
+	the button map should reference the actual keys, which get mapped to specific behaviors
+
+BUG:
+default action trying to access depcrecated levelLayout Object
 
 Need to decide if (height, width) or (width, height)
 probably should do (height, width) since that is === to (rows, columns), but be consitent
@@ -13,14 +28,10 @@ probably should do (height, width) since that is === to (rows, columns), but be 
 should gameCamera just be in renderer?
 	cleanup camera references
 
-Move GameLevel() addRenderBox() to Render class
-Render Class contains the LevelData
-
 DATA AND PARAMS:
 Load the Params as a Game object from DB
 
 SOFTWARE DESIGN
-switch to pyCharm IDE
 use packages to organize modules?
 Write down algorithm for rendering scenery somewhere!
 In Panorama render: Var Names - need better names for each variable.  Can some of the calculations be optimized?  

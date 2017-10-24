@@ -10,6 +10,7 @@ from game_level import GameLevel, GameCutscene, GameMenu, LevelTriggerTouch, Lay
 from event import EventLoadMenu, EventSetInput, EventHandler
 from scenery import StaticSprite, SceneryWrapper
 from actors import ActorsWrapper
+from debug import DebugLooper
 import pygame
 from parameters import TILESIZE
 
@@ -42,7 +43,7 @@ class Game():
 #         self.gameScene = None
         self.levelData = None
         self.inputHandler = None
-
+        self.debugLooper = DebugLooper(self)
 
     '''
     Run at Game() initialization to setup the starting point
@@ -180,4 +181,5 @@ class Game():
     def addEvent(self,event):
         self.gameEvents.append(event)
     
-    
+    def runDebugLoop(self):
+        self.debugLooper.run()

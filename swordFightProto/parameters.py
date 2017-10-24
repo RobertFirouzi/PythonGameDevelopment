@@ -58,6 +58,7 @@ CLICKDOWN = 5
 ### KEYS ### - pygame.<keyname>
 INPUT_ACTION = 32 #pygame space bar
 INPUT_STATUS = 13 #pygame enter key
+INPUT_DEBUG = 305 #pygame KMOD_RCTRL key
 INPUT_UP = 273
 INPUT_DOWN = 274
 INPUT_LEFT = 276
@@ -130,8 +131,6 @@ MENU_LIBRARY = ['menu_test01']
 
 ### MENU MAP ###
 MENU_TEST1 = 'menu_test01'
-
-
 
 
 

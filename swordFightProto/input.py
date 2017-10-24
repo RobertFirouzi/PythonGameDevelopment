@@ -28,13 +28,16 @@ class ButtonMap():
                  left =  PRAM.INPUT_LEFT, 
                  right = PRAM.INPUT_RIGHT, 
                  action = PRAM.INPUT_ACTION,
-                 status = PRAM.INPUT_STATUS):
+                 status = PRAM.INPUT_STATUS,
+                 enterDebug = PRAM.INPUT_DEBUG,
+                 ):
         self.up = up
         self.down = down
         self.left = left
         self.right = right
         self.action = action
         self.status = status
+        self.enterDebug = enterDebug
 
 '''
 Class has the behaviors of each input dynamically assigned and processes input
@@ -59,6 +62,8 @@ class InputHandler():
                     self.inputActionBehavior()
                 elif event.key == self.buttonMap.status:
                     self.inputStatusBehavior()
+                elif event.key == self.buttonMap.enterDebug:
+                    self.enterDebugBehavior()
             elif event.type == PRAM.CLICKDOWN:
                 if event.button == PRAM.INPUT_LEFTCLICK:
                     self.leftClickBehavior(event.pos)
@@ -105,6 +110,7 @@ class InputHandler():
             self.inputActionBehavior = self.defaultAction 
             self.inputCancelBehavior = self.doNothing
             self.inputStatusBehavior = self.statusAction
+            self.enterDebugBehavior = self.startDebug
             self.leftClickBehavior = self.printPixelPosition
                         
 #TODO - should dirrectional events return an event for the queue?    
@@ -139,7 +145,7 @@ class InputHandler():
         pass
 
     def menuAction(self, args=''):
-        self.game.addEvent(EventLoadLevel(2, [250,350])) #TODO temp code to test menu/level load
+        self.game.addEvent(EventLoadLevel(3, [250,350])) #TODO temp code to test menu/level load
     
     def menuCancel(self, args=''):
         pass
@@ -147,7 +153,8 @@ class InputHandler():
     def doNothing(self, args=''):
         pass
 
-    def printPixelPosition(self, args=''): #TODO Debug code for printing coordinates
+    def printPixelPosition(self, args=''):
         print('('+str(args[0])+','+str(args[1])+')') #prints the coordinates of the mouse click
 
-    
+    def startDebug(self, args=''):
+        self.game.debugLooper.debug = True

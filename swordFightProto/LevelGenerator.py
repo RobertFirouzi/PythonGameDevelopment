@@ -11,7 +11,7 @@ blank border, with trees intersperced
 
 '''
 
-FILENAME = 'Level_test_5'
+FILENAME = 'Level_test_6'
 WIDTH = 150
 HEIGHT = 150
 BORDER = 15
@@ -97,13 +97,13 @@ def createBorders(lowerTiles):
     for i in range(HEIGHT):
         for j in range(WIDTH):
             if i == 0:
-                matrix[i][j] |= BOTTOM
+                matrix[i][j] |= TOP
             if i == HEIGHT-1:
-                matrix[i][j] |= TOP      
+                matrix[i][j] |= BOTTOM
             if j == 0:
-                matrix[i][j] |= RIGHT          
+                matrix[i][j] |= LEFT
             if j == WIDTH - 1:
-                matrix[i][j] |= LEFT   
+                matrix[i][j] |= RIGHT
             if lowerTiles[i][j] != 0 and lowerTiles[i][j]%2 == 0: #even numbers are barriers
                 matrix[i][j] |= LEFT | RIGHT | TOP | BOTTOM   
                        
