@@ -1,29 +1,37 @@
-### PARAMETERS ###
+import os
 
-import pygame
+### PARAMETERS ###
+INT = 0
+STRING = 1
+FLOAT = 2
 
 DEBUG_MENU =\
 '''
-Select a Debug Option:
+Select a Debug Option (or -99 to exit debugger):
 0) Quit
 1) Change Character Speed
 2) Edit Scenery
 3) Edit Tilemap
 >>>'''
 QUIT = 0
+EXIT_DEBUGGER = -99
+RESTART_DEBUGGER = 55555
+EXIT_DEBUGGER_STR = '-99'
 CHAR_SPEED = 1
 SCENERY = 2
 TILEMAP = 3
 
 MOVESPEED_MENU=\
 '''
-Enter an integer value for character Move Speed, (or -99 to cancel).
+Enter an integer value for character Move Speed, or -99 to exit debugger.
 (0 is no movement, 10 is average, 30 is insane)
 >>>'''
+MIN_MOVE_SPEED = -10000
+MAX_MOVE_SPEED = 10000
 
 SCENERY_MENU=\
 '''
-Choose Scenery Type
+Choose Scenery Type (or -99 to exit debugger)
 0) Quit
 1) Background
 2) Foreground 
@@ -31,9 +39,12 @@ Choose Scenery Type
 BACKGROUND = 1
 FOREGROUND = 2
 
+PANORAMA_PROMPT='''or 0 to Cancel, or -99 to exit debugger
+>>>'''
+
 TILEMAP_MENU=\
 '''
-Choose Tilemap Type
+Choose Tilemap Type (or -99 to exit debugger)
 0) Quit
 1) Lower
 2) Upper
@@ -45,7 +56,7 @@ BARRIER = 3
 
 SCENERY_EDIT_MENU =\
 '''
-What will you change?
+What will you change? (or -99 to exit debugger)
 0) Quit
 1) filePath (load new image)
 2) visible sections
@@ -60,67 +71,89 @@ SCROLLING = 3
 ALPHA = 4
 LAYER = 5
 
+GET_FILEPATH='''Enter a filepath to a panorama image:
+>>>'''
+
+ALLOWED_IMAGETYPES = ('.jpg', '.png', '.gif', '.bmp', '.pcx', '.tga', '.tif', '.lbm', '.pbm', '.pgm', '.ppm', '.xpm',
+                     '.JPG', '.PNG', '.GIF', '.BMP', '.PCX', '.TGA', '.TIF', '.LBM', '.PBM', '.PGM', '.PPM', '.XPM')
+
 #Class to run debug mode - allows user programmer to change in game variables to test different areas of code
 class DebugLooper():
-    def __init__(self, game):
+    def __init__(self, game, pygameRef=None):
         self.debug = False
         self.game = game #need a reference to main game to be able to tweak game variables
-
+        self.pygameRef = pygameRef
     def run(self):
-        self.keepGoing = True
+        result = 0
         try:
             while self.debug:
-                devInput = input(DEBUG_MENU)
-                print('You chose: ' + str(devInput))
-                devInput = int(devInput)
-                if devInput == QUIT:
-                    self.debug=False
+                devInput = self.getInput(DEBUG_MENU, INT, [QUIT,TILEMAP])
+                if devInput == EXIT_DEBUGGER:
+                    self.debug = False
+                elif devInput == QUIT:
+                    self.debug = False
+                elif devInput == RESTART_DEBUGGER:
+                    break #will allower the main loop to run once and then return to the debugger menu
                 elif devInput == CHAR_SPEED:
-                    self.changePlayerSpeed()
+                    result = self.changePlayerSpeed()
                 elif devInput == SCENERY:
-                    self.changeScenery()
+                    result = self.changeScenery()
                 elif devInput == TILEMAP:
-                    self.changeTilemap()
+                    result = self.changeTilemap()
 
+                if result == EXIT_DEBUGGER:
+                    self.debug=False
+                if result == RESTART_DEBUGGER:
+                    break #runs main loop once and returns to debugger
         except Exception as e:
             print('debug loop failed with exception')
             print(e)
+            self.debug=False
+
+        print('Exiting Debugger...')
 
     def changeScenery(self):
         keepGoing = True
-
+        result = 0
         while keepGoing:
-            devInput = int(input(SCENERY_MENU))
-            if devInput == BACKGROUND:
-                self.editScenery(background = True)
-            elif devInput == FOREGROUND:
-                self.editScenery(background = False)
-            elif devInput == QUIT:
+            devInput = self.getInput(SCENERY_MENU, INT, [QUIT,FOREGROUND])
+            if devInput == QUIT:
                 keepGoing = False
-            else:
-                print('That is not a menu option')
+            elif devInput == EXIT_DEBUGGER:
+                return EXIT_DEBUGGER
+            elif devInput == BACKGROUND:
+                result = self.editScenery(background = True)
+            elif devInput == FOREGROUND:
+                result = self.editScenery(background = False)
+
+            if result == EXIT_DEBUGGER:
+                return EXIT_DEBUGGER
+            if result == RESTART_DEBUGGER:
+                return RESTART_DEBUGGER
 
     def changeTilemap(self):
         keepGoing = True
 
         while keepGoing:
-            devInput = int(input(TILEMAP_MENU))
-            if devInput == LOWER:
+            devInput = self.getInput(TILEMAP_MENU, INT, [QUIT,BARRIER])
+            if devInput == QUIT:
+                keepGoing = False
+            elif devInput == EXIT_DEBUGGER:
+                return EXIT_DEBUGGER
+            elif devInput == LOWER:
                 print('edit lower')
             elif devInput == UPPER:
                 print('edit upper')
             elif devInput == BARRIER:
                 print('edit barrier')
-            elif devInput == QUIT:
-                keepGoing = False
-            else:
-                print('That is not a menu option')
 
     def changePlayerSpeed(self):
-        devInput = int(input(MOVESPEED_MENU))
-        if devInput != -99:
-            self.game.player.moveSpeed = devInput
-            print('Players speed changed to: ' + str(devInput))
+        devInput = self.getInput(MOVESPEED_MENU, INT, [MIN_MOVE_SPEED,MAX_MOVE_SPEED])
+        if devInput == EXIT_DEBUGGER:
+            return EXIT_DEBUGGER
+        self.game.player.moveSpeed = devInput
+        print('Players speed changed to: ' + str(devInput))
+        return 0
 
     def editScenery(self, background = True):
         if background:
@@ -128,8 +161,8 @@ class DebugLooper():
         else:
             scenery = self.game.levelData.foregrounds
         if len(scenery) == 0:
-            print('No panoramas')
-            return
+            print('No panoramas of this type on this level')
+            return 0
 
         print('Which panorama will you edit?')
         i = 0
@@ -137,23 +170,39 @@ class DebugLooper():
             print(str(i+1) + ': ' + str(panorama.filePath))
             i+=1
 
-        devInput = int(input('''or -99 to cancel
->>>'''))
-        if devInput <0 or devInput > i:
-            print('Quit')
-            return
+        devInput = self.getInput(PANORAMA_PROMPT, INT, [QUIT,i])
+        if devInput == QUIT:
+            return 0
+        if devInput == EXIT_DEBUGGER:
+            return EXIT_DEBUGGER
 
         index = devInput -1 #index into array of scenery objects to edit
 
         keepGoing = True
-        while keepGoing: #TODO
-            devInput = int(input(SCENERY_EDIT_MENU))
-            if devInput == FILEPATH:
-                scenery[index].filePath = 'C:\\Users\\Robert\\repositories\\gameDev\\swordFightProto\\dir_image\\background_blue.jpg'
-                if scenery[index].alpha:
-                    scenery[index].image = pygame.image.load(scenery[index].filePath).convert_alpha()
+        while keepGoing:
+            devInput = self.getInput(SCENERY_EDIT_MENU, INT, [QUIT, LAYER])
+            if devInput == QUIT:
+                keepGoing = False
+            if devInput == EXIT_DEBUGGER:
+                return EXIT_DEBUGGER
+            elif devInput == FILEPATH:
+                devInput = self.getInput(GET_FILEPATH, STRING,[2,1000])
+                allowedType = False
+                for imageType in ALLOWED_IMAGETYPES:
+                    if imageType in devInput:
+                        allowedType = True
+                if allowedType:
+                    if os.path.isfile(devInput):
+                        scenery[index].filePath = devInput
+                        self.game.renderer.loadPanorama(scenery[index])
+                        self.game.renderer.camera.moveFlag=True
+                        # self.game.renderer.render() #force a re-render with new panorama
+                        # C:\Users\Robert\repositories\gameDev\swordFightProto\dir_image\background_blue.jpg
+                        return RESTART_DEBUGGER
+                    else:
+                        print('File not found')
                 else:
-                    scenery[index].image = pygame.image.load(scenery[index].filePath).convert()
+                    print('That is not an allowed image type in pygame')
             elif devInput == VISIBILE_SECTIONS:
                 print('edit visibility')
             elif devInput == SCROLLING:
@@ -162,10 +211,45 @@ class DebugLooper():
                 print('edit alpha')
             elif devInput == LAYER:
                 print('edit layer')
-            elif devInput == QUIT:
-                keepGoing = False
 
+        return 0
 
+    #get a user input type within a range, loop until propper input recieved.  Always return QUIT or EXIT values
+    def getInput(self, prompt, dataType=INT, range=(-10000,10000)):
+        if dataType == INT:
+            devInput = ''
+            while type(devInput) != int or devInput < range[0] or devInput > range[1]:
+                try:
+                    devInput = int(input(prompt))
+                except Exception as e:
+                    print('Exception, caught on user input')
+                    print(e)
+                if devInput == QUIT or devInput == EXIT_DEBUGGER:
+                    return devInput
+        elif dataType == STRING:
+            devInput = 0
+            while type(devInput) != str or len(devInput) < range[0] or len(devInput) > range[1]:
+                try:
+                    devInput = str(input(prompt))
+                except Exception as e:
+                    print('Exception, caught on user input')
+                    print(e)
+
+                if devInput == EXIT_DEBUGGER_STR:
+                    return EXIT_DEBUGGER
+        elif dataType == FLOAT:
+            devInput = ''
+            while type(devInput) != float or devInput < range[0] or devInput > range[1]:
+                try:
+                    devInput = float(input(prompt))
+                except Exception as e:
+                    print('Exception, caught on user input')
+                    print(e)
+
+                if devInput == float(QUIT) or devInput == float(EXIT_DEBUGGER):
+                    return int(devInput)
+
+        return devInput
 
 
 

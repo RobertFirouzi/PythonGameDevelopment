@@ -28,7 +28,7 @@ eventHandler.renderer = renderer
 game.inputHandler = inputHandler
 game.eventHandler = eventHandler
 renderer.camera = gameCamera
-
+game.debugLooper.pygameRef = pygame
 
 game.gameStartup()
 while not DONE:

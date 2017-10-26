@@ -1,20 +1,16 @@
 PROJECT CharmQuark 
 
+debug:
+try running as a thread to allow instant change of pygame screen?
+right click a tile and be able to change its tilemap index?
+
 general todo
 Documentation Documentation Documentation
 remove deprecated code
 all size variables named including pixel or tile ("<var>_px" or "<var>_tile")
-more organization: want debug params to be accessable to the game object to be modified during game
-	debug console?
-		may have to create a button which opens creates a loop which queries for input
-		as to param to change and value to change to which then calls a function...
-	eg: char speed
-	background scrolling
-	...
 cleanup all warnings in PyCharm
 metrics: timeit to measure speed of render all vs render changed
 	other metrics?
-
 
 buttomap
 	the button map should reference the actual keys, which get mapped to specific behaviors
