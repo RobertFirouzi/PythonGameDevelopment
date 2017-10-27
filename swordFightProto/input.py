@@ -157,4 +157,4 @@ class InputHandler():
         print('('+str(args[0])+','+str(args[1])+')') #prints the coordinates of the mouse click
 
     def startDebug(self, args=''):
-        self.game.debugLooper.debug = True
+        self.game.runDebug = True

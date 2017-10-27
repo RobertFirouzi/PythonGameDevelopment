@@ -23,8 +23,8 @@ scenery = []
 
 bgScrolling1= [[1,28],[1,126]]
 bgScrolling2= [[1,4],[1,21]]
-bgVisible1= [(0,7200, 0, 720),(720,6480, 6480, 7200),(0, 720, 720, 7200),(6480, 7200, 720, 7200)]
-bgVisible2= [(0,7200, 0, 720),(720,6480, 6480, 7200),(0, 720, 720, 7200),(6480, 7200, 720, 7200)]
+bgVisible1= [[0,7200, 0, 720],[720,6480, 6480, 7200],[0, 720, 720, 7200],[6480, 7200, 720, 7200]]
+bgVisible2= [[0,7200, 0, 720],[720,6480, 6480, 7200],[0, 720, 720, 7200],[6480, 7200, 720, 7200]]
 
 background = [PanoramicImage(PRAM.IMAGE_PATH, PRAM.BACKGROUND_TEST, (1800,950), bgVisible1, bgScrolling1, False),
 			  PanoramicImage(PRAM.IMAGE_PATH, 'treeline.png', (3000,1200), bgVisible2, bgScrolling2, True)]

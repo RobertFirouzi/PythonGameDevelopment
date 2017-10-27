@@ -1,5 +1,5 @@
 import os
-
+import threading
 ### PARAMETERS ###
 INT = 0
 STRING = 1
@@ -15,7 +15,6 @@ Select a Debug Option (or -99 to exit debugger):
 >>>'''
 QUIT = 0
 EXIT_DEBUGGER = -99
-RESTART_DEBUGGER = 55555
 EXIT_DEBUGGER_STR = '-99'
 CHAR_SPEED = 1
 SCENERY = 2
@@ -77,34 +76,40 @@ GET_FILEPATH='''Enter a filepath to a panorama image:
 ALLOWED_IMAGETYPES = ('.jpg', '.png', '.gif', '.bmp', '.pcx', '.tga', '.tif', '.lbm', '.pbm', '.pgm', '.ppm', '.xpm',
                      '.JPG', '.PNG', '.GIF', '.BMP', '.PCX', '.TGA', '.TIF', '.LBM', '.PBM', '.PGM', '.PPM', '.XPM')
 
+VISIBILE_MENU=\
+'''
+Add or Delete a Section? (or -99 to exit Debugger)
+0) Quit
+1) Delete
+2) Add
+>>>
+'''
+DELETE_VISIBILITY = 1
+ADD_VISIBILITY = 2
 #Class to run debug mode - allows user programmer to change in game variables to test different areas of code
-class DebugLooper():
-    def __init__(self, game, pygameRef=None):
-        self.debug = False
+class DebugLooper(threading.Thread):
+    def __init__(self, game):
+        threading.Thread.__init__(self, daemon=True)
         self.game = game #need a reference to main game to be able to tweak game variables
-        self.pygameRef = pygameRef
     def run(self):
         result = 0
+        keepGoing = True
         try:
-            while self.debug:
+            while keepGoing:
                 devInput = self.getInput(DEBUG_MENU, INT, [QUIT,TILEMAP])
                 if devInput == EXIT_DEBUGGER:
-                    self.debug = False
+                    keepGoing = False
                 elif devInput == QUIT:
-                    self.debug = False
-                elif devInput == RESTART_DEBUGGER:
-                    break #will allower the main loop to run once and then return to the debugger menu
+                    keepGoing = False
                 elif devInput == CHAR_SPEED:
                     result = self.changePlayerSpeed()
                 elif devInput == SCENERY:
                     result = self.changeScenery()
                 elif devInput == TILEMAP:
                     result = self.changeTilemap()
-
                 if result == EXIT_DEBUGGER:
-                    self.debug=False
-                if result == RESTART_DEBUGGER:
-                    break #runs main loop once and returns to debugger
+                    keepGoing = False
+
         except Exception as e:
             print('debug loop failed with exception')
             print(e)
@@ -128,8 +133,6 @@ class DebugLooper():
 
             if result == EXIT_DEBUGGER:
                 return EXIT_DEBUGGER
-            if result == RESTART_DEBUGGER:
-                return RESTART_DEBUGGER
 
     def changeTilemap(self):
         keepGoing = True
@@ -169,7 +172,6 @@ class DebugLooper():
         for panorama in scenery:
             print(str(i+1) + ': ' + str(panorama.filePath))
             i+=1
-
         devInput = self.getInput(PANORAMA_PROMPT, INT, [QUIT,i])
         if devInput == QUIT:
             return 0
@@ -177,15 +179,16 @@ class DebugLooper():
             return EXIT_DEBUGGER
 
         index = devInput -1 #index into array of scenery objects to edit
-
         keepGoing = True
         while keepGoing:
             devInput = self.getInput(SCENERY_EDIT_MENU, INT, [QUIT, LAYER])
             if devInput == QUIT:
                 keepGoing = False
-            if devInput == EXIT_DEBUGGER:
+
+            elif devInput == EXIT_DEBUGGER:
                 return EXIT_DEBUGGER
-            elif devInput == FILEPATH:
+
+            elif devInput == FILEPATH: #Change the image
                 devInput = self.getInput(GET_FILEPATH, STRING,[2,1000])
                 allowedType = False
                 for imageType in ALLOWED_IMAGETYPES:
@@ -195,22 +198,53 @@ class DebugLooper():
                     if os.path.isfile(devInput):
                         scenery[index].filePath = devInput
                         self.game.renderer.loadPanorama(scenery[index])
-                        self.game.renderer.camera.moveFlag=True
-                        # self.game.renderer.render() #force a re-render with new panorama
-                        # C:\Users\Robert\repositories\gameDev\swordFightProto\dir_image\background_blue.jpg
-                        return RESTART_DEBUGGER
                     else:
                         print('File not found')
                 else:
                     print('That is not an allowed image type in pygame')
+
             elif devInput == VISIBILE_SECTIONS:
-                print('edit visibility')
+                devInput = self.getInput(VISIBILE_MENU, INT, [QUIT, ADD_VISIBILITY])
+                print('Current Visibility:')
+                count = 0
+                for visibleSection in scenery[index].visibleSections:
+                    count += 1
+                    print(str(count) + ') ' + str(visibleSection))
+                if devInput == QUIT:
+                    keepGoing = False
+                elif devInput == EXIT_DEBUGGER:
+                    return EXIT_DEBUGGER
+                elif devInput == DELETE_VISIBILITY:
+                    print('Delete which visible section?')
+                    devInput = self.getInput('>>>', INT, [1, count])
+                    scenery[index].visibleSections = list(scenery[index].visibleSections)
+                    del(scenery[index].visibleSections[devInput-1])
+                    scenery[index].visibleSections = tuple(scenery[index].visibleSections)
+                elif devInput == ADD_VISIBILITY:
+                    print('Enter ints for the 4 values')
+                    newVisibility = ['xmin', 'xmax', 'ymin', 'ymax']  # placeholders tags
+                    for i in range(4):
+                        newVisibility[i] = self.getInput('Value for ' + newVisibility[i] + '\n>>>', INT, [-500000, 500000])
+                    scenery[index].visibleSections = list(scenery[index].visibleSections)
+                    scenery[index].visibleSections.append(newVisibility)
+                    scenery[index].visibleSections = tuple(scenery[index].visibleSections)
             elif devInput == SCROLLING:
-                print('edit scrolling')
+                print('Current scrolling: ' + str(scenery[index].scrolling))
+                print('Enter ints for the 4 values')
+                scrolling = [['xmult', 'xdiv'],['ymult','ydiv']] #placeholders tags
+                for i in range(2):
+                    for j in range(2):
+                        scrolling[i][j] = self.getInput('Value for ' + scrolling[i][j]+'\n>>>',
+                                                        INT, [-10000, 10000])
+                scenery[index].scrolling = scrolling
+
             elif devInput == ALPHA:
                 print('edit alpha')
+
             elif devInput == LAYER:
                 print('edit layer')
+
+            self.game.renderer.camera.moveFlag = True
 
         return 0
 

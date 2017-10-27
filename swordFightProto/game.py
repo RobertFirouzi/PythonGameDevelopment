@@ -43,7 +43,8 @@ class Game():
 #         self.gameScene = None
         self.levelData = None
         self.inputHandler = None
-        self.debugLooper = DebugLooper(self)
+        self.runDebug = False
+
 
     '''
     Run at Game() initialization to setup the starting point
@@ -182,4 +183,6 @@ class Game():
         self.gameEvents.append(event)
     
     def runDebugLoop(self):
-        self.debugLooper.run()
+        self.runDebug = False
+        debugLooper = DebugLooper(self)
+        debugLooper.start()

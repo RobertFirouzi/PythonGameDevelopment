@@ -3,6 +3,7 @@ Created on Feb 24, 2017
 
 @author: Robert
 '''
+
 import pygame
 import parameters as PRAM
 from setup import soundPlayerFactory, playerFactory, eventHandlerFactory
@@ -28,7 +29,6 @@ eventHandler.renderer = renderer
 game.inputHandler = inputHandler
 game.eventHandler = eventHandler
 renderer.camera = gameCamera
-game.debugLooper.pygameRef = pygame
 
 game.gameStartup()
 while not DONE:
@@ -52,7 +52,7 @@ while not DONE:
         #     pygame.draw.line(screen, PRAM.COLOR_BLACK,(0, 48*i), (1600, 48*i))
         #     pygame.draw.line(screen, PRAM.COLOR_BLACK,(48*i, 0), (48*i, 900))
 
-        if game.debugLooper.debug:
+        if game.runDebug:
             game.runDebugLoop() #if debug is activated ented debug mode
 
         pygame.display.flip()
